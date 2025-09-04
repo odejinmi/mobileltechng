@@ -1,0 +1,1 @@
+ <?php echo $__env->yieldPushContent('breadcrumb-plugins'); ?>    <?php /**PATH /home/ltecyxtc/mobile.ltechng.co/mobile-app/resources/mobileapp/templates/basic/partials/userbreadcrumb.blade.php ENDPATH**/ ?>

@@ -1,0 +1,1 @@
+ <?php echo $__env->yieldPushContent('breadcrumb-plugins'); ?>    <?php /**PATH /Applications/XAMPP/xamppfiles/htdocs/billspaypointmobile/core/resources/mobileapp/templates/basic/partials/userbreadcrumb.blade.php ENDPATH**/ ?>

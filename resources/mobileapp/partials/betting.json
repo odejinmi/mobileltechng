@@ -1,0 +1,488 @@
+[
+    {
+        "provider": "1",
+        "providerLogoUrl": "https://files.opayweb.com/image/884e87899e311bb76378a52f3a255e5a.jpg",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 1000000000,
+            "currency": "NGN",
+            "ngnamount": "10000000.00"
+        }
+    },
+    {
+        "provider": "ILOT",
+        "providerLogoUrl": "https://files.opayweb.com/image/c016b196cf4f311251608d90d3af9387.jpg",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 1000000000,
+            "currency": "NGN",
+            "ngnamount": "10000000.00"
+        }
+    },
+    {
+        "provider": "SPORTYBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Sportybet.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 999999900,
+            "currency": "NGN",
+            "ngnamount": "9999999.00"
+        }
+    },
+    {
+        "provider": "BANGBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Bangbet-new3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 99000000,
+            "currency": "NGN",
+            "ngnamount": "990000.00"
+        }
+    },
+    {
+        "provider": "WAJEGAME",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/Waje.png",
+        "minAmount": {
+            "amount": 50000,
+            "currency": "NGN",
+            "ngnamount": "500.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "BETKING",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/betking02.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "ONE_XBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/1xbet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "AFRICA365",
+        "providerLogoUrl": "https://files.opayweb.com/image/c8c03141b7859489a1a55d115d42ad31.jpg",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 500000000,
+            "currency": "NGN",
+            "ngnamount": "5000000.00"
+        }
+    },
+    {
+        "provider": "BET9JA",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Bet9ja3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "LUCKYBET",
+        "providerLogoUrl": "https://files.opayweb.com/image/b5501054b3ecf85d4ca0b95938dd393b.jpg",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 1000000000,
+            "currency": "NGN",
+            "ngnamount": "10000000.00"
+        }
+    },
+    {
+        "provider": "PARIPESA",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Paripesa.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 200000000,
+            "currency": "NGN",
+            "ngnamount": "2000000.00"
+        }
+    },
+    {
+        "provider": "BETWAY",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/betway3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "BETBONANZA",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/20230621-165411.jpeg",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "PARIMATCH",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/parimatch.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 500000000,
+            "currency": "NGN",
+            "ngnamount": "5000000.00"
+        }
+    },
+    {
+        "provider": "BET9JA_AGENT",
+        "providerLogoUrl": "https://opaywebcom.s3-eu-west-1.amazonaws.com/images/nearby/Bet9ja.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "EASYWIN",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/20221226-153858.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "FRAPAPA",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/20221130-105551.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 1000000000,
+            "currency": "NGN",
+            "ngnamount": "10000000.00"
+        }
+    },
+    {
+        "provider": "MEGAMILLIONS",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/play%20it.%20win%20it.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "YANGASPORT",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/icon.png",
+        "minAmount": {
+            "amount": 20000,
+            "currency": "NGN",
+            "ngnamount": "200.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "NAIRABET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Nairabet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 25000000,
+            "currency": "NGN",
+            "ngnamount": "250000.00"
+        }
+    },
+    {
+        "provider": "NAIJABET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Naijabet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "BETLION",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Livescorebet.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "MYLOTTOHUB",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/mylottohub3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "MERRYBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Merrybet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "NAIRAMILLION",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/nairamillion.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 999999900,
+            "currency": "NGN",
+            "ngnamount": "9999999.00"
+        }
+    },
+    {
+        "provider": "CLOUDBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/cloudbet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": null
+    },
+    {
+        "provider": "BETLAND",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Betland3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "SUPABET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/supabet3x.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "MELBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/Melbet.png",
+        "minAmount": {
+            "amount": 25000,
+            "currency": "NGN",
+            "ngnamount": "250.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    },
+    {
+        "provider": "ZEBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/Zebet.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "BETCORRECT",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/BetCorrect.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "HELABET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/Helabet.png",
+        "minAmount": {
+            "amount": 25000,
+            "currency": "NGN",
+            "ngnamount": "250.00"
+        },
+        "maxAmount": {
+            "amount": 10000000,
+            "currency": "NGN",
+            "ngnamount": "100000.00"
+        }
+    },
+    {
+        "provider": "SUREBET",
+        "providerLogoUrl": "https://files.opayweb.com/images/api/icon/betting/logo/SUREBET247.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 500000000,
+            "currency": "NGN",
+            "ngnamount": "5000000.00"
+        }
+    },
+    {
+        "provider": "HALLABET_AGENT",
+        "providerLogoUrl": "https://files.opayweb.com/image/dc4bd6c985e2140a313b1a2eb72132b2.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 50000000,
+            "currency": "NGN",
+            "ngnamount": "500000.00"
+        }
+    },
+    {
+        "provider": "BETGR8",
+        "providerLogoUrl": "https://files.opayweb.com/image/c8ee78684fc17a0482c3be210cc47bb1.png",
+        "minAmount": {
+            "amount": 10000,
+            "currency": "NGN",
+            "ngnamount": "100.00"
+        },
+        "maxAmount": {
+            "amount": 100000000,
+            "currency": "NGN",
+            "ngnamount": "1000000.00"
+        }
+    }
+    ]

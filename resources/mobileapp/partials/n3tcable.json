@@ -1,0 +1,152 @@
+[
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Padi",
+        "variation_amount": "2921",
+        "variation_code": "1"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DSTV -YANGA",
+        "variation_amount": "4158",
+        "variation_code": "2"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Premium-Asia",
+        "variation_amount": "24500",
+        "variation_code": "9"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Confam + ExtraView",
+        "variation_amount": "7115",
+        "variation_code": "10"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "Dstv Confam",
+        "variation_amount": "7326",
+        "variation_code": "34"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv  Compact",
+        "variation_amount": "12375",
+        "variation_code": "35"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Premium",
+        "variation_amount": "29500",
+        "variation_code": "36"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Asia",
+        "variation_amount": "7100",
+        "variation_code": "37"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Compact Plus",
+        "variation_amount": "19602",
+        "variation_code": "38"
+    },
+    {
+        "cable_name": "DSTV",
+        "name": "DStv Padi + ExtraView",
+        "variation_amount": "5300",
+        "variation_code": "43"
+    },
+    {
+        "cable_name": "GOTV",
+        "name": "GOtv Max",
+        "variation_amount": "5750",
+        "variation_code": "59"
+    },
+    {
+        "cable_name": "GOTV",
+        "name": "GOtv Jolli",
+        "variation_amount": "4050",
+        "variation_code": "60"
+    },
+    {
+        "cable_name": "GOTV",
+        "name": "GOtv Jinja",
+        "variation_amount": "2750",
+        "variation_code": "61"
+    },
+    {
+        "cable_name": "GOTV",
+        "name": "GOtv Smallie - monthly",
+        "variation_amount": "1400",
+        "variation_code": "62"
+    },
+    {
+        "cable_name": "GOTV",
+        "name": "GOtv Supa - monthly",
+        "variation_amount": "7700",
+        "variation_code": "65"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Nova - 1 Month",
+        "variation_amount": "1700",
+        "variation_code": "66"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Basic (Antenna)  - 1 Month",
+        "variation_amount": "3000",
+        "variation_code": "67"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Smart (Dish) -1 Month",
+        "variation_amount": "3500",
+        "variation_code": "68"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Classic (Antenna) -  1 Month",
+        "variation_amount": "4500",
+        "variation_code": "69"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Super (Dish)  - 1 Month",
+        "variation_amount": "7500",
+        "variation_code": "70"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Nova - 1 Week",
+        "variation_amount": "500",
+        "variation_code": "71"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Basic (Antenna) - 1 Week",
+        "variation_amount": "900",
+        "variation_code": "72"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Smart (Dish) -- 1 Week",
+        "variation_amount": "1100",
+        "variation_code": "73"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Classic (Antenna) - 1 Week",
+        "variation_amount": "1500",
+        "variation_code": "74"
+    },
+    {
+        "cable_name": "STARTIME",
+        "name": "Super (Dish)  - 1 Week",
+        "variation_amount": "2200",
+        "variation_code": "75"
+    }
+]

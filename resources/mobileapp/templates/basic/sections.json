@@ -1,0 +1,26 @@
+{
+   
+    "faq": {
+        "builder": true,
+        "name": "FAQ Section",
+        "content": {
+            "heading": "text",
+            "sub_heading": "text"
+        },
+        "element": {
+            "question": "text",
+            "answer": "textarea",
+            "modal": true
+        }
+    }, 
+    "privacy_policy": {
+        "builder": true,
+        "no_selection": true,
+        "name": "Policy Pages",
+        "element": {
+            "title": "text",
+            "content": "textarea-nic",
+            "modal": false
+        }
+    } 
+}

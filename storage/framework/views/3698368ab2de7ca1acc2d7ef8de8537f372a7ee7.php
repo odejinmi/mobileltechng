@@ -1,0 +1,1 @@
+ <?php echo $__env->yieldPushContent('breadcrumb-plugins'); ?>    <?php /**PATH C:\Users\DELL\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/partials/userbreadcrumb.blade.php ENDPATH**/ ?>

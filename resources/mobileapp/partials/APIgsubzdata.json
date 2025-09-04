@@ -1,0 +1,220 @@
+{
+    "1": [
+        {
+            "name": "10GB - 30days",
+            "plan_id": "260",
+            "price": "2700",
+            "type": "mtn_sme",
+            "network": "MTN"
+        },
+        {
+            "name": "1GB - 30days",
+            "plan_id": "166",
+            "price": "270",
+            "type": "mtn_sme",
+            "network": "MTN"
+        },
+        {
+            "name": "2GB - 30days",
+            "plan_id": "167",
+            "price": "540",
+            "type": "mtn_sme",
+            "network": "MTN"
+        },
+        {
+            "name": "3GB - 30days",
+            "plan_id": "168",
+            "price": "810",
+            "type": "mtn_sme",
+            "network": "MTN"
+        },
+        {
+            "name": "500MB - 30 Days",
+            "plan_id": "179",
+            "price": "135",
+            "type": "mtn_sme",
+            "network": "MTN"
+        },
+        {
+            "name": "5GB - 30days",
+            "plan_id": "169",
+            "price": "1350",
+            "type": "mtn_sme",
+            "network": "MTN"
+        }
+    ],
+    "2": [
+        {
+            "name": "100.0 MB - 7days(Corporate Gifting)",
+            "plan_id": "264",
+            "price": "50",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "10GB - 30days(Corporate Gifting)",
+            "plan_id": "273",
+            "price": "2250",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "15GB - 30days(Corporate Gifting)",
+            "plan_id": "274",
+            "price": "3375",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "1GB - 30days(Corporate Gifting)",
+            "plan_id": "267",
+            "price": "225",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "20GB - 30days(Corporate Gifting)",
+            "plan_id": "275",
+            "price": "4500",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "2GB - 30days(Corporate Gifting)",
+            "plan_id": "268",
+            "price": "450",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "300.0 MB- 7days(Corporate Gifting)",
+            "plan_id": "265",
+            "price": "100",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "500MB - 30days(Corporate Gifting)",
+            "plan_id": "266",
+            "price": "113",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "5GB - 30days(Corporate Gifting)",
+            "plan_id": "269",
+            "price": "1125",
+            "type": "airtel_cg",
+            "network": "AIRTEL"
+        }
+    ],
+    "3": [
+        {
+            "name": "10GB - 30days(Corporate Gifting)\t",
+            "plan_id": "10000",
+            "price": "2350",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "1GB - 30days(Corporate Gifting)\t",
+            "plan_id": "1000",
+            "price": "235",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "200 MB - 14days(Corporate Gifting)",
+            "plan_id": "200",
+            "price": "70",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "2GB - 30days(Corporate Gifting)\t",
+            "plan_id": "2000",
+            "price": "470",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "3GB - 30days(Corporate Gifting)\t",
+            "plan_id": "3000",
+            "price": "705",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "500MB - 30days(Corporate Gifting)\t",
+            "plan_id": "500",
+            "price": "118",
+            "type": "glo_data",
+            "network": "GLO"
+        },
+        {
+            "name": "5GB - 30days(Corporate Gifting)\t",
+            "plan_id": "5000",
+            "price": "1175",
+            "type": "glo_data",
+            "network": "GLO"
+        }
+    ],
+    "4": [
+        {
+            "name": "1.5GB - 30 Days",
+            "plan_id": "300",
+            "price": "255",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "1GB for 30 Days",
+            "plan_id": "298",
+            "price": "170",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "20GB  - 30days",
+            "plan_id": "351",
+            "price": "3400",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "25MB - 30Days",
+            "plan_id": "361",
+            "price": "25",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "2GB - 30days",
+            "plan_id": "299",
+            "price": "340",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "3GB - 30days",
+            "plan_id": "303",
+            "price": "510",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "4GB - 30 Days",
+            "plan_id": "347",
+            "price": "680",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "500MB - 30days",
+            "plan_id": "182",
+            "price": "85",
+            "type": "etisalat_data",
+            "network": "9MOBILE"
+        }
+    ]
+}

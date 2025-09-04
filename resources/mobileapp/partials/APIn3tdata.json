@@ -1,0 +1,362 @@
+{
+    "1": [
+        {
+            "name": "500MB",
+            "plan_id": "1",
+            "price": "109.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "750MB",
+            "plan_id": "64",
+            "price": "150.00",
+            "plan_type": "GIFTING",
+            "plan_day": "7Days",
+            "network": "MTN"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "65",
+            "price": "200.00",
+            "plan_type": "GIFTING",
+            "plan_day": "7 Days",
+            "network": "MTN"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "66",
+            "price": "405.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "3GB",
+            "plan_id": "67",
+            "price": "600.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "1.5GB",
+            "plan_id": "68",
+            "price": "300.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "2",
+            "price": "217.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "500MB",
+            "plan_id": "50",
+            "price": "110.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "51",
+            "price": "220.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "52",
+            "price": "440.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "5GB",
+            "plan_id": "54",
+            "price": "1,100.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "10GB",
+            "plan_id": "55",
+            "price": "2,200.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "3",
+            "price": "434.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "3GB",
+            "plan_id": "4",
+            "price": "651.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "5GB",
+            "plan_id": "5",
+            "price": "1,085.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        },
+        {
+            "name": "10GB",
+            "plan_id": "6",
+            "price": "2,170.00",
+            "plan_type": "SME",
+            "plan_day": "1 Month",
+            "network": "MTN"
+        }
+    ],
+    "3": [
+        {
+            "name": "1.35GB",
+            "plan_id": "20",
+            "price": "480.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "2.9GB",
+            "plan_id": "21",
+            "price": "970.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "4.1GB",
+            "plan_id": "22",
+            "price": "1,450.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "5.8GB",
+            "plan_id": "24",
+            "price": "1,900.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "200MB",
+            "plan_id": "57",
+            "price": "50.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "500MB",
+            "plan_id": "58",
+            "price": "108.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "59",
+            "price": "215.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "60",
+            "price": "430.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "3GB",
+            "plan_id": "61",
+            "price": "645.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "5GB",
+            "plan_id": "62",
+            "price": "1,075.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        },
+        {
+            "name": "10GB",
+            "plan_id": "63",
+            "price": "2,150.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "GLO"
+        }
+    ],
+    "4": [
+        {
+            "name": "1.5GB",
+            "plan_id": "36",
+            "price": "880.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "37",
+            "price": "1,000.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "3GB",
+            "plan_id": "38",
+            "price": "1,300.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "4.5GB",
+            "plan_id": "39",
+            "price": "1,750.00",
+            "plan_type": "GIFTING",
+            "plan_day": "1 Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "500MB",
+            "plan_id": "72",
+            "price": "90.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "73",
+            "price": "170.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "74",
+            "price": "340.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "3GB",
+            "plan_id": "75",
+            "price": "510.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "5GB",
+            "plan_id": "76",
+            "price": "850.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        },
+        {
+            "name": "10GB",
+            "plan_id": "77",
+            "price": "1,700.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "9MOBILE"
+        }
+    ],
+    "2": [
+        {
+            "name": "500MB",
+            "plan_id": "46",
+            "price": "103.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "1GB",
+            "plan_id": "47",
+            "price": "205.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "2GB",
+            "plan_id": "48",
+            "price": "410.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "5GB",
+            "plan_id": "49",
+            "price": "1,025.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "10GB",
+            "plan_id": "56",
+            "price": "2,050.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1 Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "300MB",
+            "plan_id": "70",
+            "price": "85.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "AIRTEL"
+        },
+        {
+            "name": "100MB",
+            "plan_id": "71",
+            "price": "30.00",
+            "plan_type": "COOPERATE GIFTING",
+            "plan_day": "1Month",
+            "network": "AIRTEL"
+        }
+    ]
+}
