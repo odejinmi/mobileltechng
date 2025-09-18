@@ -1,6 +1,6 @@
 @extends($activeTemplate . 'layouts.dashboard')
 @section('panel')
-    
+
 
   <!-- card start -->
 
@@ -9,18 +9,18 @@
     <div class="custom-container">
       <div class="swiper banner">
         <div class="swiper-wrapper">
-          <!--<div class="swiper-slide">-->
-          <!--  <a href="{{route('user.downlines')}}">-->
-          <!--    <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/domore.png')}}" alt="banner2" />-->
-          <!--  </a>-->
-          <!--</div>-->
+          <div class="swiper-slide">
+            <a href="{{route('user.downlines')}}">
+              <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/domore.png')}}" alt="banner2" />
+            </a>
+          </div>
           <div class="swiper-slide">
             <a href="#">
               <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/refer.png')}}" alt="banner1" />
             </a>
           </div>
 
-          
+
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@
             </div>
             <h5 class="mt-2 text-center dark-text">Electricity</h5>
           </a>
-        </div> 
+        </div>
         <div class="col-3">
           <a href="{{ route('user.buy.internet_sme') }}">
             <div class="service-box">
@@ -136,7 +136,7 @@
             </div>
             <h5 class="mt-2 text-center dark-text">Cable TV</h5>
           </a>
-        </div> 
+        </div>
         <div class="col-3">
           <a href="{{ route('user.airtime.indexlocal') }}">
             <div class="service-box">
@@ -164,7 +164,7 @@
           </a>
         </div>
         @endif
-        
+
         @if ($general->insurance > 0)
         <div class="col-3">
           <a href="{{ route('user.buy.insurance') }}">
@@ -179,7 +179,7 @@
     </div>
   </section>
   <!-- service section end -->
- 
+
   <!-- Transaction section starts -->
   <section>
     <div class="custom-container">
@@ -214,8 +214,8 @@
         @empty
         {!!emptyData2()!!}
 
-        @endforelse 
-        
+        @endforelse
+
       </div>
     </div>
   </section>
@@ -243,7 +243,7 @@
                 <span class="badge bg-warning badge-sm">{{ strToUpper($data->status) }}</span>
                 @endif
               </div>
-             
+
               <h6 class="card-number">{{$data->pan}}</h6>
               <h5 class="card-name">{{Auth::user()->fullname}}</h5>
               <h2 class="card-amount">@if($data->currency == 'NGN')₦ @else $ @endif ****</h2>
@@ -258,21 +258,21 @@
                   <h5 class="text-white fw-semibold mt-1">
                         ***
                   </h5>
-                  </a> 
+                  </a>
                 </div>
               </div>
             </div>
           </div>
           @empty
           {!!emptyData2()!!}
-          @endforelse 
-           
+          @endforelse
+
       </div>
     </div>
   </section>
   @endif
   <!-- all cards section end -->
-  
+
 
   <!-- monthly statistics section starts -->
   <section>
