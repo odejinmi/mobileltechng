@@ -32,7 +32,7 @@ class ApiController extends Controller
 
         try{
             $json = file_get_contents('php://input');
-            $input = json_decode($json, true); 
+            $input = json_decode($json, true);
             $action = isset($input['action_type']) ? $input['action_type'] : $input['event_type'];
             \Log::info('WIRELESS XNOMBA API'. __LINE__ .': '.json_encode($input) ."\n");
             if ($action == 'pre-balance-check-auth') {
@@ -46,8 +46,8 @@ class ApiController extends Controller
             }
         }catch(\Exception $ex){
                 \Log::error('WIRELESS XNOMBA API ERROR ON LINE '. __LINE__ .': '.$ex->getMessage() ."\n");
-                return response(['error'=>$ex->getMessage()], 400);  
-        } 
+                return response(['error'=>$ex->getMessage()], 400);
+        }
 
     }
 
@@ -55,14 +55,14 @@ class ApiController extends Controller
 
         try{
             $json = file_get_contents('php://input');
-            $input = json_decode($json, true); 
+            $input = json_decode($json, true);
             $terminalId = $input['data']['terminal']['terminalId'];
             $terminalPin = $input['data']['terminal']['pin'];
             $action = $input['action_type'];
             $terminal = Terminal::whereTerminalId($terminalId)->first();
 
             \Log::info('WIRELESS XNOMBA BALANCE API'. __LINE__ .': '.json_encode($input) ."\n");
-            
+
 
             if(!$terminal)
             {
@@ -72,8 +72,8 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'Terminal Not Found'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
+                return response(['data'=>$data], 400);
+            }
             $user = User::whereId($terminal->user_id)->first();
             if(!$user)
             {
@@ -83,13 +83,13 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'There Is No User Assigned To This Terminal'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
+                return response(['data'=>$data], 400);
+            }
 
             if (!Hash::check($terminalPin, $user->terminal_pin)) {
-                //05 - INVALID_PIN 
-               return response(['message'=>'Invalid authentication','status'=>'INVALID_PIN'], 400); 
-            }  
+                //05 - INVALID_PIN
+               return response(['message'=>'Invalid authentication','status'=>'INVALID_PIN'], 400);
+            }
 
             if($user->status != 1)
             {
@@ -98,23 +98,23 @@ class ApiController extends Controller
                     'shouldActionProceed' => false,
                     'reasonCode' => '02'
                 ];
-                return response(['message'=>'Account Blacklisted','data'=>$data], 400);  
-            } 
+                return response(['message'=>'Account Blacklisted','data'=>$data], 400);
+            }
 
             //CHECK BALANCE FUNCTION ON XNOMBA
                 $data['user'] = [
                     'balance' => bcdiv($user->balance,1,2),
                     'currency' => 'NGN'
-                ]; 
-                return response(['data'=>$data], 200);                        
+                ];
+                return response(['data'=>$data], 200);
 
         }
         //RETURN ERROR FROM FUNCTION IF ANY
         catch(\Exception $ex){
             \Log::error('WIRELESS XNOMBA BALANCE API ERROR ON LINE '. __LINE__ .': '.$ex->getMessage() ."\n");
-            return response(['error'=>$ex->getMessage()], 400);  
+            return response(['error'=>$ex->getMessage()], 400);
 
-        } 
+        }
 
     }
 
@@ -122,7 +122,7 @@ class ApiController extends Controller
 
         try{
             $json = file_get_contents('php://input');
-            $input = json_decode($json, true); 
+            $input = json_decode($json, true);
             $terminalId = $input['data']['terminal']['terminalId'];
             $rrn = $input['data']['transaction']['rrn'];
             // $terminalSn = $input['data']['terminal']['serialNo'];
@@ -130,7 +130,7 @@ class ApiController extends Controller
             $terminal = Terminal::whereTerminalId($terminalId)->first();
 
             \Log::info('WIRELESS XNOMBA PAYOUT API'. __LINE__ .': '.json_encode($input) ."\n");
-            
+
 
             if(!$terminal)
             {
@@ -140,8 +140,8 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'Terminal Not Found'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
+                return response(['data'=>$data], 400);
+            }
             $user = User::whereId($terminal->user_id)->first();
             if(!$user)
             {
@@ -151,10 +151,10 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'There Is No User Assigned To This Terminal'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
-            //PROCEED WITH PAYOUT FUNCTION 
-                
+                return response(['data'=>$data], 400);
+            }
+            //PROCEED WITH PAYOUT FUNCTION
+
                 if (!Hash::check($terminalPin, $user->terminal_pin)) {
                         //05 - INVALID_PIN
                         $data['transaction'] = [
@@ -162,9 +162,9 @@ class ApiController extends Controller
                         'reasonCode' => '05',
                         'message'=>'Invalid PIN',
                     ];
-                    return response(['data'=>$data], 400); 
-                } 
-                    
+                    return response(['data'=>$data], 400);
+                }
+
                    $exist = Transaction::whereUserId($user->id)->whereTrx($rrn)->first();
                     if($exist)
                     {
@@ -174,12 +174,12 @@ class ApiController extends Controller
                             'reasonCode' => '01',
                             'message'=>'Duplicate Transaction',
                         ];
-                        return response(['data'=>$data], 400); 
+                        return response(['data'=>$data], 400);
 
                     }
                 $amount = $input['data']['transaction']['amount'];
                 $actionType = $input['data']['transaction']['type'];
-                
+
                     //07 - INSUFFICIENT_BALANCE
                     if($user->balance < $amount)
                     {
@@ -208,13 +208,13 @@ class ApiController extends Controller
                         $fee = env('POSCOMMISION');
                         //$commission = (@$amount / 100) * @$fee;
                         $commission = $fee;
-                        $debit = $amount - $commission; 
-                        
+                        $debit = $amount - $commission;
+
                         $data['transaction'] = [
                             'shouldActionProceed' => true,
                             'reasonCode' => '00',
                             'message' => gs()->site_name.' Transaction Successful'
-                        ];  
+                        ];
                         $user->balance -= $debit;
                         $user->save();
 
@@ -231,17 +231,17 @@ class ApiController extends Controller
                         $transaction->save();
                         $code = 200;
                     }
- 
-            return response(['data'=>$data], $code);                        
+
+            return response(['data'=>$data], $code);
             // END PAYOUT FUNCTION
 
         }
         //RETURN ERROR FROM FUNCTION IF ANY
         catch(\Exception $ex){
             \Log::error('WIRELESS XNOMBA API ERROR ON LINE '. __LINE__ .': '.$ex->getMessage() ."\n");
-            return response(['error'=>$ex->getMessage()], 400);  
+            return response(['error'=>$ex->getMessage()], 400);
 
-        } 
+        }
 
     }
 
@@ -249,11 +249,11 @@ class ApiController extends Controller
 
         try{
             $json = file_get_contents('php://input');
-            $input = json_decode($json, true); 
+            $input = json_decode($json, true);
             $terminalId = $input['data']['terminal']['terminalId'];
              $rrn = $input['data']['transaction']['rrn'];
             \Log::info('WIRELESS XNOMBA WEBHOOK API'. __LINE__ .': '.json_encode($input) ."\n");
-            $terminal = Terminal::whereTerminalId($terminalId)->first();            
+            $terminal = Terminal::whereTerminalId($terminalId)->first();
             if(!$terminal)
             {
                 //04 - ACCOUNT_NOT_FOUND
@@ -262,8 +262,8 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'Terminal Not Found'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
+                return response(['data'=>$data], 400);
+            }
             $user = User::whereId($terminal->user_id)->first();
             if(!$user)
             {
@@ -273,10 +273,10 @@ class ApiController extends Controller
                     'reasonCode' => '04',
                     'message'=>'There Is No User Assigned To This Terminal'
                 ];
-                return response(['data'=>$data], 400);  
-            } 
+                return response(['data'=>$data], 400);
+            }
 
-                //PROCEED WITH WEBHOOK FUNCTION  
+                //PROCEED WITH WEBHOOK FUNCTION
 
                    $exist = Transaction::whereUserId($user->id)->whereTrx($rrn)->first();
                     if($exist)
@@ -287,13 +287,13 @@ class ApiController extends Controller
                             'reasonCode' => '01',
                             'message'=>'Duplicate Transaction',
                         ];
-                        return response(['data'=>$data], 400); 
+                        return response(['data'=>$data], 400);
 
                     }
 
                     $amount = $input['data']['transaction']['transactionAmount'];
                     $fee = $input['data']['transaction']['fee'];
-                    $actionType = $input['data']['transaction']['type']; 
+                    $actionType = $input['data']['transaction']['type'];
 
                     //00 - CREDIT
                     if($actionType == 'withdrawal' || $actionType == 'purchase')
@@ -302,8 +302,8 @@ class ApiController extends Controller
                             'shouldActionProceed' => true,
                             'reasonCode' => '00',
                             'message' => gs()->site_name.' Transaction Successful'
-                        ];  
-                        
+                        ];
+
                         $fee  = TerminalFee::where('from', '<=', $amount)->where('to', '>=', $amount)->first();
                         $trxfee = 0;
                         if ($fee) {
@@ -331,17 +331,17 @@ class ApiController extends Controller
                         $transaction->save();
                         $code = 200;
                     }
- 
-                    return response(['data'=>$data], $code);                        
+
+                    return response(['data'=>$data], $code);
                     // END PAYOUT FUNCTION
 
         }
         //RETURN ERROR FROM FUNCTION IF ANY
         catch(\Exception $ex){
             \Log::error('WIRELESS XNOMBA WEBHOOK API ERROR ON LINE '. __LINE__ .': '.$ex->getMessage() ."\n");
-            return response(['error'=>$ex->getMessage()], 400);  
+            return response(['error'=>$ex->getMessage()], 400);
 
-        } 
+        }
 
     }
 
@@ -350,7 +350,7 @@ class ApiController extends Controller
     public function strowalletwebhook(Request $request)
 	{
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         if(!isset($input['sessionId']) || !isset($input['sourceAccountNumber'])) {
 			return response()->json(["error" => "Invalid Input"]);
 		}
@@ -361,13 +361,13 @@ class ApiController extends Controller
         {
             return response()->json(["error" => "Duplicate Transaction"]);
         }
-        
+
         $commission = (@$input['transactionAmount'] / 100) * @$fee;
         $credit = $input['transactionAmount'] - $commission;
         $nuban->balance += $credit; // $input['transactionAmount'];
         $nuban->save();
         $nuban = User::whereNubanRef($input['accountNumber'])->firstOrFail();
-        
+
         $transaction               = new Transaction();
         $transaction->user_id      = $nuban->id;
         $transaction->amount       = round($credit);
@@ -379,28 +379,40 @@ class ApiController extends Controller
         $transaction->trx          = $input['sessionId'];
         $transaction->remark       = 'Funding via dedicated account number';
         $transaction->save();
+
+        $transaction1               = new Transaction();
+        $transaction1->user_id      = $nuban->id;
+        $transaction1->amount       = round($fee);
+        $transaction1->post_balance = $nuban->balance;
+        $transaction1->charge       = round(0.0);
+        $transaction1->trx_type     = '-';
+        $transaction1->details      = 'Charges for Wallet funding via dedicated account number';
+        $transaction1->trx          = $input['trx'];
+        $transaction1->val_1          = json_encode($input);
+        $transaction1->remark       = 'Charges for Funding via dedicated account number';
+        $transaction1->save();
         return response()->json(["success" => "Wallet Updated"]);
 
-	} 
+	}
 
     public function paylonywebhook(Request $request)
 	{
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         if(!isset($input['reference']) || !isset($input['customer_reference'])) {
 			return response()->json(["error" => "Invalid Input"]);
 		}
         $fee = env('DEDICATEDACCOUNTFEE');
         $nuban = User::whereNubanRef($input['customer_reference'])->firstOrFail();
-        
+
         $exist = Transaction::whereUserId($nuban->id)->whereTrx($input['trx'])->first();
         if($exist)
         {
             return response()->json(["error" => "Duplicate Transaction"]);
         }
-        
+
         if($input['type'] == 'reserved_account')
-        { 
+        {
         //VALIDATE TRANSACTIONS
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -423,25 +435,25 @@ class ApiController extends Controller
         curl_close($curl);
         if(!isset($reply['data']['status']))
         {
-            return response()->json(["error" => "OOPS!".json_encode($reply['message'])]); 
+            return response()->json(["error" => "OOPS!".json_encode($reply['message'])]);
         }
         if($reply['data']['status'] != 'success')
         {
-            return response()->json(["error" => "OOPS!!".json_encode($reply['message'])]); 
+            return response()->json(["error" => "OOPS!!".json_encode($reply['message'])]);
         }
-        
+
         // END VALIDATE TRANSACTION
         $nuban = User::whereNubanRef($input['customer_reference'])->firstOrFail();
         $accountnumber = json_decode($nuban->nuban)->account_number;
         if($accountnumber != $input['receiving_account'])
         {
-            return response()->json(["error" => "OOPS!! Intruition detected"]); 
+            return response()->json(["error" => "OOPS!! Intruition detected"]);
         }
         $commission = (@$input['amount'] / 100) * @$fee;
         $credit = $input['amount'] - $commission;
         $nuban->balance += $credit; // $input['transactionAmount'];
         $nuban->save();
-        
+
         $transaction               = new Transaction();
         $transaction->user_id      = $nuban->id;
         $transaction->amount       = round($credit);
@@ -454,17 +466,29 @@ class ApiController extends Controller
         $transaction->val_1          = json_encode($input);
         $transaction->remark       = 'Funding via dedicated account number';
         $transaction->save();
-        return response()->json(["success" => "Wallet Updated"]); 
+
+            $transaction1               = new Transaction();
+            $transaction1->user_id      = $nuban->id;
+            $transaction1->amount       = round($fee);
+            $transaction1->post_balance = $nuban->balance;
+            $transaction1->charge       = round(0.0);
+            $transaction1->trx_type     = '-';
+            $transaction1->details      = 'Charges for Wallet funding via dedicated account number';
+            $transaction1->trx          = $input['trx'];
+            $transaction1->val_1          = json_encode($input);
+            $transaction1->remark       = 'Charges for Funding via dedicated account number';
+            $transaction1->save();
+        return response()->json(["success" => "Wallet Updated"]);
         }
-        return response()->json(["error" => "TRX Not Dedicated Account Number Funding"]); 
+        return response()->json(["error" => "TRX Not Dedicated Account Number Funding"]);
 
 
-	} 
+	}
 
     public function monnifywebhook()
     {
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $account_ref = $input['eventData']['product']['reference'];
         $transaction_type = $input['eventData']['product']['type'];
         $transaction_ref = $input['eventData']['transactionReference'];
@@ -485,7 +509,7 @@ class ApiController extends Controller
 
         $commission = (@$amount / 100) * @$fee;
         $credit = $amount - $commission;
-        
+
         $transaction               = new Transaction();
         $transaction->user_id      = $user->id;
         $transaction->amount       = round($credit);
@@ -496,14 +520,26 @@ class ApiController extends Controller
         $transaction->details      = 'Wallet funding via dedicated account number';
         $transaction->trx          = $transaction_ref;
         $transaction->remark       = 'Funding via dedicated account number';
-        $transaction->save(); 
+        $transaction->save();
+
+        $transaction1               = new Transaction();
+        $transaction1->user_id      = $user->id;
+        $transaction1->amount       = round($fee);
+        $transaction1->post_balance = $user->balance;
+        $transaction1->charge       = round(0.0);
+        $transaction1->trx_type     = '-';
+        $transaction1->details      = 'Charges for Wallet funding via dedicated account number';
+        $transaction1->trx          = $input['trx'];
+        $transaction1->val_1          = json_encode($input);
+        $transaction1->remark       = 'Charges for Funding via dedicated account number';
+        $transaction1->save();
         return 'Transaction Successful';
-    }  
+    }
 
     public function vpaywebhook()
     {
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $transaction_type = 'NUBAN';
         $transaction_ref = $input['reference'];
         $session_id = $input['session_id'];
@@ -528,13 +564,13 @@ class ApiController extends Controller
         {
             return response(['Message'=>'Merchant Account Not Found'], 400);
         }
-        
+
         $fee = env('VPAY_ACCOUNT_FEE');
         $commission = (@$amount / 100) * @$fee;
         $credit = $amount - $commission;
         $user->balance += $credit;
         $user->save();
-        
+
         $transaction               = new Transaction();
         $transaction->user_id      = $user->id;
         $transaction->amount       = round($credit);
@@ -545,7 +581,19 @@ class ApiController extends Controller
         $transaction->details      = 'Wallet funding via API using virtual account number';
         $transaction->trx          = $transaction_ref;
         $transaction->remark       = 'Funding via dedicated virtual account number';
-        $transaction->save(); 
+        $transaction->save();
+
+        $transaction1               = new Transaction();
+        $transaction1->user_id      = $user->id;
+        $transaction1->amount       = round($fee);
+        $transaction1->post_balance = $user->balance;
+        $transaction1->charge       = round(0.0);
+        $transaction1->trx_type     = '-';
+        $transaction1->details      = 'Charges for Wallet funding via dedicated account number';
+        $transaction1->trx          = $input['trx'];
+        $transaction1->val_1          = json_encode($input);
+        $transaction1->remark       = 'Charges for Funding via dedicated account number';
+        $transaction1->save();
         //SEND WEBHOOK NOTIFICATION START;
             $url = $user->webhook_url;
             $curl = curl_init($url);
@@ -581,7 +629,7 @@ class ApiController extends Controller
             //var_dump($resp);
         //END SEND WEBHOOK NOTIFCATION
         return response(['Message'=>'Merchant Account Funded Successfuly'], 200);
-    }  
+    }
 
 
     public function savings(){
@@ -727,7 +775,7 @@ class ApiController extends Controller
         $transaction->save();
     }
 
-      
+
 
     public function cryptoWallet(Request $request)
     {
@@ -802,7 +850,7 @@ class ApiController extends Controller
        // $currency = Currency::whereSymbol($input['coin_short_name'])->first();
         $amount = $input['amount'];
         if ($u) {
-           
+
             if($input['type'] == 'receive')
         {
             if(!$receive)
@@ -827,7 +875,7 @@ class ApiController extends Controller
 
 
 
- 
 
-	 
+
+
 }
