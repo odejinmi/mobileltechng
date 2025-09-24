@@ -165,7 +165,7 @@ class LoginController extends Controller
         return Socialite::driver('google')->stateless()->redirect();
     }
 
-    public function handleGoogleCallback()
+    public function handleGoogleCallback(Request $request)
     {
         // Debug: Log all request parameters
         \Log::info('Google Callback Request:', [
