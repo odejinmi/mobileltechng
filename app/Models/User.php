@@ -10,6 +10,8 @@ use App\Constants\Status;
 
 class User extends Authenticatable
 {
+
+    use HasApiTokens, Searchable;
     protected $fillable = [
         'firstname',
         'lastname',
@@ -26,9 +28,6 @@ class User extends Authenticatable
         'theme',
         // ... other existing fields
     ];
-
-    use HasApiTokens, Searchable;
-
     /**
      * The attributes that should be hidden for arrays.
      *

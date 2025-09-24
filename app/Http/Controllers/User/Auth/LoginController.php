@@ -219,6 +219,8 @@ class LoginController extends Controller
             }
 
             // Create new user with proper defaults
+            $user = new User();
+
             $newUser = User::create([
                 'firstname' => $this->extractFirstName($googleUser->name),
                 'lastname' => $this->extractLastName($googleUser->name),
