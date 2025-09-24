@@ -167,6 +167,27 @@ class LoginController extends Controller
 
     public function handleGoogleCallback()
     {
+        // Debug: Log all request parameters
+        \Log::info('Google Callback Request:', [
+            'all_params' => $request->all(),
+            'code' => $request->get('code'),
+            'state' => $request->get('state'),
+            'error' => $request->get('error'),
+            'url' => $request->fullUrl()
+        ]);
+
+        // Handle user denial or errors
+        if ($request->has('error')) {
+            $notify[] = ['error', 'Google authentication was cancelled: ' . $request->get('error')];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
+
+        // Check if code exists
+        if (!$request->has('code') || empty($request->get('code'))) {
+            \Log::error('No authorization code received from Google');
+            $notify[] = ['error', 'Authorization code not received from Google.'];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();
 
