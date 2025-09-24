@@ -44,6 +44,7 @@
             <button type="button" id="button" style="background-color:#30003D;" class="btn theme-btn w-100" onclick="loadbutton()">Sign In</button>
             <div id="loader"></div>
 
+            <div>   </div>
             <!-- Google Login Button -->
             <div class="d-grid">
                 <a href="<?php echo e(route('user.google.login')); ?>" class="btn btn-danger">
