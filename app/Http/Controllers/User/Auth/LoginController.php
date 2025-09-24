@@ -236,6 +236,7 @@ class LoginController extends Controller
                 'ts' => 0, // Two-factor security
                 'tv' => 1, // Two-factor verified
                 'theme' => 'default', // Default theme
+                'profile_complete' => 1, // Profile completed
             ]);
 
             Auth::login($newUser, true);

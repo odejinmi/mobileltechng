@@ -26,6 +26,9 @@ class User extends Authenticatable
         'ts',
         'tv',
         'theme',
+        'profile_complete',
+        'ver_code',
+        'ver_code_send_at',
         // ... other existing fields
     ];
 
