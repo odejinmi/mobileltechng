@@ -26,6 +26,7 @@ class User extends Authenticatable
         'ts',
         'tv',
         'theme',
+        'profile_complete',
         // ... other existing fields
     ];
     /**
