@@ -152,7 +152,7 @@ class BankTransferController extends Controller
         $totalAmount = $transactions->sum('amount');
         $maxAmount   = $transactions->max('amount');
 
-        if ($totalAmount > 500) {
+        if ($totalAmount > 200000) {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Daily limit exceeded'],400);
         }
 
