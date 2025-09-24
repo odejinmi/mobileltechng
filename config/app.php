@@ -146,7 +146,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        
+
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -183,6 +183,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Add this line
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
     ],
 
     /*
@@ -197,7 +200,9 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Status' => App\Constants\Status::class
+        'Status' => App\Constants\Status::class,
+        // Add this line
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 ];

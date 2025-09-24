@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserLogin;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
 
 
 class LoginController extends Controller
@@ -153,5 +157,101 @@ class LoginController extends Controller
         $userLogin->save();
 
         return to_route('user.home');
+    }
+
+    // Add Google OAuth methods
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            // Check if user already exists with this Google ID
+            $existingUser = User::where('google_id', $googleUser->id)->first();
+
+            if ($existingUser) {
+                // Use the same authentication flow as normal login
+                Auth::login($existingUser, true);
+
+                // Call the same authenticated method to maintain consistency
+                return $this->authenticated(request(), $existingUser);
+            }
+
+            // Check if user exists with same email
+            $existingEmailUser = User::where('email', $googleUser->email)->first();
+
+            if ($existingEmailUser) {
+                // Update existing user with Google ID and avatar
+                $existingEmailUser->update([
+                    'google_id' => $googleUser->id,
+                    'avatar' => $googleUser->avatar,
+                ]);
+
+                Auth::login($existingEmailUser, true);
+
+                // Call the same authenticated method
+                return $this->authenticated(request(), $existingEmailUser);
+            }
+
+            // Create new user with proper defaults
+            $newUser = User::create([
+                'firstname' => $this->extractFirstName($googleUser->name),
+                'lastname' => $this->extractLastName($googleUser->name),
+                'username' => $this->generateUsername($googleUser->email),
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id,
+                'avatar' => $googleUser->avatar,
+                'password' => Hash::make(uniqid()), // Random password
+                'email_verified_at' => now(), // Auto-verify Google users
+                'status' => 1, // Active status
+                'ev' => 1, // Email verified
+                'sv' => 1, // SMS verified (if applicable)
+                'ts' => 0, // Two-factor security
+                'tv' => 1, // Two-factor verified
+                'theme' => 'default', // Default theme
+            ]);
+
+            Auth::login($newUser, true);
+
+            // Call the same authenticated method
+            return $this->authenticated(request(), $newUser);
+
+        } catch (Exception $e) {
+            $notify[] = ['error', 'Something went wrong with Google authentication.'];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
+    }
+
+    // Helper methods for Google user creation
+    private function extractFirstName($fullName)
+    {
+        $nameParts = explode(' ', $fullName);
+        return $nameParts[0] ?? '';
+    }
+
+    private function extractLastName($fullName)
+    {
+        $nameParts = explode(' ', $fullName);
+        array_shift($nameParts); // Remove first name
+        return implode(' ', $nameParts) ?: '';
+    }
+
+    private function generateUsername($email)
+    {
+        $baseUsername = explode('@', $email)[0];
+        $username = $baseUsername;
+        $counter = 1;
+
+        // Ensure username is unique
+        while (User::where('username', $username)->exists()) {
+            $username = $baseUsername . $counter;
+            $counter++;
+        }
+
+        return $username;
     }
 }

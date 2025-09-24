@@ -8,6 +8,8 @@ Route::namespace('User\Auth')->name('user.')->group(function () {
         Route::get('/login', 'showLoginForm')->name('login');
         Route::post('/login', 'login');
         Route::get('logout', 'logout')->name('logout');
+        Route::get('auth/google', 'redirectToGoogle')->name('google.login');
+        Route::get('auth/google/callback', 'handleGoogleCallback');
     });
 
     Route::controller('RegisterController')->group(function () {
