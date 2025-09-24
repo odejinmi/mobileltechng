@@ -7,6 +7,7 @@ use App\Models\Cryptocurrency;
 use App\Models\Cryptowallet;
 use App\Models\Cryptotrx;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -134,6 +135,27 @@ class BankTransferController extends Controller
 			return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Invalid transaction PIN'],400);
 		}
 
+		if ($amount > 50000)
+		{
+			return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Amount can not be greater than 50,000'],400);
+		}
+
+        $today = Carbon::today(); // start of day
+        $tomorrow = Carbon::tomorrow(); // end of day
+
+// Get today's bank transfer transactions for the user
+        $transactions = Transaction::where('user_id', $user->id)
+            ->where('remark', 'Bank Transfer')
+            ->whereBetween('created_at', [$today, $tomorrow])
+            ->get();
+// Calculate total and max
+        $totalAmount = $transactions->sum('amount');
+        $maxAmount   = $transactions->max('amount');
+
+        if ($totalAmount > 500) {
+            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Daily limit exceeded'],400);
+        }
+
 		// $fee = ($amount / 100) * env('TRANSFERFEE');
 		$fee = env('TRANSFERFEE');
 		$total = $amount + $fee;
@@ -203,7 +225,7 @@ class BankTransferController extends Controller
 					$balance = $user->ref_balance;
 				}
 				// END RETURN MONEY TO USER PROCESS
-				return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Error,'.@json_encode($reply['message'])],400);
+				return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Error,'.@json_encode($reply['message']), 'errors' => $reply['errors']],400);
 			}
 			if($reply['success'] = true)
 			{
