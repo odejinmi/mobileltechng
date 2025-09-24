@@ -12,6 +12,23 @@ class User extends Authenticatable
 {
     use HasApiTokens, Searchable;
 
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'username',
+        'email',
+        'password',
+        'google_id',
+        'avatar',
+        'status',
+        'ev',
+        'sv',
+        'ts',
+        'tv',
+        'theme',
+        // ... other existing fields
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -47,8 +64,8 @@ class User extends Authenticatable
     public function deposits()
     {
         return $this->hasMany(Deposit::class)->where('status', '!=', Status::PAYMENT_INITIATE);
-    } 
-    
+    }
+
     public function p2p()
     {
         return $this->hasMany(P2p::class);
@@ -60,7 +77,7 @@ class User extends Authenticatable
             get: fn () => $this->firstname . ' ' . $this->lastname,
         );
     }
-    
+
     public function plan(){
         return $this->belongsTo(Plan::class, 'plan_id', 'id');
     }
