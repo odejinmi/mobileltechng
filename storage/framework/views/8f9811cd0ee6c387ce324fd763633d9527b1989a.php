@@ -3,20 +3,20 @@
     <?php $__currentLoopData = session('notify'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $msg): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <script>
             "use strict";
-            SlimNotifierJs.notification('<?php echo e($msg[0]); ?>', '<?php echo e(__($msg[0])); ?>', '<?php echo e(__($msg[1])); ?>', 3000);
+            SlimNotifierJs.notification('<?php echo e($msg[0]); ?>', '<?php echo e(__($msg[0])); ?>', '<?php echo e(__($msg[1])); ?>', 5000);
         </script>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 <?php endif; ?>
 <?php if(session()->has('error')): ?>
     <script>
         "use strict";
-        SlimNotifierJs.notification('error', 'Oops', "<?php echo e(session('error')); ?>", 3000);
+        SlimNotifierJs.notification('error', 'Oops', "<?php echo e(session('error')); ?>", 5000);
     </script>
 <?php endif; ?>
 <?php if(session()->has('success')): ?>
     <script>
         "use strict";
-        SlimNotifierJs.notification('success', 'Oops', "<?php echo e(session('success')); ?>", 3000);
+        SlimNotifierJs.notification('success', 'Oops', "<?php echo e(session('success')); ?>", 5000);
     </script>
 <?php endif; ?>
 <script></script>
@@ -29,7 +29,7 @@
     <script>
         "use strict";
         <?php $__currentLoopData = $errors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            SlimNotifierJs.notification('error', 'Oops', '<?php echo e(__($error)); ?>', 3000);
+            SlimNotifierJs.notification('error', 'Oops', '<?php echo e(__($error)); ?>', 5000);
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </script>
 <?php endif; ?>
@@ -37,9 +37,9 @@
     "use strict";
 
     function notify(status, message) {
-        SlimNotifierJs.notification([status], 'Hello', message, 3000);
+        SlimNotifierJs.notification([status], 'Hello', message, 5000);
     }
-</script> 
+</script>
 
 <script>
     $(document).ready(function() {

@@ -1,0 +1,233 @@
+[25-Mar-2025 12:16:51 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:16:51 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:16:56 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:16:56 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:03 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:03 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:37 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:40 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:40 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:49 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:17:49 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:28 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:28 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:31 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:31 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:32 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:32 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:36 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:36 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:41 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:19:41 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:21 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:21 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:39 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:42 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:20:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:23:35 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:23:35 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:24:06 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:24:06 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:24:12 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:24:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:07 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:07 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:11 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:11 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:14 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:30:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:19 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:19 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:24 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:24 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:26 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:26 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:33 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:33 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:37 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:39 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[25-Mar-2025 12:31:39 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/../../app/Http/Helpers/helpers.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php:78
+Stack trace:
+#0 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php(61): composerRequired0ff0a75737508fa1e0c218721759ccb()
+#1 /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/autoload.php(7): ComposerAutoloaderInitd0ff0a75737508fa1e0c218721759ccb::getLoader()
+#2 /home/ltecyxtc/mobile.ltechng.co/index.php(34): require('/home/ltecyxtc/...')
+#3 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/mobile-app/vendor/composer/autoload_real.php on line 78
+[04-Sep-2025 15:39:37 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:40 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:40 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:42 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:42 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:51 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:51 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:54 UTC] PHP Warning:  require(/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php): Failed to open stream: No such file or directory in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34
+[04-Sep-2025 15:39:54 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/ltecyxtc/mobile.ltechng.co/repo/vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/ltecyxtc/mobile.ltechng.co/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/ltecyxtc/mobile.ltechng.co/index.php on line 34

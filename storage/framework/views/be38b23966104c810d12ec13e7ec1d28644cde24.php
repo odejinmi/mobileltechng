@@ -33,7 +33,7 @@
 
     <!-- swiper css -->
     <link rel="stylesheet" type="text/css" href="<?php echo e(asset($activeTemplateTrue . 'mobile/css/vendors/swiper-bundle.min.css')); ?>" />
- 
+
     <!-- Theme css -->
         <link rel="stylesheet" id="change-link" type="text/css" href="<?php echo e(asset($activeTemplateTrue . 'mobile/css/style.css')); ?>" />
         <link rel="stylesheet" id="change-link" type="text/css" href="<?php echo e(asset($activeTemplateTrue . 'mobile/css/select2.css')); ?>" />
@@ -100,7 +100,7 @@
               <i class="sidebar-icon" data-feather="credit-card"></i>
               <h3>Virtual Card <b>(Visa)</b></h3>
             </a>
-          </li> 
+          </li>
           <?php endif; ?>
           <li>
             <a href="<?php echo e(route('user.transactions')); ?>" class="pages">
@@ -108,7 +108,7 @@
               <h3>Transactions</h3>
             </a>
           </li>
-           
+
           <li>
             <a href="<?php echo e(route('user.contact')); ?>" class="pages">
               <i class="sidebar-icon" data-feather="mail"></i>
@@ -123,7 +123,7 @@
           </li>
         </ul>
         <div class="mode-switch">
-          <ul class="switch-section"> 
+          <ul class="switch-section">
             <li>
               <h3>Dark</h3>
               <div class="switch-btn">
@@ -150,7 +150,7 @@
           <i class="menu-icon" data-feather="menu"></i>
         </a>
         <?php endif; ?>
-        
+
         <img class="img-fluid logo" src="<?php echo e(url('/')); ?>/logo.png" style="  max-width: 10%;
         height: auto;" alt="logo" />
         <?php echo $__env->make('templates.basic.partials.userbreadcrumb', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
@@ -161,7 +161,7 @@
    <!-- header start -->
    <header class="section-t-space">
     <div class="custom-container">
-      <div class="header-panel"> 
+      <div class="header-panel">
         <h2><?php echo e($pageTitle); ?></h2>
       </div>
     </div>
@@ -259,7 +259,7 @@
   <script>
     $(document).ready(function() { $("#banklist").select2(); });
   </script>
-  
+
   <!-- Add the pull-to-refresh script here -->
     <script>
     let touchStartY = 0;
@@ -299,4 +299,5 @@
     <?php echo $__env->make('partials.notify', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
 </body>
-</html><?php /**PATH C:\Users\DELL\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/layouts/dashboard.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\Users\DELL\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/layouts/dashboard.blade.php ENDPATH**/ ?>

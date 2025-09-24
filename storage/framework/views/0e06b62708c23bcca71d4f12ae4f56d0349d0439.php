@@ -1,5 +1,5 @@
 <?php $__env->startSection('panel'); ?>
-    
+
 
   <!-- card start -->
 
@@ -19,7 +19,7 @@
             </a>
           </div>
 
-          
+
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@
             </div>
             <h5 class="mt-2 text-center dark-text">Electricity</h5>
           </a>
-        </div> 
+        </div>
         <div class="col-3">
           <a href="<?php echo e(route('user.buy.internet_sme')); ?>">
             <div class="service-box">
@@ -135,7 +135,7 @@
             </div>
             <h5 class="mt-2 text-center dark-text">Cable TV</h5>
           </a>
-        </div> 
+        </div>
         <div class="col-3">
           <a href="<?php echo e(route('user.airtime.indexlocal')); ?>">
             <div class="service-box">
@@ -163,7 +163,7 @@
           </a>
         </div>
         <?php endif; ?>
-        
+
         <?php if($general->insurance > 0): ?>
         <div class="col-3">
           <a href="<?php echo e(route('user.buy.insurance')); ?>">
@@ -178,7 +178,7 @@
     </div>
   </section>
   <!-- service section end -->
- 
+
   <!-- Transaction section starts -->
   <section>
     <div class="custom-container">
@@ -214,8 +214,8 @@
         <?php echo emptyData2(); ?>
 
 
-        <?php endif; ?> 
-        
+        <?php endif; ?>
+
       </div>
     </div>
   </section>
@@ -243,7 +243,7 @@
                 <span class="badge bg-warning badge-sm"><?php echo e(strToUpper($data->status)); ?></span>
                 <?php endif; ?>
               </div>
-             
+
               <h6 class="card-number"><?php echo e($data->pan); ?></h6>
               <h5 class="card-name"><?php echo e(Auth::user()->fullname); ?></h5>
               <h2 class="card-amount"><?php if($data->currency == 'NGN'): ?>₦ <?php else: ?> $ <?php endif; ?> ****</h2>
@@ -258,7 +258,7 @@
                   <h5 class="text-white fw-semibold mt-1">
                         ***
                   </h5>
-                  </a> 
+                  </a>
                 </div>
               </div>
             </div>
@@ -266,14 +266,14 @@
           <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
           <?php echo emptyData2(); ?>
 
-          <?php endif; ?> 
-           
+          <?php endif; ?>
+
       </div>
     </div>
   </section>
   <?php endif; ?>
   <!-- all cards section end -->
-  
+
 
   <!-- monthly statistics section starts -->
   <section>
@@ -302,4 +302,5 @@
     <i class="icon" data-feather="bell"></i>
   </a>
 <?php $__env->stopPush(); ?>
+
 <?php echo $__env->make($activeTemplate . 'layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\DELL\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/user/dashboard.blade.php ENDPATH**/ ?>

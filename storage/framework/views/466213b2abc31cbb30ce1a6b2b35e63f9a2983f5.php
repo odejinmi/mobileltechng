@@ -47,8 +47,7 @@
                 <span>OR</span>
             </div>
 
-            <a href="<?php echo e(route('user.register')); ?>" target="" class="btn gray-btn mt-3"> <img class="img-fluid google"
-                    src="<?php echo e(asset($activeTemplateTrue . 'mobile/images/svg/google.svg')); ?>" alt="google" /> Signup Account</a>
+            <a href="<?php echo e(route('user.register')); ?>" target="" class="btn gray-btn mt-3"> Signup Account</a>
 
         </div>
     </form>
