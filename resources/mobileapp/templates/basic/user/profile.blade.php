@@ -2,7 +2,7 @@
 @section('panel')
     <!-- change password section start -->
     <section>
-        <div class="custom-container"> 
+        <div class="custom-container">
 
             <form class="auth-form pt-0 mt-3" class="form" novalidate="novalidate" action="" method="POST"
                 enctype="multipart/form-data">
@@ -12,12 +12,12 @@
                   <div class="upload-image rounded-image">
                     <label for="formFileLg" class="form-label d-none">Avatar </label>
                     <input class="form-control upload-file" type="file" onchange="readURL(this);"   name="image" accept=".png, .jpg, .jpeg" id="formFileLg">
-                      
+
                      <img id="khaytech" class="upload-icon dark-text" width="35"
                             src="https://static.vecteezy.com/system/resources/previews/015/337/675/original/transparent-upload-icon-free-png.png" />
                   </div>
                 </div>
-                
+
                 @push('script')
                 <script>
                     function readURL(input) {
@@ -28,7 +28,7 @@
                             };
                             reader.readAsDataURL(input.files[0]);
                         }
-                    } 
+                    }
                 </script>
             @endpush
 
@@ -62,22 +62,22 @@
                 <div class="form-group">
                     <label for="inputpin" class="form-label">City</label>
                     <input type="text" class="form-control " name="city"
-                        value="{{ $user->address->city }}" />
+                        value="{{ $user->address != null ? $user->address->city : '' }}" />
                 </div>
                 <div class="form-group">
                     <label for="inputpin" class="form-label">Zip Code</label>
                     <input type="text" class="form-control " name="zip"
-                        value="{{ $user->address->zip }}" />
+                        value="{{ $user->address != null ? $user->address->zip : '' }}" />
                 </div>
                 <div class="form-group">
                     <label for="inputpin" class="form-label">Address</label>
                     <input type="text" class="form-control " name="address"
-                        value="{{ $user->address->address }}" />
+                        value="{{ $user->address != null ? $user->address->address : '' }}" />
                 </div>
                 <div class="form-group">
                     <label for="inputpin" class="form-label">State</label>
                     <input type="text" class="form-control " name="state"
-                        value="{{ $user->address->state }}" />
+                        value="{{ $user->address != null ? $user->address->state : '' }}" />
                 </div>
                 <div class="form-group">
                     <label for="inputpin" class="form-label">Country</label>
@@ -98,7 +98,7 @@
                         <h3 class="fw-semibold dark-text">Notification</h3>
                       </div>
                     </li>
-            
+
                     <li>
                       <div class="notification">
                         <h5 class="fw-normal dark-text">Email Notification</h5>
@@ -108,7 +108,7 @@
                         </div>
                       </div>
                     </li>
-            
+
                     <li>
                       <div class="notification">
                         <h5 class="fw-normal dark-text">SMS Notification</h5>
@@ -117,7 +117,7 @@
                           name="sn" value="1" />
                         </div>
                       </div>
-                    </li> 
+                    </li>
                   </ul>
                 </div>
 
@@ -126,7 +126,7 @@
             </form>
         </div>
     </section>
-    <!-- change password section start --> 
+    <!-- change password section start -->
 @endsection
 
 @push('breadcrumb-plugins')
