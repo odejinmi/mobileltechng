@@ -81,6 +81,7 @@ class Kernel extends HttpKernel
         'internet.status' => \App\Http\Middleware\AllowInternet::class,
         'internetsme.status' => \App\Http\Middleware\AllowInternetSme::class,
         'cabletv.status' => \App\Http\Middleware\AllowCabletv::class,
+        'education.status' => \App\Http\Middleware\AllowEducation::class,
         'insurance.status' => \App\Http\Middleware\AllowInsurance::class,
         'virtualcard.status' => \App\Http\Middleware\AllowVirtualCard::class,
         'crypto.status' => \App\Http\Middleware\AllowCrypto::class,
@@ -96,7 +97,7 @@ class Kernel extends HttpKernel
         'buy_giftcard.status' => \App\Http\Middleware\AllowBuyGiftcard::class,
         'giftauto.status' => \App\Http\Middleware\AllowAutoGiftcard::class,
         'sell_giftcard.status' => \App\Http\Middleware\AllowSellGiftcard::class,
-        
+
         'demo' => \App\Http\Middleware\Demo::class,
         'registration.complete' => \App\Http\Middleware\RegistrationStep::class,
         'maintenance' => \App\Http\Middleware\MaintenanceMode::class,

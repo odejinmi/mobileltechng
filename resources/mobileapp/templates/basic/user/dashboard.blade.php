@@ -175,6 +175,17 @@
           </a>
         </div>
         @endif
+
+          @if ($general->education > 0)
+        <div class="col-3">
+          <a href="{{ route('user.buy.education') }}">
+            <div class="service-box">
+              <i class="iconsax categories-icon" data-feather="book"></i>
+            </div>
+            <h5 class="mt-2 text-center dark-text">Education</h5>
+          </a>
+        </div>
+        @endif
       </div>
     </div>
   </section>

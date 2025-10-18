@@ -395,6 +395,16 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('history', 'history')->name('cabletv.history');
             });
 
+Route::controller('EducationController')->prefix('education')->group(function () {
+                Route::get('/', 'education')->name('education.index');
+                Route::get('buy/education', 'buy_education')->name('buy.education');
+                Route::post('buy/education', 'buy_education_post')->name('buy.education');
+                Route::get('education_operators', 'education_operators')->name('education.operators');
+                Route::get('education_verify', 'education_verify')->name('education.verifydecoder');
+                Route::post('education_operator_id', 'operatorsUtilitydetails')->name('education.operatorsUtilitydetails');
+                Route::get('history', 'history')->name('education.history');
+            });
+
 
             Route::controller('InsuranceController')->prefix('insurance')->group(function () {
                 Route::get('/', 'insurance')->name('insurance.index');
