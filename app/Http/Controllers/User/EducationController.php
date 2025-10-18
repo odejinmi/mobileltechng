@@ -34,11 +34,11 @@ class EducationController extends Controller
         $user = auth()->user();
         $network = $request->decoder;
 
-        if($general->cabletv_provider == 'VTPASS')
+        if($general->education_provider == 'VTPASS')
         {
            return $this->education_operators_vtpass($network);
         }
-        if($general->cabletv_provider == 'N3TDATA')
+        if($general->education_provider == 'N3TDATA')
         {
            return $this->education_operators_n3t($network);
         }
@@ -170,11 +170,11 @@ class EducationController extends Controller
     public function education_verify(Request $request)
     {
         $general = gs();
-        if($general->cabletv_provider == 'VTPASS')
+        if($general->education_provider == 'VTPASS')
         {
            return $this->education_verify_vtpass($request);
         }
-        if($general->cabletv_provider == 'N3TDATA')
+        if($general->education_provider == 'N3TDATA')
         {
            return $this->education_verify_n3t($request);
         }
@@ -328,11 +328,11 @@ class EducationController extends Controller
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
         }
 
-        if($general->cabletv_provider == 'VTPASS')
+        if($general->education_provider == 'VTPASS')
         {
            return $this->buy_education_vtpass($decoder,$wallet,$number,$customername,$plan,$amount,$payment,$profilecode);
         }
-        if($general->cabletv_provider == 'N3TDATA')
+        if($general->education_provider == 'N3TDATA')
         {
            return $this->buy_education_n3t($decoder,$wallet,$number,$customername,$plan,$amount,$payment);
         }
