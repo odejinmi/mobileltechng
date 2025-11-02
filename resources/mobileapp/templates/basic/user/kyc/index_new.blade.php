@@ -209,7 +209,10 @@
                 web2app.bvnverification({'identifier':email, 'type':type}, function(response){
                     console.log('bvnverification');
                     console.log(response);
-                    updatedata(type,response);
+                    console.log(response['verify']);
+                    if(response['verify']) {
+                        updatedata(type, response);
+                    }
                 });
             } else {
                 alert('Please use the mobile app to complete BVN verification');
