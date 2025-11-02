@@ -216,14 +216,15 @@
         function startBVNVerification(email, type) {
             // Add your BVN verification logic here
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
-                
+
                 // For testing - comment this out in production
                 var testResponse = {messageLevel: 1, message: {"success":true,"data":{"confidence_level":93.075430393219,"bvn":"22314756491","nin":null,"name":"ODEJINMI TOLULOPE ABRAHAM","verify":true,"reference":"3c46d0c1-0855-42b4-88db-cece7aca6665","message":"Verified Successfully","status":true,"method":"CheckoutMethod.bvn"}}};
-                console.log('Test Response:', testResponse);
+                console.log('Test Response:', testResponse.data);
 
                 // Extract the actual response data
                 const responseData = testResponse.message;
-                console.log('Response Data:', responseData);
+                console.log('Response Data:', responseData.data);
+                console.log('Response Data:', responseData.data.data);
 
                 // Check if verification was successful
                 const isVerified = responseData && responseData.data && responseData.data.verify === true;
@@ -316,9 +317,18 @@
                     errorDiv.role = 'alert';
                     errorDiv.textContent = 'An error occurred during verification. Please try again.';
 
-                    const container = document.getElementById('passmessage') || document.body;
-                    container.innerHTML = '';
-                    container.appendChild(errorDiv);
+                    // Safely handle the message container
+                    const container = document.getElementById('passmessage');
+                    if (container) {
+                        container.innerHTML = '';
+                        container.appendChild(errorDiv);
+                    } else {
+                        // If passmessage doesn't exist, create it
+                        const newContainer = document.createElement('div');
+                        newContainer.id = 'passmessage';
+                        newContainer.appendChild(errorDiv);
+                        document.body.prepend(newContainer);
+                    }
                 })
                 .finally(() => {
                     // Hide loading overlay
