@@ -136,8 +136,6 @@
     @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            Log::info('DOMContentLoaded');
-            Log::info(typeof web2app !== 'undefined' && web2app.isNative());
             console.log('DOMContentLoaded');
             console.log(typeof web2app !== 'undefined' && web2app.isNative());
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
