@@ -37,8 +37,8 @@ class UserController extends Controller
     }
 
     public function home()
-    { 
-        
+    {
+
         $user  = User::whereId(auth()->user()->id)->first();
         $last30 = date('Y-m-d', strtotime('-30 days'));
 		$last7 = date('Y-m-d', strtotime('-7 days'));
@@ -75,7 +75,7 @@ class UserController extends Controller
 				return $query->created_at->format('F');
 			}, 'remark']);
 
-           
+
 
                 $airtime = Transaction::select('remark', 'created_at')
                     ->where('user_id', $user->id)
@@ -90,7 +90,7 @@ class UserController extends Controller
 
                 $internet = Transaction::select('remark', 'created_at')
                 ->where('user_id', $user->id)
-                ->where('remark','internet') 
+                ->where('remark','internet')
                 ->whereYear('created_at', $today)
                 ->groupBy([DB::raw("DATE_FORMAT(created_at, '%m')"), 'remark'])
                 ->selectRaw("SUM(amount) as Internet")
@@ -199,7 +199,7 @@ class UserController extends Controller
 		$data['yearUtility'] = $yearUtilty;
 		$data['yearInsurance'] = $yearInsurance;
         $data['ref'] = User::where('ref_by', $user->id)->orderBy('id', 'desc')->count();
-       
+
         //return $payouts;
         $data['top_earner'] = Transaction::select('user_id',DB::raw('sum(amount) as sums'))
             // ->whereDate('created_at', Carbon::today())
@@ -235,10 +235,10 @@ class UserController extends Controller
         return view($this->activeTemplate . 'user.dashboard', $data, compact('pageTitle', 'widget'));
     }
 
-    
+
     public function apikey(Request $request)
     {
-        $user = auth()->user();  
+        $user = auth()->user();
         if ($user->api_access != 1 || $user->vendor != 1) {
             $notify[] = ['error', 'You do not have API access'];
             return back()->withNotify($notify);
@@ -251,13 +251,13 @@ class UserController extends Controller
         }
         $key = $user->api_key;
         $pageTitle = 'API Key';
-        $user = auth()->user();  
+        $user = auth()->user();
         return view($this->activeTemplate . 'user.api_key', compact('pageTitle','key','user'));
     }
 
     public function apikeyGenerate(Request $request)
     {
-        $user = auth()->user();  
+        $user = auth()->user();
         if ($user->api_access != 1 || $user->vendor != 1) {
             $notify[] = ['error', 'You do not have API access'];
             return back()->withNotify($notify);
@@ -272,7 +272,7 @@ class UserController extends Controller
 
     public function apiWebhook(Request $request)
     {
-        $user = auth()->user();  
+        $user = auth()->user();
         $user->webhook_url  = $request->webhook;
         $user->redirect_url  = $request->callback;
         $user->save();
@@ -283,7 +283,7 @@ class UserController extends Controller
 
     public function qrcode(Request $request)
     {
-        $user = auth()->user();  
+        $user = auth()->user();
         $pageTitle       = 'QR Code';
         $url = url('/').'/user/qr/'.encrypt($user->username);
         $payment = Transaction::whereUserId($user->id)->whereRemark('QR Payment')->whereTrxType('-')->sum('amount');
@@ -295,13 +295,13 @@ class UserController extends Controller
     }
     public function kyc(Request $request)
     {
-        $user = auth()->user(); 
+        $user = auth()->user();
         $pageTitle  = 'KYC Verification';
-        return view($this->activeTemplate . 'user.kyc.index', compact('pageTitle','user','pageTitle'));
+        return view($this->activeTemplate . 'user.kyc.index_new', compact('pageTitle','user','pageTitle'));
     }
     public function kycpost(Request $request)
     {
-        $user = auth()->user(); 
+        $user = auth()->user();
         if($user->kyc_complete == 3)
         {
             $notify[] = ['error', 'Your KYC document is pending'];
@@ -314,11 +314,11 @@ class UserController extends Controller
         }
         $path = imagePath()['kyc']['path'].'/'.$user->username;
         if ($request->hasFile('front')) {
-            $request->validate([ 
+            $request->validate([
                 'front'     => ['required', 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
             ]);
             try {
-                    
+
                 if (!file_exists($path)) {
                     mkdir($path, 0755, true);
                 }
@@ -329,9 +329,9 @@ class UserController extends Controller
                 $notify[] = ['error', 'Could not upload your front kyc id image'];
                 return back()->withNotify($notify)->withInput();
             }
-        }  
+        }
         if ($request->hasFile('back')) {
-            $request->validate([ 
+            $request->validate([
                 'back'     => ['required', 'image', new FileTypeValidate(['jpg', 'jpeg', 'png'])],
             ]);
             try {
@@ -345,14 +345,14 @@ class UserController extends Controller
                 $notify[] = ['error', 'Could not upload your back kyc id image'];
                 return back()->withNotify($notify)->withInput();
             }
-        } 
-         
+        }
+
         $user->kyc   = [
             'type' => $request->type,
             'front'   => @$front,
             'back'     => @$back,
             'date'     => @Carbon::now(),
-        ];  
+        ];
         $user->kyc_complete = 3;
         $user->kyc_source = 'mobile';
         $user->save();
@@ -373,30 +373,30 @@ class UserController extends Controller
         $general = gs();
         if($general->nuban_provider == 'MONNIFY')
         {
-          return $this->generatenubanMonnify(); 
+          return $this->generatenubanMonnify();
         }
         if($general->nuban_provider == 'STROWALLET')
         {
-          return $this->generatenubanstrowallet(); 
+          return $this->generatenubanstrowallet();
         }
         if($general->nuban_provider == 'PAYLONY')
         {
-          return $this->generatenubanpaylony(); 
+          return $this->generatenubanpaylony();
         }
-        
+
     }
-    
+
     public function generatenubanMonnify()
     {
         $user = auth()->user();
         if($user->nuban != null)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'You already have an account number'],400);
         }
 
         $fee = env('DEDICATEDACCOUNTFEE');
-        
-        $token = monnifyToken();  
+
+        $token = monnifyToken();
         $url = "https://monnify.com/api/v2/bank-transfer/reserved-accounts";
         if(env('MONIFYSTATUS') == 'TEST')
         {
@@ -422,7 +422,7 @@ class UserController extends Controller
             "customerName": "'.$user->fullname.'",
             "getAllAvailableBanks": true
         }',
-        CURLOPT_HTTPHEADER => array( 
+        CURLOPT_HTTPHEADER => array(
         'Authorization: Bearer '.$token.'',
         'Content-Type: application/json'
         ),
@@ -431,19 +431,19 @@ class UserController extends Controller
         curl_close($curl);
         $reply = json_decode($response,true);
         if(!isset($reply['responseBody']))
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         if($reply['requestSuccessful'] != true)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         if($reply['requestSuccessful'] = true)
-        {  
+        {
         $user->nuban   = json_encode($reply['responseBody']['accounts']);
         $user->nuban_ref = $reply['responseBody']['accountReference'];
-        $user->save(); 
-        
+        $user->save();
+
         // Send Mail
         notify($user, 'USER_MESSAGE', [
             'message' => 'A dedicated account number has been generated for you successfuly. Please login to  your account to check details',
@@ -456,13 +456,13 @@ class UserController extends Controller
 
     public function generatenubanstrowallet()
     {
-        $user = auth()->user(); 
+        $user = auth()->user();
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $fee = env('DEDICATEDACCOUNTFEE');
-        
+
         if($user->nuban != null)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'You already have an account number'],400);
         }
         //$webhook = "https://webhook.site/516932b1-20b2-4936-9d11-50f34183b6e2";
@@ -484,7 +484,7 @@ class UserController extends Controller
             "phone": "'.$user->mobile.'",
             "webhook_url": "'.$webhook.'"
         }',
-        CURLOPT_HTTPHEADER => array( 
+        CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json'
         ),
         ));
@@ -492,23 +492,23 @@ class UserController extends Controller
         curl_close($curl);
         $reply = json_decode($response,true);
         if(!isset($reply['success']))
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         if($reply['success'] != true)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$reply['message']],400);
         }
         if($reply['success'] = true)
-        {  
+        {
         $user->nuban   = [
                 'bank_name' => @$reply['bank_name'],
                 'account_name' => @$reply['account_name'],
                 'account_number'   => @$reply['account_number']
         ];
-        
-        $user->nuban_ref = @$reply['account_number']; 
-        $user->save(); 
+
+        $user->nuban_ref = @$reply['account_number'];
+        $user->save();
         // Send Mail
         notify($user, 'USER_MESSAGE', [
             'message' => 'A dedicated account number has been generated for you successfuly. Please login to  your account to check details',
@@ -521,13 +521,13 @@ class UserController extends Controller
 
     public function generatenubanpaylony()
     {
-        $user = auth()->user(); 
+        $user = auth()->user();
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $fee = env('DEDICATEDACCOUNTFEE');
-        
+
         if($user->nuban != null)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'You already have an account number'],400);
         }
         $curl = curl_init();
@@ -551,7 +551,7 @@ class UserController extends Controller
             "bvn":"",
             "provider":"safehaven"
         }',
-        CURLOPT_HTTPHEADER => array( 
+        CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',
         'Authorization: Bearer '.env('PAYLONYSK')
         ),
@@ -561,25 +561,25 @@ class UserController extends Controller
         $reply = json_decode($response,true);
 
         if(!isset($reply['success']))
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         if($reply['success'] != true)
-        { 
+        {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$reply['message']],400);
         }
 
         if($reply['success'] = true && isset($reply['data']['reference']))
-        {  
+        {
 
         $user->nuban   = [
                 'bank_name' => @$reply['data']['provider'],
                 'account_name' => @$reply['data']['account_name'],
                 'account_number'   => @$reply['data']['account_number']
         ];
-        
-        $user->nuban_ref = @$reply['data']['reference']; 
-        $user->save(); 
+
+        $user->nuban_ref = @$reply['data']['reference'];
+        $user->save();
         // Send Mail
         notify($user, 'USER_MESSAGE', [
             'message' => 'A dedicated account number has been generated for you successfuly. Please login to  your account to check details',
@@ -637,11 +637,11 @@ class UserController extends Controller
                $user->status = 0;
                $user->save();
                $notify[] = ['error', 'You are scammer'];
-               return back()->withNotify($notify);        
+               return back()->withNotify($notify);
             }
 
     //$number = rand(1,10);
-    //sleep($number); 
+    //sleep($number);
     if (!Hash::check($code, $user->trx_password)) {
         return back()->with('error', 'Invalid Account Password!');
     }
@@ -717,7 +717,7 @@ class UserController extends Controller
         }
         $passwordValidation = Password::min(4);
         $general            = gs();
-        
+
         $this->validate($request, [
             'pin' => 'required',
             'recipient' => 'required',
@@ -728,7 +728,7 @@ class UserController extends Controller
 
         //return $request;
         $number = rand(1,10);
-        sleep($number); 
+        sleep($number);
 
         $user = auth()->user();
         $code = $request->pin;
@@ -746,7 +746,7 @@ class UserController extends Controller
             if ($beneficiary->id == $user->id) {
                 $notify[] = ['error', 'You cant transfer fund to the same beneficiary account.'];
                 return back()->withNotify($notify);
-            } 
+            }
 
             if ($amount > $user->ref_balance && $request->wallet == 'ref_wallet') {
                 $notify[] = ['error', 'You do not have sufficient balance in your referral wallet for this transfer.'];
@@ -780,7 +780,7 @@ class UserController extends Controller
             $transaction->trx          = getTrx();
             $transaction->remark       = 'P2P';
             $transaction->save();
-            
+
             $beneficiary->ref_balance += $request->amount;
             $beneficiary->save();
             //Create Credit Transaction
@@ -824,7 +824,7 @@ class UserController extends Controller
             $transaction->remark       = 'P2P';
             $transaction->save();
             }
-   
+
 
             $notify[] = ['success', 'P2P fund transfer completed successfully'];
             return back()->withNotify($notify);
@@ -836,9 +836,9 @@ class UserController extends Controller
 
 
 
-    
+
     public function login_earn(Request $request)
-    { 
+    {
         $general = gs();
         if($general->login_bonus == 1)
         {
@@ -849,8 +849,8 @@ class UserController extends Controller
             }
             $nextEarn = Carbon::now()->addDay(1);
             $user->balance += $general->login_earn;
-            $user->earn_at = $nextEarn; 
-            $user->save(); 
+            $user->earn_at = $nextEarn;
+            $user->save();
             //LOG
             $transaction = new Transaction();
             $transaction->user_id = $user->id;
@@ -893,7 +893,7 @@ class UserController extends Controller
         $method = WithdrawMethod::where('id', $methodid->id)->where('status', 1)->firstOrFail();
         $today = date('l');
         $payoutdays = json_decode($method->payout_days);
- 
+
          if(in_array($today, $payoutdays, true ) == false)
          {
             $notify[] = ['error', 'Sorry  you can\'t request for payout on '.$today];
@@ -902,12 +902,12 @@ class UserController extends Controller
 
          $user = auth()->user();
          //Check Balance
-       
+
         if ($request->amount > $user->balance) {
             $notify[] = ['error', 'You do not have sufficient balance in your wallet for this request.'];
             return back()->withNotify($notify);
         }
-        
+
         if ($request->amount < $method->min_limit) {
             $notify[] = ['error', 'Your requested amount is smaller than minimum amount.'];
             return back()->withNotify($notify);
@@ -916,7 +916,7 @@ class UserController extends Controller
             $notify[] = ['error', 'Your requested amount is larger than maximum amount.'];
             return back()->withNotify($notify);
         }
- 
+
 
 
         $charge = $method->fixed_charge + ($request->amount * $method->percent_charge / 100);
@@ -946,7 +946,7 @@ class UserController extends Controller
         return view($this->activeTemplate . 'user.withdraw.preview', compact('pageTitle','withdraw'));
     }
 
-    
+
 
     public function withdrawSubmit(Request $request)
     {
@@ -976,7 +976,7 @@ class UserController extends Controller
         $this->validate($request, $rules);
 
         $user = auth()->user();
- 
+
         if ($withdraw->amount > $user->ref_balance && $withdraw->wallet == 'ref_wallet') {
             $notify[] = ['error', 'You do not have sufficient balance in your referral wallet for this transfer.'];
             return back()->withNotify($notify);
@@ -1046,7 +1046,7 @@ class UserController extends Controller
         $transaction->details = showAmount($withdraw->final_amount) . ' ' . $withdraw->currency . ' Withdraw Via ' . $withdraw->method->name;
         $transaction->trx =  $withdraw->trx;
         $transaction->save();
- 
+
 
         notify($user, 'WITHDRAW_REQUEST', [
             'method_name' => $withdraw->method->name,
@@ -1097,7 +1097,7 @@ class UserController extends Controller
 
         return view($this->activeTemplate . 'user.giftcard.giftcard_history', compact('pageTitle', 'log'));
     }
-    
+
 
     public function giftcardDetails($id)
     {
@@ -1238,7 +1238,7 @@ class UserController extends Controller
                     "Transaction Details",
                     "Transaction Date"
                 ]);
-                
+
                 $startDate = $request->start;
                 $endDate = $request->end;
                 $transactions = Transaction::whereBetween('created_at', [$startDate, $endDate])->where('user_id', auth()->id())->searchable(['trx'])->filter(['trx_type', 'remark'])->orderBy('created_at', 'desc')->paginate(getPaginate());
@@ -1264,7 +1264,7 @@ class UserController extends Controller
                 });
                 fclose($handle);
                 Response::download($filename, auth()->user()->username.".csv", $headers);
-                
+
         }
         return view($this->activeTemplate . 'user.transactions', compact('pageTitle', 'transactions', 'remarks'));
     }
@@ -1325,7 +1325,7 @@ class UserController extends Controller
             }
             //GD OR FILE INFO NOT AVAILABLE?
             /*  $path = getFilePath('userProfile');
-                
+
                 $imageName = time().'.'.$request->image->extension();
 
                 // Public Folder
@@ -1364,8 +1364,8 @@ class UserController extends Controller
         } else {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The transaction password doesn\'t match!'],400);
         }
- 
+
     }
 
- 
+
 }

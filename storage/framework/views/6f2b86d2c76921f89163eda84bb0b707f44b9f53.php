@@ -1,12 +1,11 @@
-@extends($activeTemplate . 'layouts.dashboard')
-@section('panel')
+<?php $__env->startSection('panel'); ?>
     <div id="appView" style="display: none;">
         <div class="verification-container" style="padding: 20px;">
             <div class="verification-header text-center mb-4">
                 <h3 style="font-size: 24px; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Identity Verification</h3>
                 <p style="color: #7f8c8d; font-size: 14px;">Secure your account with additional verification</p>
             </div>
-            @push('script')
+            <?php $__env->startPush('script'); ?>
                 <script>
                     function readURL(input) {
                         if (input.files && input.files[0]) {
@@ -28,7 +27,7 @@
                         }
                     }
                 </script>
-            @endpush
+            <?php $__env->stopPush(); ?>
 
             <h3 class="info-id">To confirm your information, upload front view of your ID.</h3>
 
@@ -36,29 +35,29 @@
                 <div class="upload-image rounded-image">
                     <input class="form-control upload-file" onchange="readURL2(this);" type="file" name="back"
                         id="formFileLg">
-                    @if ($user->kyc_complete == 3 || $user->kyc_complete == 1)
-                        <img id="khaytech2" src="{{ asset('assets/images/kyc') }}/{{ $user->username }}/back_kyc_image.png" alt=""
+                    <?php if($user->kyc_complete == 3 || $user->kyc_complete == 1): ?>
+                        <img id="khaytech2" src="<?php echo e(asset('assets/images/kyc')); ?>/<?php echo e($user->username); ?>/back_kyc_image.png" alt=""
                             class="img-fluid rounded-circle" width="120" height="120">
-                    @else
+                    <?php else: ?>
                         <img id="khaytech2" class="upload-icon dark-text" width="35"
                             src="https://static.vecteezy.com/system/resources/previews/015/337/675/original/transparent-upload-icon-free-png.png" />
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
             <h3 class="info-id border-0 pb-0">To confirm your information, upload back view of your ID.</h3>
 
             <div class="form-group">
-                @if ($user->kyc_complete == 3 || $user->kyc_complete == 1)
+                <?php if($user->kyc_complete == 3 || $user->kyc_complete == 1): ?>
                     <div class="text-center">
-                        <p class="mb-0">{{ @$user->kyc->type }}</p>
-                        @if ($user->kyc_complete == 3)
-                            <badge class="badge bg-warning">@lang('Pending')</badge>
-                        @elseif($user->kyc_complete == 1)
-                            <badge class="badge bg-success">@lang('Approved')</badge>
-                        @endif
+                        <p class="mb-0"><?php echo e(@$user->kyc->type); ?></p>
+                        <?php if($user->kyc_complete == 3): ?>
+                            <badge class="badge bg-warning"><?php echo app('translator')->get('Pending'); ?></badge>
+                        <?php elseif($user->kyc_complete == 1): ?>
+                            <badge class="badge bg-success"><?php echo app('translator')->get('Approved'); ?></badge>
+                        <?php endif; ?>
                     </div>
-                @else
-                    <label for="exampleInputPassword1" class="form-label fw-semibold">@lang('Document Type')</label>
+                <?php else: ?>
+                    <label for="exampleInputPassword1" class="form-label fw-semibold"><?php echo app('translator')->get('Document Type'); ?></label>
                     <select name="type" class="select2 form-control form-control-lg" style="width: 100%; height: 36px">
                         <option>Select</option>
                         <option>Voters Card</option>
@@ -70,12 +69,12 @@
                         <option>Address Utility Bill</option>
                         <option>NIN Card</option>
                     </select>
-                @endif
+                <?php endif; ?>
             </div>
 
-            @if ($user->kyc_complete == 0 || $user->kyc_complete == 2)
+            <?php if($user->kyc_complete == 0 || $user->kyc_complete == 2): ?>
                 <button type="submit" class="btn theme-btn w-100">Upload Document</button>
-            @endif
+            <?php endif; ?>
         </div>
     </form>
     <!-- login section start -->
@@ -131,4 +130,6 @@
             }
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make($activeTemplate . 'layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/user/kyc/index.blade.php ENDPATH**/ ?>
