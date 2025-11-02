@@ -2,7 +2,7 @@
 @section('panel')
     <!-- App View (initially hidden) -->
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
         <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -185,7 +185,6 @@
     @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loadingOverlay').style.display = 'block';
             console.log('DOMContentLoaded');
             console.log(typeof web2app !== 'undefined' && web2app.isNative());
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
