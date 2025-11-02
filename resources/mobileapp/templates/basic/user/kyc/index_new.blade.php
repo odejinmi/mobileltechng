@@ -151,6 +151,7 @@
 
         function startIDVerification(email) {
             // Add your ID verification logic here
+            console.log(email);
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
                 web2app.startIDVerification();
             } else {
@@ -165,9 +166,9 @@
 
         function startBVNVerification(email) {
             // Add your BVN verification logic here
-            console.log(email);
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
                 web2app.bvnverification({'identifier':email, 'type':'bvn'}, function(response){
+                    console.log('bvnverification');
                     console.log(response);
                 });
             } else {

@@ -297,7 +297,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $pageTitle  = 'KYC Verification';
-        return view($this->activeTemplate . 'user.kyc.index_new', compact('pageTitle','user','pageTitle'));
+        return view($this->activeTemplate . 'user.kyc.index', compact('pageTitle','user','pageTitle'));
     }
     public function kycpost(Request $request)
     {
