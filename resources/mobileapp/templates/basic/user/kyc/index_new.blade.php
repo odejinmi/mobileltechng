@@ -168,7 +168,6 @@
             console.log(email);
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
                 web2app.bvnverification({'identifier':email, 'type':'bvn'}, function(response){
-                    Log::info(response);
                     console.log(response);
                 });
             } else {
