@@ -1,6 +1,16 @@
 @extends($activeTemplate . 'layouts.dashboard')
 @section('panel')
     <!-- App View (initially hidden) -->
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p style="margin-top: 10px; font-weight: 500;">Verifying your information...</p>
+        </div>
+    </div>
+    
     <div id="appView" style="display: none;">
         <div class="verification-container" style="padding: 20px;">
             <div class="verification-header text-center mb-4">
@@ -220,7 +230,10 @@
         }
 
 
-        function updatedata(type,response) {
+        function updatedata(type, response) {
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
 
             var raw = JSON.stringify({
                 _token: "{{ csrf_token() }}",
@@ -231,22 +244,57 @@
             var requestOptions = {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: raw
             };
+
             fetch("{{ route('user.kyc.kycbvn') }}", requestOptions)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(result => {
-                    resp = JSON.parse(result);
-                    $("#passmessage").html(
-                        `<div class="alert alert-${resp.status}" role="alert"><strong>${resp.status} - </strong> ${resp.message}</div>`
-                    );
+                    // Show success message
+                    const message = result.message || 'Verification successful';
+                    const status = result.status || 'success';
+                    
+                    // Update UI with response
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `alert alert-${status}`;
+                    messageDiv.role = 'alert';
+                    messageDiv.innerHTML = `<strong>${status.charAt(0).toUpperCase() + status.slice(1)} - </strong> ${message}`;
+                    
+                    const container = document.getElementById('passmessage') || document.body;
+                    container.innerHTML = '';
+                    container.appendChild(messageDiv);
+                    
+                    // If verification was successful, reload the page after a delay
+                    if (status === 'success') {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
                 })
                 .catch(error => {
-
+                    console.error('Error:', error);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.role = 'alert';
+                    errorDiv.textContent = 'An error occurred during verification. Please try again.';
+                    
+                    const container = document.getElementById('passmessage') || document.body;
+                    container.innerHTML = '';
+                    container.appendChild(errorDiv);
+                })
+                .finally(() => {
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
                 });
-            // END GET DATA \\
         }
 
         function readURL(input) {
