@@ -10,7 +10,7 @@
             <p style="margin-top: 10px; font-weight: 500;">Verifying your information...</p>
         </div>
     </div>
-    
+
     <div id="appView" style="display: none;">
         <div class="verification-container" style="padding: 20px;">
             <div class="verification-header text-center mb-4">
@@ -185,6 +185,7 @@
     @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loadingOverlay').style.display = 'block';
             console.log('DOMContentLoaded');
             console.log(typeof web2app !== 'undefined' && web2app.isNative());
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
@@ -262,17 +263,17 @@
                     // Show success message
                     const message = result.message || 'Verification successful';
                     const status = result.status || 'success';
-                    
+
                     // Update UI with response
                     const messageDiv = document.createElement('div');
                     messageDiv.className = `alert alert-${status}`;
                     messageDiv.role = 'alert';
                     messageDiv.innerHTML = `<strong>${status.charAt(0).toUpperCase() + status.slice(1)} - </strong> ${message}`;
-                    
+
                     const container = document.getElementById('passmessage') || document.body;
                     container.innerHTML = '';
                     container.appendChild(messageDiv);
-                    
+
                     // If verification was successful, reload the page after a delay
                     if (status === 'success') {
                         setTimeout(() => {
@@ -286,7 +287,7 @@
                     errorDiv.className = 'alert alert-danger';
                     errorDiv.role = 'alert';
                     errorDiv.textContent = 'An error occurred during verification. Please try again.';
-                    
+
                     const container = document.getElementById('passmessage') || document.body;
                     container.innerHTML = '';
                     container.appendChild(errorDiv);
