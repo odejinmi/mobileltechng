@@ -132,9 +132,13 @@
         </form>
     </div>
 
-    <script !src="">
+
+    @push('script')
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             Log::info('DOMContentLoaded');
+            Log::info(typeof web2app !== 'undefined' && web2app.isNative());
+            console.log('DOMContentLoaded');
             console.log(typeof web2app !== 'undefined' && web2app.isNative());
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
                 // Show app view and hide browser view
@@ -154,6 +158,11 @@
             } else {
                 alert('Please use the mobile app to complete ID verification');
             }
+        }
+
+        function web2appInit(data) {
+            console.log("web2app is ready")
+            console.log(JSON.stringify(data));
         }
 
         function startBVNVerification(email) {
@@ -190,7 +199,6 @@
         }
     </script>
 
-    @push('script')
     <script>
         function readURL(input) {
             if (input.files && input.files[0]) {
