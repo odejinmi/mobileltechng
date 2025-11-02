@@ -216,14 +216,43 @@
         function startBVNVerification(email, type) {
             // Add your BVN verification logic here
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
-                web2app.bvnverification({'identifier':email, 'type':type}, function(response){
-                    console.log('bvnverification');
-                    console.log(response);
-                    console.log(response['verify']);
-                    if(response['verify']) {
-                        updatedata(type, response);
+                
+                // For testing - comment this out in production
+                var testResponse = {messageLevel: 1, message: {"success":true,"data":{"confidence_level":93.075430393219,"bvn":"22314756491","nin":null,"name":"ODEJINMI TOLULOPE ABRAHAM","verify":true,"reference":"3c46d0c1-0855-42b4-88db-cece7aca6665","message":"Verified Successfully","status":true,"method":"CheckoutMethod.bvn"}}};
+                console.log('Test Response:', testResponse);
+
+                // Extract the actual response data
+                const responseData = testResponse.message;
+                console.log('Response Data:', responseData);
+
+                // Check if verification was successful
+                const isVerified = responseData && responseData.data && responseData.data.verify === true;
+                console.log('Is Verified:', isVerified);
+
+                if (isVerified) {
+                    updatedata(type, responseData.data);
+                }
+
+                // Uncomment this in production
+                /*
+                web2app.bvnverification({'identifier':email, 'type':type}, function(response) {
+                    console.log('BVN Verification Response:', response);
+
+                    // Handle the response structure
+                    if (response && response.message) {
+                        const responseData = response.message;
+                        const isVerified = responseData.data && responseData.data.verify === true;
+
+                        if (isVerified) {
+                            updatedata(type, responseData.data);
+                        } else {
+                            console.error('Verification failed:', responseData.message || 'Unknown error');
+                        }
+                    } else {
+                        console.error('Invalid response format:', response);
                     }
                 });
+                */
             } else {
                 alert('Please use the mobile app to complete BVN verification');
             }
