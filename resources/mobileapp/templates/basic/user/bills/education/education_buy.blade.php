@@ -367,7 +367,7 @@
                 },
                 body: raw
             };
-            fetch("{{ route('user.buy.cabletv') }}", requestOptions)
+            fetch("{{ route('user.buy.education') }}", requestOptions)
                 .then(response => response.text())
                 .then(result => {
                     resp = JSON.parse(result);

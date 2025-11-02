@@ -23,9 +23,42 @@
                         <p style="margin: 2px 0 0; font-size: 13px; color: #7f8c8d;">Verify with your Bank Verification Number</p>
                     </div>
                 </div>
-                <button onclick="startBVNVerification('{{ $user->email }}')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
+                @if($user->kyc_complete == 1)
+                <button disabled style="width: 100%; padding: 12px; background: #9e9e9e; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: not-allowed; margin-top: 8px;">
+                    Verified
+                </button>
+                @else
+                <button onclick="startBVNVerification('{{ $user->email }}', 'bvn')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
                     Verify Now
                 </button>
+                @endif
+            </div>
+
+
+            <!-- NIN Verification -->
+            <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="background: #e8f5e9; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="#388E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12Z" stroke="#388E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 15.5C14.5 15.5 16.5 16 16.5 17.5V19H7.5V17.5C7.5 16 9.5 15.5 12 15.5Z" stroke="#388E3C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #2c3e50;">NIN Verification</h4>
+                        <p style="margin: 2px 0 0; font-size: 13px; color: #7f8c8d;">Verify with your National Identification Number</p>
+                    </div>
+                </div>
+                @if($user->kyc_complete == 1)
+                <button disabled style="width: 100%; padding: 12px; background: #9e9e9e; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: not-allowed; margin-top: 8px;">
+                    Verified
+                </button>
+                @else
+                <button onclick="startBVNVerification('{{ $user->email }}', 'nin')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
+                    Verify Now
+                </button>
+                @endif
             </div>
 
 
@@ -43,9 +76,15 @@
                         <p style="margin: 2px 0 0; font-size: 13px; color: #7f8c8d;">Verify with a valid ID card</p>
                     </div>
                 </div>
+                @if($user->kyc_complete == 1)
+                <button disabled style="width: 100%; padding: 12px; background: #9e9e9e; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: not-allowed; margin-top: 8px;">
+                    Verified
+                </button>
+                @else
                 <button onclick="startIDVerification('{{ $user->email }}')" style="width: 100%; padding: 12px; background: #1976D2; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
                     Verify Now
                 </button>
+                @endif
             </div>
 
             <!-- Security Info -->
@@ -164,16 +203,47 @@
             console.log(JSON.stringify(data));
         }
 
-        function startBVNVerification(email) {
+        function startBVNVerification(email, type) {
             // Add your BVN verification logic here
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
-                web2app.bvnverification({'identifier':email, 'type':'bvn'}, function(response){
+                web2app.bvnverification({'identifier':email, 'type':type}, function(response){
                     console.log('bvnverification');
                     console.log(response);
+                    updatedata(type,response);
                 });
             } else {
                 alert('Please use the mobile app to complete BVN verification');
             }
+        }
+
+
+        function updatedata(type,response) {
+
+            var raw = JSON.stringify({
+                _token: "{{ csrf_token() }}",
+                type: type,
+                response: response,
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                body: raw
+            };
+            fetch("{{ route('user.kyc.kycbvn') }}", requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    resp = JSON.parse(result);
+                    $("#passmessage").html(
+                        `<div class="alert alert-${resp.status}" role="alert"><strong>${resp.status} - </strong> ${resp.message}</div>`
+                    );
+                })
+                .catch(error => {
+
+                });
+            // END GET DATA \\
         }
 
         function readURL(input) {

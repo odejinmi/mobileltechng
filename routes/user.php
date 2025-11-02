@@ -77,6 +77,7 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::any('qrcode', 'qrcode')->name('qr.index');
                 Route::get('kyc', 'kyc')->name('kyc.index');
                 Route::post('kyc', 'kycpost');
+                Route::post('kycbvn', 'kycbvnpost')->name('kyc.kycbvn');
 
                 //P2P
                 Route::get('p2p/log', 'p2plog')->name('p2p.history');
