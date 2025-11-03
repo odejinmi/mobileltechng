@@ -73,29 +73,29 @@
 
 
             <!-- ID Card Verification -->
-            <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-                <div style="display: flex; align-items: center; margin-bottom: 12px;">
-                    <div style="background: #e3f2fd; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#1976D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7 7H17M7 12H17M7 17H13" stroke="#1976D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #2c3e50;">ID Card Verification</h4>
-                        <p style="margin: 2px 0 0; font-size: 13px; color: #7f8c8d;">Verify with a valid ID card</p>
-                    </div>
-                </div>
-                @if($user->kyc_complete == 1)
-                <button disabled style="width: 100%; padding: 12px; background: #9e9e9e; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: not-allowed; margin-top: 8px;">
-                    Verified
-                </button>
-                @else
-                <button onclick="startIDVerification('{{ $user->email }}')" style="width: 100%; padding: 12px; background: #1976D2; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
-                    Verify Now
-                </button>
-                @endif
-            </div>
+{{--            <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">--}}
+{{--                <div style="display: flex; align-items: center; margin-bottom: 12px;">--}}
+{{--                    <div style="background: #e3f2fd; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">--}}
+{{--                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">--}}
+{{--                            <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#1976D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>--}}
+{{--                            <path d="M7 7H17M7 12H17M7 17H13" stroke="#1976D2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>--}}
+{{--                        </svg>--}}
+{{--                    </div>--}}
+{{--                    <div>--}}
+{{--                        <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: #2c3e50;">ID Card Verification</h4>--}}
+{{--                        <p style="margin: 2px 0 0; font-size: 13px; color: #7f8c8d;">Verify with a valid ID card</p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                @if($user->kyc_complete == 1)--}}
+{{--                <button disabled style="width: 100%; padding: 12px; background: #9e9e9e; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: not-allowed; margin-top: 8px;">--}}
+{{--                    Verified--}}
+{{--                </button>--}}
+{{--                @else--}}
+{{--                <button onclick="startIDVerification('{{ $user->email }}')" style="width: 100%; padding: 12px; background: #1976D2; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">--}}
+{{--                    Verify Now--}}
+{{--                </button>--}}
+{{--                @endif--}}
+{{--            </div>--}}
 
             <!-- Security Info -->
             <div style="margin-top: 24px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #1976D2;">
@@ -216,7 +216,7 @@
         function startBVNVerification(email, type) {
             // Add your BVN verification logic here
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
-
+                /*
                 // For testing - comment this out in production
                 var testResponse = {messageLevel: 1, message: {"success":true,"data":{"confidence_level":93.075430393219,"bvn":"22314756491","nin":null,"name":"ODEJINMI TOLULOPE ABRAHAM","verify":true,"reference":"3c46d0c1-0855-42b4-88db-cece7aca6665","message":"Verified Successfully","status":true,"method":"CheckoutMethod.bvn"}}};
                 console.log('Test Response:', testResponse.data);
@@ -233,9 +233,9 @@
                 if (isVerified) {
                     updatedata(type, responseData.data);
                 }
-
+                */
                 // Uncomment this in production
-                /*
+
                 web2app.bvnverification({'identifier':email, 'type':type}, function(response) {
                     console.log('BVN Verification Response:', response);
 
@@ -253,7 +253,7 @@
                         console.error('Invalid response format:', response);
                     }
                 });
-                */
+
             } else {
                 alert('Please use the mobile app to complete BVN verification');
             }
