@@ -242,6 +242,9 @@
                     // Handle the response structure
                     if (response && response.message) {
                         const responseData = response.message;
+                        console.log('Response Data:', responseData);
+                        console.log('Response Data:', responseData.data);
+                        console.log('Response Data:', responseData.data.data);
                         const isVerified = responseData.data && responseData.data.verify === true;
 
                         if (isVerified) {
