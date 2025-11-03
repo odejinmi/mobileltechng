@@ -246,13 +246,29 @@
                         console.log('Response Data:', JSON.stringify(response));
                         console.log('Response Data:', JSON.stringify(response.data));
                         console.log('Response Data:', response.data.verify);
-                        console.log('Response Data:', JSON.stringify(response.data.data));
                         const isVerified = response.data && response.data.verify === true;
 
                         if (isVerified) {
                             updatedata(type, response.data);
                         } else {
-                            console.error('Verification failed:', response.message || 'Unknown error');
+                            console.error('Verification failed:', response.data.message || 'Unknown error');
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'alert alert-danger';
+                            errorDiv.role = 'alert';
+                            errorDiv.textContent = 'Verification failed: ' + response.data.message || 'Unknown error';
+
+                            // Safely handle the message container
+                            const container = document.getElementById('passmessage');
+                            if (container) {
+                                container.innerHTML = '';
+                                container.appendChild(errorDiv);
+                            } else {
+                                // If passmessage doesn't exist, create it
+                                const newContainer = document.createElement('div');
+                                newContainer.id = 'passmessage';
+                                newContainer.appendChild(errorDiv);
+                                document.body.prepend(newContainer);
+                            }
                         }
                     // } else {
                     //     console.error('Invalid response format:', response);
