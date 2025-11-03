@@ -399,7 +399,8 @@ class UserController extends Controller
         ]);
 
         $notify[] = ['success', 'KYC document submitted successfuly'];
-        return back()->withNotify($notify)->withInput();
+        return response()->json(['ok'=>true,'status'=>'success','message'=> 'KYC document submitted successfuly'],200);
+//        return back()->withNotify($notify)->withInput();
     }
 
     public function generatenuban()
