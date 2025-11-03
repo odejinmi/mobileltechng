@@ -238,25 +238,25 @@
 
                 web2app.bvnverification({'identifier':email, 'type':type}, function(response) {
                     console.log('BVN Verification Response:', JSON.stringify(response));
-                    console.log('BVN Verification Response:', JSON.stringify(response.message));
+                    console.log('BVN Verification Response:', JSON.stringify(response.data));
 
                     // Handle the response structure
-                    if (response && response.message) {
-                        const responseData = response.message;
-                        console.log('Response Data:', JSON.stringify(responseData));
-                        console.log('Response Data:', JSON.stringify(responseData.data));
-                        console.log('Response Data:', responseData.data.verify);
-                        console.log('Response Data:', JSON.stringify(responseData.data.data));
-                        const isVerified = responseData.data && responseData.data.verify === true;
+                    // if (response && response.message) {
+                    //     const responseData = response.message;
+                        console.log('Response Data:', JSON.stringify(response));
+                        console.log('Response Data:', JSON.stringify(response.data));
+                        console.log('Response Data:', response.data.verify);
+                        console.log('Response Data:', JSON.stringify(response.data.data));
+                        const isVerified = response.data && response.data.verify === true;
 
                         if (isVerified) {
-                            updatedata(type, responseData.data);
+                            updatedata(type, response.data);
                         } else {
-                            console.error('Verification failed:', responseData.message || 'Unknown error');
+                            console.error('Verification failed:', response.message || 'Unknown error');
                         }
-                    } else {
-                        console.error('Invalid response format:', response);
-                    }
+                    // } else {
+                    //     console.error('Invalid response format:', response);
+                    // }
                 });
 
             } else {
