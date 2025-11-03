@@ -237,14 +237,15 @@
                 // Uncomment this in production
 
                 web2app.bvnverification({'identifier':email, 'type':type}, function(response) {
-                    console.log('BVN Verification Response:', response);
+                    console.log('BVN Verification Response:', JSON.stringify(response));
 
                     // Handle the response structure
                     if (response && response.message) {
                         const responseData = response.message;
-                        console.log('Response Data:', responseData);
-                        console.log('Response Data:', responseData.data);
-                        console.log('Response Data:', responseData.data.data);
+                        console.log('Response Data:', JSON.stringify(responseData));
+                        console.log('Response Data:', JSON.stringify(responseData.data));
+                        console.log('Response Data:', responseData.data.verify);
+                        console.log('Response Data:', JSON.stringify(responseData.data.data));
                         const isVerified = responseData.data && responseData.data.verify === true;
 
                         if (isVerified) {
