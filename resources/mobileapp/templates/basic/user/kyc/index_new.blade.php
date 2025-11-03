@@ -238,6 +238,7 @@
 
                 web2app.bvnverification({'identifier':email, 'type':type}, function(response) {
                     console.log('BVN Verification Response:', JSON.stringify(response));
+                    console.log('BVN Verification Response:', JSON.stringify(response.message));
 
                     // Handle the response structure
                     if (response && response.message) {
