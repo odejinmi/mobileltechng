@@ -58,12 +58,12 @@
     <div class="offcanvas-body">
       <div class="sidebar-content">
         <ul class="link-section">
-          <li>
-            <a href="{{ route('user.kyc.index') }}" class="pages">
-              <i class="sidebar-icon" data-feather="shield"></i>
-              <h3>Verification</h3>
-            </a>
-          </li>
+{{--          <li>--}}
+{{--            <a href="{{ route('user.kyc.index') }}" class="pages">--}}
+{{--              <i class="sidebar-icon" data-feather="shield"></i>--}}
+{{--              <h3>Verification</h3>--}}
+{{--            </a>--}}
+{{--          </li>--}}
 {{--          @if ($general->buy_giftcard > 0 || $general->sell_giftcard > 0)--}}
 {{--          <li>--}}
 {{--            <a href="{{ route('user.tradegift') }}" class="pages">--}}
