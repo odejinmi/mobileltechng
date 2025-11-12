@@ -5,27 +5,27 @@
   <!-- card start -->
 
   <!-- banner section starts -->
-{{--  <section>--}}
-{{--    <div class="custom-container">--}}
-{{--      <div class="swiper banner">--}}
-{{--        <div class="swiper-wrapper">--}}
-{{--          <div class="swiper-slide">--}}
-{{--          <a href="{{route('user.downlines')}}">--}}
-{{--             <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/domore.png')}}" alt="banner2" />--}}
-{{--            </a>--}}
-{{--          </div>--}}
-{{--          <div class="swiper-slide">--}}
-{{--            <a href="#">--}}
-{{--              <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/refer.png')}}" alt="banner1" />--}}
-{{--            </a>--}}
-{{--          </div>--}}
+  <section>
+    <div class="custom-container">
+      <div class="swiper banner">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+          <a href="{{route('user.downlines')}}">
+             <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/domore.png')}}" alt="banner2" />
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="#">
+              <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/refer.png')}}" alt="banner1" />
+            </a>
+          </div>
 
 
-{{--        </div>--}}
-{{--      </div>--}}
-{{--    </div>--}}
-{{--    </div>--}}
-{{--  </section>--}}
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
   <!-- banner section end -->
 
   <section class="section-b-space">

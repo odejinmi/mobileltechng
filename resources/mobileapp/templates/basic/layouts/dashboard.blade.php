@@ -58,20 +58,20 @@
     <div class="offcanvas-body">
       <div class="sidebar-content">
         <ul class="link-section">
-{{--          <li>--}}
-{{--            <a href="{{ route('user.kyc.index') }}" class="pages">--}}
-{{--              <i class="sidebar-icon" data-feather="shield"></i>--}}
-{{--              <h3>Verification</h3>--}}
-{{--            </a>--}}
-{{--          </li>--}}
-{{--          @if ($general->buy_giftcard > 0 || $general->sell_giftcard > 0)--}}
-{{--          <li>--}}
-{{--            <a href="{{ route('user.tradegift') }}" class="pages">--}}
-{{--              <i class="sidebar-icon" data-feather="gift"></i>--}}
-{{--              <h3>Giftcard</h3>--}}
-{{--            </a>--}}
-{{--          </li>--}}
-{{--          @endif--}}
+          <li>
+            <a href="{{ route('user.kyc.index') }}" class="pages">
+              <i class="sidebar-icon" data-feather="shield"></i>
+              <h3>Verification</h3>
+            </a>
+          </li>
+          @if ($general->buy_giftcard > 0 || $general->sell_giftcard > 0)
+          <li>
+            <a href="{{ route('user.tradegift') }}" class="pages">
+              <i class="sidebar-icon" data-feather="gift"></i>
+              <h3>Giftcard</h3>
+            </a>
+          </li>
+          @endif
           @if($general->loan > 0)
           <li>
             <a href="{{ route('user.loan.plans') }}" class="pages">
