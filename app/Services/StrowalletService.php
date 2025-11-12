@@ -47,7 +47,7 @@ class StrowalletService
         ]);
 
         $data = $response->json();
-
+        Log::error('Account validation result', ['response' => $response->body()]);
         if (!isset($data['data']['account_name'])) {
             Log::error('Account validation failed', ['response' => $response->body()]);
             throw new \Exception($data['message'] ?? 'Account validation failed');
