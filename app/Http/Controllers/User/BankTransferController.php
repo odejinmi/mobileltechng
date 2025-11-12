@@ -50,7 +50,7 @@ class BankTransferController extends Controller
     }
 
 
-	 public function validateBankStrowallet(Request $request)
+	 public function validatebankstrowallet(Request $request)
     {
         $validated = $request->validate([
             'bankcode' => 'required|string|size:3',
