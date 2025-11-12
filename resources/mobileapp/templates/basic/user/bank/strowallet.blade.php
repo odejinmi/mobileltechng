@@ -33,7 +33,7 @@
       </div>
         <form class="auth-form p-0" novalidate="novalidate" action="" method="post">
         @csrf
- 
+
       <ul class="select-bank">
         <li>
           <div class="balance-box active">
@@ -64,11 +64,11 @@
           </div>
         </li>
       </ul>
-     
-      
+
+
 
         <div class="form-group mb-3">
-            <label class="form-label">@lang('Recipient\'s Bank')</label> 
+            <label class="form-label">@lang('Recipient\'s Bank')</label>
             <select class="form-control" name="bank"
             data-control="select2" id="banklist" data-hide-search="false"
             onchange="validatebank()" />
@@ -114,11 +114,11 @@
                           type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">{{$general->cur_sym}}5k</button>
                   </li>
               </ul>
-           
+
           @push('script')
           <script>
               function setamount(amount) {
-                  document.getElementById("amount").value = amount; 
+                  document.getElementById("amount").value = amount;
               }
           </script>
          @endpush
@@ -135,7 +135,7 @@
 
         <div class="form-group mb-3">
             <label class="form-label" data-kt-translate="two-step-label">@lang('Transaction Pin')</label>
-            <input type="number" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" /> 
+            <input type="number" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" />
         </div>
         <input id="wallet" value="main" hidden>
         <input id="account_name" hidden>
@@ -150,7 +150,7 @@
   <!-- Withdraw section end -->
 
   <!-- successful transfer modal start -->
-  
+
   <div class="modal successful-modal fade" id="done" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -193,36 +193,62 @@
               bankcode: bankcode,
               account: account,
           });
+
           var requestOptions = {
               method: 'POST',
               headers: {
-                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                  'Accept': 'application/json',
+                  'X-Requested-With': 'XMLHttpRequest'
               },
               body: raw
           };
+
+// Show loading state
+          const submitBtn = document.getElementById("submit");
+          const originalBtnText = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Validating...';
+
           fetch("{{ route('user.bank.validate.strowallet') }}", requestOptions)
-              .then(response => response.text())
+              .then(response => {
+                  if (!response.ok) {
+                      return response.json().then(err => { throw err; });
+                  }
+                  return response.json();
+              })
               .then(result => {
-                  const reply = JSON.parse(result);
-                  if (reply.ok != true) 
-                  {
-                      document.getElementById("submit").disabled = true;
-                  }
-                  if (reply.ok != false) {
-                    document.getElementById("sessionId").value = reply.sessionId;
-                      document.getElementById("submit").disabled = false;
-                      document.getElementById("account_name").value = reply.message;
+                  console.log('Validation result:', result);
+
+                  if (result.ok === true) {
+                      document.getElementById("sessionId").value = result.sessionId || '';
+                      document.getElementById("account_name").value = result.message;
                       document.getElementById("bank_name").value = bankname;
+                      submitBtn.disabled = false;
+                  } else {
+                      submitBtn.disabled = true;
                   }
-                  $("#beneficiary").html(
-                      `<label class="badge mb-1 bg-${reply.status}"> 
-                          <span>${reply.message}</span>
-                      </label>`
-                  );
-                  
+
+                  $("#beneficiary").html(`
+            <div class="alert alert-${result.status === 'success' ? 'success' : 'danger'} mb-0">
+                ${result.message}
+            </div>
+        `);
               })
               .catch(error => {
-                  console.log(error);
+                  console.error('Validation error:', error);
+                  const errorMessage = error.message || 'An unexpected error occurred';
+
+                  $("#beneficiary").html(`
+            <div class="alert alert-danger mb-0">
+                <i class="fas fa-exclamation-circle"></i> ${errorMessage}
+            </div>
+        `);
+              })
+              .finally(() => {
+                  submitBtn.disabled = !(document.getElementById("sessionId").value);
+                  submitBtn.innerHTML = originalBtnText;
               });
       }
   </script>
@@ -237,7 +263,7 @@
   var sessionid = document.getElementById("sessionId").value;
   var account_name = document.getElementById("account_name").value;
   var bank_name = document.getElementById("bank_name").value;
-  var pin = document.getElementById("pin").value; 
+  var pin = document.getElementById("pin").value;
   if (account.length < 10 || bankcode == '' || amount < 1 || wallet == '') {
       return;
   }
@@ -267,7 +293,7 @@
   fetch("{{ route('user.bank.transfer.strowallet') }}", requestOptions)
       .then(response => response.text())
       .then(result => {
-          const reply = JSON.parse(result); 
+          const reply = JSON.parse(result);
               document.getElementById("submit").disabled = false;
               document.getElementById("sentamount").innerHTML = '₦'+amount;
               document.getElementById("sentmessage").innerHTML = reply.message;
@@ -279,7 +305,7 @@
                 document.getElementById("doneimage").innerHTML = `<img class="img-fluid" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/error.svg')}}" alt="done" />`;
               }
               $('#done').modal('show');
-             $("#sending").html(''); 
+             $("#sending").html('');
       })
       .catch(error => {
           console.log(error);
@@ -287,7 +313,7 @@
   }
   </script>
 @endpush
-    @endsection 
+    @endsection
 
 @push('breadcrumb-plugins')
 <a href="{{ route('user.bank.transfer.history') }}" class="back-btn">

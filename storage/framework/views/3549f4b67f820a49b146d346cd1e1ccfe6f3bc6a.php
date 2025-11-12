@@ -58,20 +58,61 @@
     <div class="offcanvas-body">
       <div class="sidebar-content">
         <ul class="link-section">
+          <?php
+    $currentHour = now()->hour;
+    $isDisabled = ($currentHour >= 22 || $currentHour < 6);
+    $disabledClass = $isDisabled ? 'disabled-link' : '';
+    $tooltip = $isDisabled ? 'data-bs-toggle="tooltip" data-bs-placement="right" title="Verification is only available from 6 AM to 10 PM"' : '';
+?>
+
+<li>
+    <?php if($isDisabled): ?>
+        <a href="javascript:void(0)" class="pages <?php echo e($disabledClass); ?>" <?php echo $tooltip; ?>>
+            <i class="sidebar-icon" data-feather="shield"></i>
+            <h3>Verification</h3>
+            <span class="badge bg-warning">Closed</span>
+        </a>
+    <?php else: ?>
+        <a href="<?php echo e(route('user.kyc.index')); ?>" class="pages">
+            <i class="sidebar-icon" data-feather="shield"></i>
+            <h3>Verification</h3>
+        </a>
+    <?php endif; ?>
+</li>
+
+<?php $__env->startPush('style'); ?>
+<style>
+    .disabled-link {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+        text-decoration: none;
+    }
+    .disabled-link h3 {
+        color: #6c757d;
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startPush('script'); ?>
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+<?php $__env->stopPush(); ?>
+          <?php if($general->buy_giftcard > 0 || $general->sell_giftcard > 0): ?>
           <li>
-            <a href="<?php echo e(route('user.kyc.index')); ?>" class="pages">
-              <i class="sidebar-icon" data-feather="shield"></i>
-              <h3>Verification</h3>
+            <a href="<?php echo e(route('user.tradegift')); ?>" class="pages">
+              <i class="sidebar-icon" data-feather="gift"></i>
+              <h3>Giftcard</h3>
             </a>
           </li>
-
-
-
-
-
-
-
-
+          <?php endif; ?>
           <?php if($general->loan > 0): ?>
           <li>
             <a href="<?php echo e(route('user.loan.plans')); ?>" class="pages">

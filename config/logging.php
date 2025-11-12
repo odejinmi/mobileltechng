@@ -114,6 +114,27 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'airtime' => [
+        'driver' => 'daily',
+        'path' => storage_path('logs/airtime/airtime.log'),
+        'level' => 'info',
+        'days' => 30,
+        ],
+
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security/security.log'),
+            'level' => 'warning',
+            'days' => 90,
+        ],
+
+        'api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/api/api.log'),
+            'level' => 'info',
+            'days' => 14,
+        ],
     ],
 
 ];

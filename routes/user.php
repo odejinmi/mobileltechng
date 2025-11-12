@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::middleware(['throttle:api'])->group(function () {
 Route::namespace('User\Auth')->name('user.')->group(function () {
 
     Route::controller('LoginController')->group(function () {
@@ -445,6 +446,6 @@ Route::controller('EducationController')->prefix('education')->group(function ()
         Route::post('manual', 'manualDepositUpdate')->name('manual.update');
     });
 });
-
+});
 
 ?>

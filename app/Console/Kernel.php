@@ -16,6 +16,15 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        // Monitor scheduled tasks
+    $schedule->command('monitor:schedule')->everyMinute();
+    
+    // Uptime monitoring
+    $schedule->command('monitor:check-uptime')->everyMinute();
+    $schedule->command('monitor:check-certificates')->daily();
+    
+    // Log cleanup
+    $schedule->command('log:clear --keep-last')->daily();
     }
 
     /**
@@ -25,8 +34,12 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
-
-        require base_path('routes/console.php');
+    $this->load(__DIR__.'/Commands');
+    require base_path('routes/console.php');
+    
+    // Schedule Monitor
+    \Spatie\ScheduleMonitor\Models\MonitoredScheduledTask::query()
+        ->where('name', 'like', '%monitor:schedule%')
+        ->update(['should_run_in_maintenance_mode' => true]);
     }
 }

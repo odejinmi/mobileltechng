@@ -40,6 +40,7 @@ class BankTransferController extends Controller
     {
         try {
             $banks = $this->strowalletService->getBanks();
+            Log::info('Bank list:', $banks);
             $pageTitle = 'Bank Transfer';
             return view($this->activeTemplate.'user.bank.strowallet', compact('pageTitle', 'banks'));
         } catch (\Exception $e) {
@@ -50,14 +51,16 @@ class BankTransferController extends Controller
     }
 
 
-	 public function validatebankstrowallet(Request $request)
+    public function validatebankstrowallet(Request $request)
     {
-        $validated = $request->validate([
-            'bankcode' => 'required|string|size:3',
-            'account' => 'required|string|digits:10'
-        ]);
-
         try {
+            Log::info('validatebankstrowallet request:', $request->all());
+
+            $validated = $request->validate([
+                'bankcode' => 'required|string|size:3',
+                'account' => 'required|string|digits:10'
+            ]);
+
             $response = $this->strowalletService->validateAccount(
                 $validated['bankcode'],
                 $validated['account']
@@ -65,18 +68,36 @@ class BankTransferController extends Controller
 
             return response()->json([
                 'ok' => true,
-                'status' => 'success',
                 'message' => $response['account_name'],
-                'sessionId' => $response['session_id'],
-                'content' => json_encode($response)
+                'sessionId' => $response['session_id'] ?? null,
+                'status' => 'success'
             ]);
-        } catch (\Exception $e) {
-            Log::error('Account validation failed: ' . $e->getMessage());
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $errorMessages = collect($e->errors())->flatten()->implode(' ');
+            
+            Log::error('Validation error in validatebankstrowallet:', [
+                'errors' => $e->errors(),
+                'input' => $request->all()
+            ]);
+
             return response()->json([
                 'ok' => false,
-                'status' => 'danger',
-                'message' => 'Failed to validate account. Please try again.'
-            ], 400);
+                'message' => 'Validation failed: ' . $errorMessages,
+                'status' => 'error'
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Error in validatebankstrowallet:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'ok' => false,
+                'message' => 'Failed to validate account: ' . $e->getMessage(),
+                'status' => 'error'
+            ], 500);
         }
     }
 
