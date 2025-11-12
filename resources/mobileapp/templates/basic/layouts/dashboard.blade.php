@@ -58,12 +58,53 @@
     <div class="offcanvas-body">
       <div class="sidebar-content">
         <ul class="link-section">
-          <li>
-            <a href="{{ route('user.kyc.index') }}" class="pages">
-              <i class="sidebar-icon" data-feather="shield"></i>
-              <h3>Verification</h3>
-            </a>
-          </li>
+          @php
+    $currentHour = now()->hour;
+    $isDisabled = ($currentHour >= 22 || $currentHour < 6);
+    $disabledClass = $isDisabled ? 'disabled-link' : '';
+    $tooltip = $isDisabled ? 'data-bs-toggle="tooltip" data-bs-placement="right" title="Verification is only available from 6 AM to 10 PM"' : '';
+@endphp
+
+<li>
+    @if($isDisabled)
+        <a href="javascript:void(0)" class="pages {{ $disabledClass }}" {!! $tooltip !!}>
+            <i class="sidebar-icon" data-feather="shield"></i>
+            <h3>Verification</h3>
+            <span class="badge bg-warning">Closed</span>
+        </a>
+    @else
+        <a href="{{ route('user.kyc.index') }}" class="pages">
+            <i class="sidebar-icon" data-feather="shield"></i>
+            <h3>Verification</h3>
+        </a>
+    @endif
+</li>
+
+@push('style')
+<style>
+    .disabled-link {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+        text-decoration: none;
+    }
+    .disabled-link h3 {
+        color: #6c757d;
+    }
+</style>
+@endpush
+
+@push('script')
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+@endpush
           @if ($general->buy_giftcard > 0 || $general->sell_giftcard > 0)
           <li>
             <a href="{{ route('user.tradegift') }}" class="pages">
