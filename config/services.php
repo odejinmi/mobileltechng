@@ -35,4 +35,22 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
+
+    'reloadly' => [
+        'mode' => env('RELOADLY_MODE', 'sandbox'),
+        'client_id' => env('RELOADLY_CLIENT_ID'),
+        'client_secret' => env('RELOADLY_CLIENT_SECRET'),
+    ],
+
+    'strowallet' => [
+        'key' => env('STROPAYKEY'),
+        'endpoint' => env('STROWLET_ENDPOINT', 'https://strowallet.com/api/'),
+        'timeout' => 30,
+    ],
+    'monnify' => [
+        'key' => env('MONNIFY_API_KEY'),
+        'secret' => env('MONNIFY_SECRET_KEY'),
+        'endpoint' => env('MONNIFY_ENDPOINT', 'https://api.monnify.com/api/'),
+        'timeout' => 30,
+    ]
 ];

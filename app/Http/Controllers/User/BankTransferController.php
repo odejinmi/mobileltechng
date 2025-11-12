@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\Validator;
@@ -22,10 +23,11 @@ class BankTransferController extends Controller
 {
 
 	protected $strowalletService;
-	public function __construct()
+    public function __construct(StrowalletService $strowalletService)
     {
         $this->middleware('kyc.status');
         $this->activeTemplate = activeTemplate();
+        $this->strowalletService = $strowalletService;
     }
 
 	public function index()
@@ -81,7 +83,7 @@ class BankTransferController extends Controller
 	 public function bankTransferStrowallet(BankTransferRequest $request)
     {
         $user = Auth::user();
-        
+
         // Verify transaction PIN
         if (!Hash::check($request->pin, $user->trx_password)) {
             return response()->json([
@@ -117,7 +119,7 @@ class BankTransferController extends Controller
             return DB::transaction(function () use ($user, $request, $total, $fee) {
                 // Deduct balance
                 $user->decrement('balance', $total);
-                
+
                 // Process transfer
                 $response = $this->strowalletService->transferFunds(
                     $request->bankcode,

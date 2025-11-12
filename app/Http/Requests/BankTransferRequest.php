@@ -1,3 +1,4 @@
+<?php
 // app/Http/Requests/BankTransferRequest.php
 namespace App\Http\Requests;
 

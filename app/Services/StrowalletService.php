@@ -1,3 +1,4 @@
+<?php
 // app/Services/StrowalletService.php
 namespace App\Services;
 
