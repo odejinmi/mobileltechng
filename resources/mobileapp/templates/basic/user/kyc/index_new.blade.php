@@ -38,7 +38,7 @@
                     Verified
                 </button>
                 @else
-                <button onclick="startBVNVerification('{{ $user->email }}', 'bvn')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
+                <button onclick="startBVNVerification('{{ $user->email }}', 'bvn', '{{$user-> firstname}} {{$user->lastname}}')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
                     Verify Now
                 </button>
                 @endif
@@ -65,7 +65,7 @@
                     Verified
                 </button>
                 @else
-                <button onclick="startBVNVerification('{{ $user->email }}', 'nin')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
+                <button onclick="startBVNVerification('{{ $user->email }}', 'nin', '{{$user-> firstname}} {{$user->lastname}}')" style="width: 100%; padding: 12px; background: #388E3C; color: white; border: none; border-radius: 8px; font-weight: 500; font-size: 15px; cursor: pointer; margin-top: 8px; transition: all 0.2s;">
                     Verify Now
                 </button>
                 @endif
@@ -213,7 +213,7 @@
             console.log(JSON.stringify(data));
         }
 
-        function startBVNVerification(email, type) {
+        function startBVNVerification(email, type, name) {
             // Add your BVN verification logic here
             if (typeof web2app !== 'undefined' && web2app.isNative()) {
                 /*
@@ -248,8 +248,35 @@
                         console.log('Response Data:', response.data.verify);
                         const isVerified = response.data && response.data.verify === true;
 
+                        // In your verification code:
                         if (isVerified) {
-                            updatedata(type, response.data);
+                            const userName = '{{ $user->firstname }} {{ $user->lastname }}';
+                            const verifiedName = response.data.name;
+
+                            if (compareNames(userName, verifiedName)) {
+                                updatedata(type, response.data);
+                            } else {
+                                // Show a more user-friendly error message
+                                const errorMessage = `Name verification failed.
+                                    Our records show: ${userName}
+                                    Verified as: ${verifiedName}`;
+
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'alert alert-warning mt-3';
+                                errorDiv.role = 'alert';
+                                errorDiv.innerHTML = `
+                                    <h5>Name Mismatch</h5>
+                                    <p>${errorMessage}</p>
+                                    <p>Please ensure your name matches your official documents.</p>
+                                `;
+
+                                // Insert after the verification button
+                                const button = document.querySelector(`button[onclick*="${type}"]`);
+                                button.parentNode.insertBefore(errorDiv, button.nextSibling);
+
+                                // Scroll to the error
+                                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
                         } else {
                             console.error('Verification failed:', response.data.message || 'Unknown error');
                             const errorDiv = document.createElement('div');
@@ -280,6 +307,66 @@
             }
         }
 
+
+        function normalizeName(name) {
+            if (!name) return '';
+            return name
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
+                .replace(/[^a-z\s]/g, '') // Remove special characters
+                .split(' ')             // Split into array of name parts
+                .filter(part => part.length > 1) // Remove single letters
+                .sort()                 // Sort alphabetically
+                .join(' ')              // Join back to string
+                .trim();
+        }
+
+        function compareNames(name1, name2) {
+            if (!name1 || !name2) return false;
+
+            const normalized1 = normalizeName(name1);
+            const normalized2 = normalizeName(name2);
+
+            // Check for exact match
+            if (normalized1 === normalized2) return true;
+
+            // Check if one name is contained within the other
+            if (normalized1.includes(normalized2) || normalized2.includes(normalized1)) {
+                return true;
+            }
+
+            // Check for at least 60% match using Levenshtein distance
+            const similarity = 1 - levenshteinDistance(normalized1, normalized2) /
+                Math.max(normalized1.length, normalized2.length);
+
+            return similarity >= 0.6; // 60% match threshold
+        }
+
+        // Levenshtein distance implementation
+        function levenshteinDistance(a, b) {
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= a.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i-1) === a.charAt(j-1)) {
+                        matrix[i][j] = matrix[i-1][j-1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i-1][j-1] + 1,
+                            matrix[i][j-1] + 1,
+                            matrix[i-1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
+        }
 
         function updatedata(type, response) {
             // Show loading overlay
