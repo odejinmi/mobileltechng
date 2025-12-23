@@ -234,28 +234,28 @@
           <h5 class="active">Payout</h5>
         </a>
       </li>
-{{--      @if ($general->crypto > 0)--}}
-{{--      <li>--}}
-{{--        <a href="{{ route('user.crypto.trade.index') }}">--}}
-{{--          <div class="icon">--}}
-{{--            <img class="unactive" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/bitcoin.svg')}}" alt="categories" />--}}
-{{--            <img class="active" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/bitcoin-fill.svg')}}" alt="categories" />--}}
-{{--          </div>--}}
-{{--          <h5>Crypto</h5>--}}
-{{--        </a>--}}
-{{--      </li>--}}
-{{--      @endif--}}
+      @if ($general->crypto > 0)
+      <li>
+        <a href="{{ route('user.crypto.trade.index') }}">
+          <div class="icon">
+            <img class="unactive" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/bitcoin.svg')}}" alt="categories" />
+            <img class="active" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/bitcoin-fill.svg')}}" alt="categories" />
+          </div>
+          <h5>Crypto</h5>
+        </a>
+      </li>
+      @endif
 
       <li></li>
 
-{{--      <li>--}}
-{{--        <a href="{{ route('user.tradegift') }}">--}}
-{{--          <div class="icon">--}}
-{{--            <i class="icon" data-feather="gift"></i>--}}
-{{--          </div>--}}
-{{--          <h5>Giftcard</h5>--}}
-{{--        </a>--}}
-{{--      </li>--}}
+      <li>
+        <a href="{{ route('user.tradegift') }}">
+          <div class="icon">
+            <i class="icon" data-feather="gift"></i>
+          </div>
+          <h5>Giftcard</h5>
+        </a>
+      </li>
 
       <li>
         <a href="{{ route('user.profile.setting') }}">
