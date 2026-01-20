@@ -5,11 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Lib\GoogleAuthenticator;
-use App\Models\Order; 
-use App\Models\GeneralSetting; 
+use App\Models\Order;
+use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,7 @@ use Carbon\Carbon;
 class UtilityController extends Controller
 {
 
- 
+
     public function __construct()
     {
         $this->middleware('kyc.status');
@@ -79,7 +80,7 @@ class UtilityController extends Controller
             $url = "https://utilities.reloadly.com";
         }
 
- 
+
         $curl = curl_init();
         curl_setopt_array($curl, [
         CURLOPT_URL => $url."/billers?type=ELECTRICITY_BILL_PAYMENT&countryISOCode=".$request->isocode,
@@ -109,12 +110,12 @@ class UtilityController extends Controller
             'code' => '00',
             'response' => $resp['content'],
              );
-                 
+
              return response()->json(['status'=>'true','message'=>'Network Fetched','content'=>$reply],200);
         }
- 
+
     }
-    
+
 
     public function operatorsdetails($id)
     {
@@ -151,7 +152,7 @@ class UtilityController extends Controller
         $resp = json_decode($response,true);
         return @$resp['content'][0];
     }
- 
+
     public function utility(Request $request)
     {
         $pageTitle       = 'Utility Bills';
@@ -181,9 +182,9 @@ class UtilityController extends Controller
         $token = getToken('utilities');
         $user = auth()->user();
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $password = $input['password'];
-        $arr = explode("|", $input['amount'], 2); 
+        $arr = explode("|", $input['amount'], 2);
 
         $amount =  $arr[0];
         $meter = $input['meter'];
@@ -246,7 +247,7 @@ class UtilityController extends Controller
             "amount": "$amount",
             "useLocalAmount": true,
             "customIdentifier": "$code",
-            "subscriberAccountNumber": "$meter", 
+            "subscriberAccountNumber": "$meter",
         }
         DATA;
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
@@ -272,6 +273,17 @@ class UtilityController extends Controller
                 $balance_after = $user->ref_balance;
             }
             $user->save();
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'electricity',
+                $amount,
+                @$response['transactionId']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'utility';
@@ -325,7 +337,7 @@ class UtilityController extends Controller
         } else {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
         }
- 
+
     }
 
 
@@ -338,5 +350,5 @@ class UtilityController extends Controller
     }
 
 
-    
+
 }

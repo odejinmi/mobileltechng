@@ -5,11 +5,12 @@ namespace App\Http\Controllers\User;
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Lib\GoogleAuthenticator;
-use App\Models\Order; 
-use App\Models\GeneralSetting; 
+use App\Models\Order;
+use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,14 +20,14 @@ use Carbon\Carbon;
 class BettingController extends Controller
 {
 
- 
+
     public function __construct()
     {
         $this->middleware('betting.status');
         $this->middleware('kyc.status');
         $this->activeTemplate = activeTemplate();
     }
-  
+
 
     public function fund_wallet(Request $request)
     {
@@ -39,7 +40,7 @@ class BettingController extends Controller
     }
 
     public function verify_merchant(Request $request){
- 
+
         $mode = env('MODE');
         $publickey = env('OPAYPUBLICKEY');
         $merchantid = env('OPAYMERCHANTID');
@@ -71,7 +72,7 @@ class BettingController extends Controller
         ));
 
         $response = curl_exec($curl);
-        curl_close($curl); 
+        curl_close($curl);
         $resp = curl_exec($curl);
         $reply = json_decode($resp, true);
 
@@ -80,25 +81,25 @@ class BettingController extends Controller
     if(!isset($reply['data']['customerId']))
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply['message']),'content'=> 'INVALID'],200);
- 
+
     }
     else
     {
         return response()->json(['ok'=>true,'status'=>'success','message'=> 'Valid Customer Number','content'=> @$reply['data']['firstName'].' '.@$reply['data']['lastName']],200);
- 
+
     }
-    
+
 	}
-	
+
 
 
     public function fund_wallet_post()
     {
-         
+
         $user = auth()->user();
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
-        $password = $input['password']; 
+        $input = json_decode($json, true);
+        $password = $input['password'];
         $amount = $input['amount'];
         $customername = $input['customerName'];
         $customerId = $input['customerId'];
@@ -141,7 +142,7 @@ class BettingController extends Controller
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS =>' 
+        CURLOPT_POSTFIELDS =>'
         "bulkData": [
             {
               "amount": "'.$parseamount.'",
@@ -150,7 +151,7 @@ class BettingController extends Controller
               "customerId": "'.$customerId.'",
               "provider": "'.$companyId.'",
               "reference": "'.$code.'"
-            } 
+            }
         ]',
       CURLOPT_HTTPHEADER => array(
     'Authorization: Basic '.env('OPAYPUBLICKEY'),
@@ -163,24 +164,36 @@ class BettingController extends Controller
     $response = $resp;
     $reply = json_decode($resp, true);
     curl_close($curl);
-    if(!isset($reply['code'] )) 
+    if(!isset($reply['code'] ))
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
-       
+
     if(!isset($reply['bulkData'][0]['reference']))
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
-  
+
     }
 
         if($reply['bulkData'][0]['reference'])
         {
-             
+
                 $user->balance -= $payment;
                 $balance_after = $user->balance;
-           
-           //return $reply;
+
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'betting',
+                $amount,
+                @$reply['bulkData'][0]['reference']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
+
+            //return $reply;
 
             $user->save();
             $order               = new Order();
@@ -219,13 +232,13 @@ class BettingController extends Controller
             notify($user,'BETTING_BUY', [
                 'provider'        => @$customerId,
                 'amount'          => @showAmount($payment),
-                'product'         => @$plan, 
-                'beneficiary'     => @$customerName, 
+                'product'         => @$plan,
+                'beneficiary'     => @$customerName,
                 'rate'            => @showAmount($payment),
                 'purchase_at'     => @Carbon::now(),
                 'trx'             => @$trx,
             ]);
-            
+
             return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successfull','orderid'=> $trx],200);
         }
         else
@@ -234,7 +247,7 @@ class BettingController extends Controller
         }
         //return json_decode($resp,true);
     }
-  
+
     public function history(Request $request)
     {
         $pageTitle       = 'Betting Log';
@@ -244,5 +257,5 @@ class BettingController extends Controller
     }
 
 
-    
+
 }

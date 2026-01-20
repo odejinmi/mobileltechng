@@ -10,6 +10,7 @@ use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -267,6 +268,18 @@ class InternetSmeController extends Controller
         if($response['ident'])
         {
 
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'data',
+                $amount,
+                $response['ident']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
+
             $code = getTrx();
             $order               = new Order();
             $order->user_id      = $user->id;
@@ -413,6 +426,19 @@ class InternetSmeController extends Controller
                 $balance_after = $user->ref_balance;
             }
             $user->save();
+
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'data',
+                $amount,
+                $response['request-id']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
+
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'smedata';
@@ -559,6 +585,19 @@ class InternetSmeController extends Controller
                 $balance_after = $user->ref_balance;
             }
             $user->save();
+
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'data',
+                $amount,
+                $response['content']['transactionID']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
+
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  $data_type;
@@ -669,7 +708,7 @@ class InternetSmeController extends Controller
             {
                 $user->ref_balance -= $payment;
             }
-            
+
             $user->save();
             //END DEBIT WALLET
 
@@ -700,9 +739,9 @@ class InternetSmeController extends Controller
             $resp = curl_exec($curl);
 
             $err = curl_error($curl);
-    
+
             curl_close($curl);
-    
+
             if ($err) {
             dd($err);
             return [];
@@ -726,6 +765,18 @@ class InternetSmeController extends Controller
             // END AIRTIME VENDING \\
             if($response['data']['reference'])
             {
+
+                $bonusAmount = BonusService::processBonus(
+                    $user->id,
+                    'data',
+                    $amount,
+                    $response['data']['reference']
+                );
+
+                if ($bonusAmount) {
+                    // You can add a notification or log here
+                    \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+                }
 
                 $code = getTrx();
                 $order               = new Order();
