@@ -15,7 +15,7 @@ class BonusService
         $bonustype = TransactionBonus::getBonusType($transactionType);
 
         \Log::info("Bonus of {$bonustype} awarded for airtime purchase");
-        if ($bonustype) {
+        if (!$bonustype) {
             if ($bonusPercentage <= 0) {
                 return null;
             }
