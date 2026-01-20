@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -792,6 +793,18 @@ class AirtimeController extends Controller
                 $balance_after = $user->balance;
 
             $user->save();
+
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'airtime',
+                $amount,
+                $response['transactionId']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'airtime';
