@@ -655,6 +655,19 @@ class AirtimeController extends Controller
             $user->balance -= $amount;
 
             $user->save();
+
+            $bonusAmount = BonusService::processBonus(
+                $user->id,
+                'airtime',
+                $amount,
+                $response['transactionId']
+            );
+
+            if ($bonusAmount) {
+                // You can add a notification or log here
+                \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
+            }
+
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'airtime';
@@ -780,6 +793,7 @@ class AirtimeController extends Controller
         //var_dump($resp);
         $response = json_decode($resp,true);
 
+        \Log::info('airtime purchase response', $response);
         if(!isset($response['status']) && !isset($response['newbal']))
         {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response).'Sorry we cant process this request at the moment'],400);
