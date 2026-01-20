@@ -611,6 +611,8 @@ class AirtimeController extends Controller
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 0,
         CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS =>'{
@@ -630,7 +632,7 @@ class AirtimeController extends Controller
     $reply = json_decode($resp, true);
     // return $response;
     curl_close($curl);
-    \Log::info('airtime purchase response '. $reply);
+    \Log::info('airtime purchase response '. json_encode($reply));
     if(!isset($reply['code'] ))
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'.@$resp],400);
