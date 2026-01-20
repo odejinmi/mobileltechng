@@ -788,7 +788,7 @@ class AirtimeController extends Controller
         // END AIRTIME VENDING \\
         if($response['status'] == 'success')
         {
-
+            Log::info('airtime purchase success');
                 $user->balance -= $amount;
                 $balance_after = $user->balance;
 

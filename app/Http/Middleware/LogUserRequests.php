@@ -12,7 +12,7 @@ class LogUserRequests
         $response = $next($request);
 
         // Log API request
-        Log::channel('user')->info('User Request', [
+        Log::info('User Request', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
             'status' => $response->status(),
