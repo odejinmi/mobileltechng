@@ -110,6 +110,11 @@ class BettingController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -162,11 +167,21 @@ class BettingController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
     if(!isset($reply['bulkData'][0]['reference']))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
 
     }
@@ -239,6 +254,11 @@ class BettingController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);

@@ -10,6 +10,7 @@ use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\BonusService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -311,6 +312,11 @@ class EducationController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
         }
         $total = env('CABLECHARGE')+$amount;
@@ -374,21 +380,41 @@ class EducationController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(isset($reply['content']['errors'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
     if($reply['code'] != "000")
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
         if($reply['code'] == 000)
@@ -451,6 +477,11 @@ class EducationController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
@@ -504,6 +535,11 @@ class EducationController extends Controller
 
         if(!isset($response['status']) && !isset($response['newbal']))
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
 
@@ -567,6 +603,11 @@ class EducationController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$response['message']. 'API ERROR'],400);
         }
         //return json_decode($resp,true);

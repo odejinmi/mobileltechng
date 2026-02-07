@@ -622,17 +622,32 @@ class AirtimeController extends Controller
     \Log::info('airtime purchase response '. json_encode($reply));
     if(!isset($reply['code'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'.@$resp],400);
     }
 
     if(isset($reply['content']['errors'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'.@$resp],400);
     }
 
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
@@ -703,6 +718,11 @@ class AirtimeController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'API ERROR. PLEASE TRY AGAIN LATER'],400);
         }
         //return json_decode($resp,true);
@@ -786,6 +806,11 @@ class AirtimeController extends Controller
         \Log::info('airtime purchase response', $response);
         if(!isset($response['status']) && !isset($response['newbal']))
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response).'Sorry we cant process this request at the moment'],400);
         }
 
@@ -854,6 +879,11 @@ class AirtimeController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $response['message']. 'API ERROR'],400);
         }
         //return json_decode($resp,true);

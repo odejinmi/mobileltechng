@@ -306,6 +306,11 @@ class CabletvController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
         }
         $total = env('CABLECHARGE')+$amount;
@@ -369,21 +374,41 @@ class CabletvController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(isset($reply['content']['errors'] ))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
     if($reply['code'] != "000")
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
+        BonusService::refundaccount(
+            $user,
+            $amount,
+            $wallet
+        );
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
         if($reply['code'] == 000)
@@ -459,6 +484,11 @@ class CabletvController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
@@ -512,6 +542,11 @@ class CabletvController extends Controller
 
         if(!isset($response['status']) && !isset($response['newbal']))
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
 
@@ -586,6 +621,11 @@ class CabletvController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$response['message']. 'API ERROR'],400);
         }
         //return json_decode($resp,true);

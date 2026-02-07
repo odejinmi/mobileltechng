@@ -206,6 +206,11 @@ class InternetSmeController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -248,10 +253,11 @@ class InternetSmeController extends Controller
         if(!isset($response['ident']) && !isset($response['balance_after']))
         {
             //RETURN FUND
-
-                $user->balance += $payment;
-
-            $user->save();
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             //RETURN FUND
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment '.json_encode($response)],400);
         }
@@ -320,9 +326,19 @@ class InternetSmeController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'ERROR '.@$response['api_response']. 'API ERROR'],400);
         }
         } catch (\Exception $e) {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);
@@ -353,6 +369,11 @@ class InternetSmeController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -397,6 +418,11 @@ class InternetSmeController extends Controller
         $response = json_decode($resp,true);
         if(!isset($response['status']) && !isset($response['newbal']))
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         // END AIRTIME VENDING \\
@@ -473,9 +499,19 @@ class InternetSmeController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$response['message']. 'API ERROR'],400);
         }
         } catch (\Exception $e) {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);
@@ -506,6 +542,11 @@ class InternetSmeController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -551,6 +592,11 @@ class InternetSmeController extends Controller
         $response = json_decode($resp,true);
         if(!isset($response['status']) && !isset($response['content']))
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
         // END AIRTIME VENDING \\
@@ -626,9 +672,19 @@ class InternetSmeController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$response['description']. '. API ERROR!!'],400);
         }
         } catch (\Exception $e) {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);
@@ -657,6 +713,11 @@ class InternetSmeController extends Controller
                 $passcheck = true;
             } else {
                 $passcheck = false;
+                BonusService::refundaccount(
+                    $user,
+                    $amount,
+                    $wallet
+                );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -716,15 +777,11 @@ class InternetSmeController extends Controller
             if(!isset($response['data']['reference']))
             {
                 //RETURN FUND
-                if($wallet == 'main')
-                {
-                    $user->balance += $payment;
-                }
-                else
-                {
-                    $user->ref_balance += $payment;
-                }
-                $user->save();
+                BonusService::refundaccount(
+                    $user,
+                    $amount,
+                    $wallet
+                );
                 //RETURN FUND
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment '.json_encode($response)],400);
             }
@@ -793,9 +850,19 @@ class InternetSmeController extends Controller
             }
             else
             {
+                BonusService::refundaccount(
+                    $user,
+                    $amount,
+                    $wallet
+                );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'ERROR '.@$response['message']. 'API ERROR'],400);
             }
         } catch (\Exception $e) {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);
