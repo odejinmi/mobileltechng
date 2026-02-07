@@ -320,7 +320,7 @@ Route::middleware('auth')->name('user.')->group(function () {
                     Route::get('/', 'betting')->name('betting.index');
                     Route::get('fund/wallet', 'fund_wallet')->name('fund.betting.wallet');
                     Route::post('verify/merchant', 'verify_merchant')->name('betting.wallet.verify');
-                    Route::post('fund/wallet', 'fund_wallet_post')->name('fund.betting.wallet');
+                    Route::post('fund/wallet', 'fund_wallet_post')->middleware('auth', 'wallet.balance')->name('fund.betting.wallet');
                     Route::get('history', 'history')->name('betting.history');
             });
 
@@ -332,7 +332,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 
                 Route::get('/airtime/local', 'airtimelocal')->name('airtime.indexlocal');
                 Route::get('buy/airtime/local', 'buy_airtime_local')->name('buy.airtime.local');
-                Route::post('buy/airtime/local/post', 'buy_airtime_post_local')->name('buy.airtime.local.post');
+                Route::post('buy/airtime/local/post', 'buy_airtime_post_local')->middleware('auth', 'wallet.balance')->name('buy.airtime.local.post');
 
                 Route::get('history', 'history')->name('airtime.history');
                 Route::get('to_cash', 'to_cash')->name('airtime.tocash');
@@ -357,9 +357,9 @@ Route::middleware('auth')->name('user.')->group(function () {
                 Route::get('buy/internet', 'buy_internet')->name('buy.internet_sme');
                 Route::post('buy/internet/n3tdata', 'buy_internet_post_n3tdata')->name('buy.internet_sme_n3tdata');
                 Route::post('buy/internet/gsubz', 'buy_internet_post_gsubz')->name('buy.internet_sme_gsubz');
-                Route::post('internet_operator_id/natkemlinks', 'operatorsInternetdetailsNATKEMLINKS')->name('internet_sme.operatorsInternetdetailsNATKEMLINKS');
-                Route::post('buy/internet/natkemlinks', 'buy_internet_sme_natkemlinks')->name('buy.internet_sme_natkemlinks');
-                Route::post('buy/internet/techhub', 'buy_internet_sme_techhub')->name('buy.internet_sme_techhub');
+                Route::post('internet_operator_id/natkemlinks', 'operatorsInternetdetailsNATKEMLINKS')->middleware('auth', 'wallet.balance')->name('internet_sme.operatorsInternetdetailsNATKEMLINKS');
+                Route::post('buy/internet/natkemlinks', 'buy_internet_sme_natkemlinks')->middleware('auth', 'wallet.balance')->name('buy.internet_sme_natkemlinks');
+                Route::post('buy/internet/techhub', 'buy_internet_sme_techhub')->middleware('auth', 'wallet.balance')->name('buy.internet_sme_techhub');
                 Route::get('internet_operators', 'internet_operators')->name('internet_sme.operators');
                 Route::post('internet_operator_id/n3tdata', 'operatorsInternetdetailsN3TDATA')->name('internet_sme.operatorsInternetdetailsN3TDATA');
                 Route::post('internet_operator_id/gsubz', 'operatorsInternetdetailsGSUBZ')->name('internet_sme.operatorsInternetdetailsGSUBZ');
@@ -370,7 +370,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             Route::controller('UtilityController')->prefix('utility')->group(function () {
                 Route::get('/', 'utility')->name('utility.index');
                 Route::get('buy/utility', 'buy_utility')->name('buy.utility');
-                Route::post('buy/utility', 'buy_utility_post')->name('buy.utility');
+                Route::post('buy/utility', 'buy_utility_post')->middleware('auth', 'wallet.balance')->name('buy.utility');
                 Route::get('utility_operators', 'utility_operators')->name('utility.operators');
                 Route::post('utility_operator_id', 'operatorsUtilitydetails')->name('utility.operatorsUtilitydetails');
                 Route::get('history', 'history')->name('utility.history');
@@ -390,7 +390,7 @@ Route::middleware('auth')->name('user.')->group(function () {
             Route::controller('CabletvController')->prefix('cabletv')->group(function () {
                 Route::get('/', 'cabletv')->name('cabletv.index');
                 Route::get('buy/cabletv', 'buy_cabletv')->name('buy.cabletv');
-                Route::post('buy/cabletv', 'buy_cabletv_post')->name('buy.cabletv');
+                Route::post('buy/cabletv', 'buy_cabletv_post')->middleware('auth', 'wallet.balance')->name('buy.cabletv');
                 Route::get('cabletv_operators', 'cabletv_operators')->name('cabletv.operators');
                 Route::get('cabletv_verify', 'cabletv_verify')->name('cabletv.verifydecoder');
                 Route::post('cabletv_operator_id', 'operatorsUtilitydetails')->name('cabletv.operatorsUtilitydetails');
@@ -400,7 +400,7 @@ Route::middleware('auth')->name('user.')->group(function () {
 Route::controller('EducationController')->prefix('education')->group(function () {
                 Route::get('/', 'education')->name('education.index');
                 Route::get('buy/education', 'buy_education')->name('buy.education');
-                Route::post('buy/education', 'buy_education_post')->name('buy.education');
+                Route::post('buy/education', 'buy_education_post')->middleware('auth', 'wallet.balance')->name('buy.education');
                 Route::get('education_operators', 'education_operators')->name('education.operators');
                 Route::get('education_verify', 'education_verify')->name('education.verifydecoder');
                 Route::post('education_operator_id', 'operatorsUtilitydetails')->name('education.operatorsUtilitydetails');
@@ -411,7 +411,7 @@ Route::controller('EducationController')->prefix('education')->group(function ()
             Route::controller('InsuranceController')->prefix('insurance')->group(function () {
                 Route::get('/', 'insurance')->name('insurance.index');
                 Route::get('buy/insurance', 'buy_insurance')->name('buy.insurance');
-                Route::post('buy/insurance', 'buy_insurance_post')->name('buy.insurance');
+                Route::post('buy/insurance', 'buy_insurance_post')->middleware('auth', 'wallet.balance')->name('buy.insurance');
                 Route::get('insurance_operators', 'insurance_operators')->name('insurance.operators');
                 Route::post('buy/insurance/motor', 'buy_insurance_post_motor')->name('buy.insurance.motor');
                 Route::post('buy/insurance/personal', 'buy_insurance_post_personal')->name('buy.insurance.personal');

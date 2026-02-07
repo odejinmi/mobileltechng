@@ -315,18 +315,6 @@ class EducationController extends Controller
         }
         $total = env('CABLECHARGE')+$amount;
         $payment = $total;
-        if($wallet == 'main')
-        {
-            $balance = $user->balance;
-        }
-        else
-        {
-            $balance = $user->ref_balance;
-        }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
         if($general->education_provider == 'VTPASS')
         {
@@ -417,7 +405,6 @@ class EducationController extends Controller
             }
             //return $reply;
 
-            $user->save();
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'education';
@@ -534,7 +521,6 @@ class EducationController extends Controller
             }
             //return $reply;
 
-            $user->save();
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'education';

@@ -310,18 +310,6 @@ class CabletvController extends Controller
         }
         $total = env('CABLECHARGE')+$amount;
         $payment = $total;
-        if($wallet == 'main')
-        {
-            $balance = $user->balance;
-        }
-        else
-        {
-            $balance = $user->ref_balance;
-        }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
         if($general->cabletv_provider == 'VTPASS')
         {
@@ -412,7 +400,6 @@ class CabletvController extends Controller
             }
             //return $reply;
 
-            $user->save();
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -542,7 +529,6 @@ class CabletvController extends Controller
             }
             //return $reply;
 
-            $user->save();
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'cable',

@@ -1,5 +1,5 @@
 @extends($activeTemplate . 'layouts.dashboard')
-@section('panel') 
+@section('panel')
 
     <!-- banner section starts -->
     <section>
@@ -11,7 +11,7 @@
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner1" />
                 </a>
               </div>
-    
+
               <div class="swiper-slide">
                 <a href="#">
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner2" />
@@ -65,6 +65,23 @@
                             <div class="balance-content">
                                 <h6>@lang('Ref Wallet')</h6>
                                 <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->ref_balance) }}</h3>
+                                <h5>**** **** ****</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="balance-box">
+                            <input class="form-check-input" type="radio" name="account_type"
+                                   onchange="selectwallet('bonus')" />
+                            <img class="img-fluid balance-box-img active"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg') }}"
+                                 alt="balance-box" />
+                            <img class="img-fluid balance-box-img unactive"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg') }}"
+                                 alt="balance-box" />
+                            <div class="balance-content">
+                                <h6>@lang('Bonus')</h6>
+                                <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->bonus_balance) }}</h3>
                                 <h5>**** **** ****</h5>
                             </div>
                         </div>
@@ -288,14 +305,14 @@
                         success: function(data) {
                             document.getElementById("customer").innerHTML =
                                 `
-                            <label class="badge mb-1 bg-${data.status}"> 
+                            <label class="badge mb-1 bg-${data.status}">
                           <span>${data.content}</span>
                             </label>`;
                             document.getElementById("customername").value = data.content;
                             $("#loader").html('');
                         }
                     });
-                    // END GET DATA \\ 
+                    // END GET DATA \\
 
                 }
             }

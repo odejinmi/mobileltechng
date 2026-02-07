@@ -101,6 +101,7 @@ class Kernel extends HttpKernel
         'buy_giftcard.status' => \App\Http\Middleware\AllowBuyGiftcard::class,
         'giftauto.status' => \App\Http\Middleware\AllowAutoGiftcard::class,
         'sell_giftcard.status' => \App\Http\Middleware\AllowSellGiftcard::class,
+        'wallet.balance' => \App\Http\Middleware\CheckWalletBalance::class,
 
         'demo' => \App\Http\Middleware\Demo::class,
         'registration.complete' => \App\Http\Middleware\RegistrationStep::class,

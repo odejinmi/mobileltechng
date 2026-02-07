@@ -11,7 +11,7 @@
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner1" />
                 </a>
               </div>
-    
+
               <div class="swiper-slide">
                 <a href="#">
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner2" />
@@ -66,6 +66,23 @@
                             <div class="balance-content">
                                 <h6>@lang('Ref Wallet')</h6>
                                 <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->ref_balance) }}</h3>
+                                <h5>**** **** ****</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="balance-box">
+                            <input class="form-check-input" type="radio" name="account_type"
+                                   onchange="selectwallet('bonus')" />
+                            <img class="img-fluid balance-box-img active"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg') }}"
+                                 alt="balance-box" />
+                            <img class="img-fluid balance-box-img unactive"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg') }}"
+                                 alt="balance-box" />
+                            <div class="balance-content">
+                                <h6>@lang('Bonus')</h6>
+                                <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->bonus_balance) }}</h3>
                                 <h5>**** **** ****</h5>
                             </div>
                         </div>
@@ -130,7 +147,7 @@
                                                 </a>
                                             </div>
                                         </div>
-                                     
+
                                                                     `;
                                 html += htmlSegment;
                             });
@@ -210,8 +227,8 @@
                     </script>
                     <script>
                         function setamount(input) {
-                            document.getElementById("amount").value = input.value;  
-                            document.getElementById("networkname").value = input.value.split('|')[3];  
+                            document.getElementById("amount").value = input.value;
+                            document.getElementById("networkname").value = input.value.split('|')[3];
                                                         document.getElementById("data_plan").value = input.value.split('|')[2];
                                                         document.getElementById("data_type").value = input.value.split('|')[4];
                         }
@@ -244,7 +261,7 @@
                     <!--end::Label-->
                     <!--begin::Input-->
                     <input name="phone" id="phone" class="form-control" />
-                </div> 
+                </div>
 
 
                 <div class="form-group">
@@ -338,14 +355,14 @@
 
             var raw = JSON.stringify({
                 _token: "{{ csrf_token() }}",
-                password : document.getElementById('password').value, 
-                                                  networkname : document.getElementById('networkname').value, 
-                                                  amount : document.getElementById('amount').value, 
-                                                  phone : document.getElementById('phone').value,  
-                                                  networkid : document.getElementById('networkid').value, 
-                                                  data_plan : document.getElementById('data_plan').value,  
-                                                  data_type : document.getElementById('data_type').value,  
-                                                  wallet :localStorage.getItem('wallet'), 
+                password : document.getElementById('password').value,
+                                                  networkname : document.getElementById('networkname').value,
+                                                  amount : document.getElementById('amount').value,
+                                                  phone : document.getElementById('phone').value,
+                                                  networkid : document.getElementById('networkid').value,
+                                                  data_plan : document.getElementById('data_plan').value,
+                                                  data_type : document.getElementById('data_type').value,
+                                                  wallet :localStorage.getItem('wallet'),
             });
             var networkname = document.getElementById('networkname').value;
 

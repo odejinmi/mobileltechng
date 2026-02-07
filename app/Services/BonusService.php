@@ -40,4 +40,55 @@ class BonusService
 
         return $bonusAmount;
     }
+
+    public static function debitaccount($user,$amount,$wallet){
+        if($wallet == 'ref')
+        {
+            if($amount > $user->ref_balance)
+            {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }else{
+                $user->ref_balance -= $amount;
+                $user->save();
+            }
+        }
+        else if($wallet == 'bonus')
+        {
+            if($amount > $user->bonus_balance)
+            {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }else{
+                $user->bonus_balance -= $amount;
+                $user->save();
+            }
+        }
+        else
+        {
+            if($amount > $user->balance)
+            {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }else{
+                $user->balance -= $amount;
+                $user->save();
+            }
+        }
+    }
+    public static function refundaccount($user,$amount,$wallet){
+        if($wallet == 'ref')
+        {
+                $user->ref_balance += $amount;
+                $user->save();
+        }
+        else if($wallet == 'bonus')
+        {
+                $user->bonus_balance += $amount;
+                $user->save();
+        }
+        else
+        {
+                $user->balance += $amount;
+                $user->save();
+
+        }
+    }
 }

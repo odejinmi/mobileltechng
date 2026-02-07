@@ -70,6 +70,23 @@
                             </div>
                         </div>
                     </li>
+                    <li>
+                        <div class="balance-box">
+                            <input class="form-check-input" type="radio" name="account_type"
+                                   onchange="selectwallet('bonus')" />
+                            <img class="img-fluid balance-box-img active"
+                                 src="<?php echo e(asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg')); ?>"
+                                 alt="balance-box" />
+                            <img class="img-fluid balance-box-img unactive"
+                                 src="<?php echo e(asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg')); ?>"
+                                 alt="balance-box" />
+                            <div class="balance-content">
+                                <h6><?php echo app('translator')->get('Bonus'); ?></h6>
+                                <h3><?php echo e($general->cur_sym); ?><?php echo e(showAmount(Auth::user()->bonus_balance)); ?></h3>
+                                <h5>**** **** ****</h5>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
                 <?php $__env->startPush('script'); ?>
                     <script>
@@ -367,7 +384,7 @@
                 },
                 body: raw
             };
-            fetch("<?php echo e(route('user.buy.cabletv')); ?>", requestOptions)
+            fetch("<?php echo e(route('user.buy.education')); ?>", requestOptions)
                 .then(response => response.text())
                 .then(result => {
                     resp = JSON.parse(result);

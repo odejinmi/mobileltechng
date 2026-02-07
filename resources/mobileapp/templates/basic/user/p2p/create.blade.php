@@ -13,7 +13,7 @@
       </div>
         <form class="auth-form p-0" novalidate="novalidate" action="" method="post">
         @csrf
- 
+
       <ul class="select-bank">
         <li>
           <div class="balance-box active">
@@ -43,9 +43,26 @@
             </div>
           </div>
         </li>
+          <li>
+              <div class="balance-box">
+                  <input class="form-check-input" type="radio" name="account_type"
+                         onchange="selectwallet('bonus')" />
+                  <img class="img-fluid balance-box-img active"
+                       src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg') }}"
+                       alt="balance-box" />
+                  <img class="img-fluid balance-box-img unactive"
+                       src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg') }}"
+                       alt="balance-box" />
+                  <div class="balance-content">
+                      <h6>@lang('Bonus')</h6>
+                      <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->bonus_balance) }}</h3>
+                      <h5>**** **** ****</h5>
+                  </div>
+              </div>
+          </li>
       </ul>
-     
-     
+
+
         <div class="form-group">
           <label for="amount" class="form-label">Amount</label>
           <input type="number" id="amount" class="form-control amount @error('amount') is-invalid @enderror" value="{{ old('amount') }}" name="amount" placeholder="0.00" />
@@ -63,16 +80,16 @@
             <label class="form-label mb-3" data-kt-translate="two-step-label">@lang('Transaction Pin')</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <input type="text" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" /> 
+            <input type="text" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" />
         </div>
 
-         
+
         <button type="submit" class="btn theme-btn w-100" data-bs-toggle="modal">Transfer</button>
       </form>
     </div>
   </section>
   <!-- Withdraw section end -->
- 
 
-  
+
+
 @endsection

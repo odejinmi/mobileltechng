@@ -574,19 +574,6 @@ class AirtimeController extends Controller
             }
 
 
-        if($wallet == 'ref')
-        {
-            $balance = $user->ref_balance;
-        }
-        else
-        {
-            $balance = $user->balance;
-        }
-        if($amount > $user->balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
-
         $mode = env('MODE');
         $username = env('VTPASSUSERNAME');
         $password = env('VTPASSPASSWORD');

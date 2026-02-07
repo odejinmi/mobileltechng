@@ -68,6 +68,23 @@
                             </div>
                         </div>
                     </li>
+                    <li>
+                        <div class="balance-box">
+                            <input class="form-check-input" type="radio" name="account_type"
+                                onchange="selectwallet('bonus')" />
+                            <img class="img-fluid balance-box-img active"
+                                src="<?php echo e(asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg')); ?>"
+                                alt="balance-box" />
+                            <img class="img-fluid balance-box-img unactive"
+                                src="<?php echo e(asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg')); ?>"
+                                alt="balance-box" />
+                            <div class="balance-content">
+                                <h6><?php echo app('translator')->get('Bonus'); ?></h6>
+                                <h3><?php echo e($general->cur_sym); ?><?php echo e(showAmount(Auth::user()->bonus_balance)); ?></h3>
+                                <h5>**** **** ****</h5>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
                 <?php $__env->startPush('script'); ?>
                 localStorage.setItem('wallet', 'main');
@@ -116,14 +133,14 @@
                                                     <div class="form-check">
                                                         <input class="form-check-input" onchange="networkprovider('${plan['networkid']}','${plan['logo']}','${plan['name']}','${plan['networkid']}')" type="radio" name="operator" id="${plan['networkid']}" value="${plan['networkid']}" />
                                                         <label class="form-check-label" for="${plan['networkid']}"></label>
-                                                    </div>    
+                                                    </div>
                                                 </h5>
                                                 </div>
                                             </div>
                                             </a>
                                         </div>
-                                    </div> 
-                                    
+                                    </div>
+
                                                 `;
                                 html += htmlSegment;
                             });
@@ -131,7 +148,7 @@
                             document.getElementById('providers').innerHTML =
                                 `${html}`;
                         }
-                        // END GET DATA \\ 
+                        // END GET DATA \\
                     </script>
                     <script>
                         function networkprovider(operatorId, image, name, networkid) {
@@ -183,7 +200,7 @@
                             $("#passmessage").html(
                                 `<center><div class="spinner-border theme-color mt-2" role="status"><span class="visually-hidden">Loading...</span></div></center>`
                                 );
-                            
+
                             var raw = JSON.stringify({
                                 _token: "<?php echo e(csrf_token()); ?>",
                                 password: e.value,
@@ -223,9 +240,9 @@
             </form>
         </div>
     </section>
-    
+
   <!-- successful transfer modal start -->
-  
+
   <div class="modal successful-modal fade" id="done" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -308,4 +325,5 @@
     <i class="icon" data-feather="grid"></i>
   </a>
 <?php $__env->stopPush(); ?>
+
 <?php echo $__env->make($activeTemplate . 'layouts.dashboard', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\PhpstormProjects\mobileltechng\resources\mobileapp/templates/basic/user/bills/airtime/airtime_buy_local.blade.php ENDPATH**/ ?>

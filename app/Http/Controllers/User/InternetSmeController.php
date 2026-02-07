@@ -216,16 +216,7 @@ class InternetSmeController extends Controller
             $balance_after = $user->balance;
 
 
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
-        //DEBIT WALLET
-            $user->balance -= $payment;
-
-        $user->save();
-        //END DEBIT WALLET
 
         $token = env('NATKEMLINKSTOKEN');
         $curl = curl_init();
@@ -374,10 +365,6 @@ class InternetSmeController extends Controller
         {
             $balance = $user->ref_balance;
         }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
         $token = getN3TToken();
         $url = 'https://n3tdata.com/api/data';
@@ -425,7 +412,6 @@ class InternetSmeController extends Controller
                 $user->ref_balance -= $payment;
                 $balance_after = $user->ref_balance;
             }
-            $user->save();
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -532,10 +518,6 @@ class InternetSmeController extends Controller
         {
             $balance = $user->ref_balance;
         }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
 
         $url = 'https://gsubz.com/api/pay/';
@@ -584,8 +566,6 @@ class InternetSmeController extends Controller
                 $user->ref_balance -= $payment;
                 $balance_after = $user->ref_balance;
             }
-            $user->save();
-
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'data',
@@ -693,20 +673,6 @@ class InternetSmeController extends Controller
                 $balance = $user->ref_balance;
                 $balance_after = $user->ref_balance;
 
-            }
-            if($payment > $balance)
-            {
-                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-            }
-
-            //DEBIT WALLET
-            if($wallet == 'main')
-            {
-                $user->balance -= $payment;
-            }
-            else
-            {
-                $user->ref_balance -= $payment;
             }
 
             $user->save();

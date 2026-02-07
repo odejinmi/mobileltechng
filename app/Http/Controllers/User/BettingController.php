@@ -125,10 +125,6 @@ class BettingController extends Controller
         {
             $balance = $user->ref_balance;
         }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
 
         $parseamount = $amount*100;
         $url = 'https://cashierapi.opayweb.com/api/v3/bills/bulk-bills';
@@ -195,7 +191,7 @@ class BettingController extends Controller
 
             //return $reply;
 
-            $user->save();
+
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'betting';

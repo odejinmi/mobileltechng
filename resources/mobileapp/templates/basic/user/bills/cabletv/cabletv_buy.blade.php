@@ -11,7 +11,7 @@
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner1" />
                 </a>
               </div>
-    
+
               <div class="swiper-slide">
                 <a href="#">
                   <img class="img-fluid banner-img" src="{{ asset($activeTemplateTrue . 'mobile/images/banner/4747113.jpg')}}" alt="banner2" />
@@ -66,6 +66,23 @@
                             <div class="balance-content">
                                 <h6>@lang('Ref Wallet')</h6>
                                 <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->ref_balance) }}</h3>
+                                <h5>**** **** ****</h5>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="balance-box">
+                            <input class="form-check-input" type="radio" name="account_type"
+                                   onchange="selectwallet('bonus')" />
+                            <img class="img-fluid balance-box-img active"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg') }}"
+                                 alt="balance-box" />
+                            <img class="img-fluid balance-box-img unactive"
+                                 src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg') }}"
+                                 alt="balance-box" />
+                            <div class="balance-content">
+                                <h6>@lang('Bonus')</h6>
+                                <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->bonus_balance) }}</h3>
                                 <h5>**** **** ****</h5>
                             </div>
                         </div>
@@ -132,7 +149,7 @@
                                                                             <div class="transaction-details">
                                                                                 <div class="transaction-name pb-0">
                                                                                 <h5>${plan['name']}<br>
-                                                                                <small>  {{ $general->cur_sym }}${plan['variation_amount']}</small>    
+                                                                                <small>  {{ $general->cur_sym }}${plan['variation_amount']}</small>
                                                                                 </h5>
                                                                                 <h5 class="dark-text fw-semibold">
                                                                                     <div class="option d-block mt-3">
@@ -141,12 +158,12 @@
                                                                                             <label class="form-check-label" for="flexradio${plan['variation_code']}"></label>
                                                                                         </div>
                                                                                     </div>
-                                                                                </h5> 
+                                                                                </h5>
                                                                                 </div>
                                                                             </div>
                                                                             </a>
                                                                         </div>
-                                                                    </div> 
+                                                                    </div>
                                                                     `;
                                             html += htmlSegment;
                                         });
@@ -310,7 +327,7 @@
                     success: function(data) {
                         if (data.ok = true) {
                             document.getElementById("customer").innerHTML = `
-                 <label class="badge mb-1 bg-${data.status}"> 
+                 <label class="badge mb-1 bg-${data.status}">
                           <span>Customer Name: ${data.content}</span>
                       </label>
                 `;
@@ -319,7 +336,7 @@
                         } else {
                             $("#loader").html('');
                             document.getElementById("customer").innerHTML = `
-                            <label class="badge mb-1 bg-${data.status}"> 
+                            <label class="badge mb-1 bg-${data.status}">
                                     <span>${data.content}</span>
                                 </label>
                             `;
@@ -327,7 +344,7 @@
 
                     }
                 });
-                // END GET DATA \\ 
+                // END GET DATA \\
 
             }
         }

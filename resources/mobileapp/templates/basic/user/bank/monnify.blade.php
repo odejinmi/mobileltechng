@@ -33,7 +33,7 @@
       </div>
         <form class="auth-form p-0" novalidate="novalidate" action="" method="post">
         @csrf
- 
+
       <ul class="select-bank">
         <li>
           <div class="balance-box active">
@@ -63,13 +63,30 @@
             </div>
           </div>
         </li>
+          <li>
+              <div class="balance-box">
+                  <input class="form-check-input" type="radio" name="account_type"
+                         onchange="selectwallet('bonus')" />
+                  <img class="img-fluid balance-box-img active"
+                       src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg-active.svg') }}"
+                       alt="balance-box" />
+                  <img class="img-fluid balance-box-img unactive"
+                       src="{{ asset($activeTemplateTrue . 'mobile/images/svg/balance-box-bg.svg') }}"
+                       alt="balance-box" />
+                  <div class="balance-content">
+                      <h6>@lang('Bonus')</h6>
+                      <h3>{{ $general->cur_sym }}{{ showAmount(Auth::user()->bonus_balance) }}</h3>
+                      <h5>**** **** ****</h5>
+                  </div>
+              </div>
+          </li>
       </ul>
-     
-     
-        
+
+
+
 
         <div class="form-group mb-3">
-            <label class="form-label">@lang('Recipient\'s Bank')</label> 
+            <label class="form-label">@lang('Recipient\'s Bank')</label>
             <select class="form-control form-control-lg" name="bank" id="banklist" data-hide-search="false"
             onchange="validatebank()" />
             @foreach ($banks['responseBody'] as $data)
@@ -114,11 +131,11 @@
                           type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">{{$general->cur_sym}}5k</button>
                   </li>
               </ul>
-           
+
           @push('script')
           <script>
               function setamount(amount) {
-                  document.getElementById("amount").value = amount; 
+                  document.getElementById("amount").value = amount;
               }
           </script>
          @endpush
@@ -132,11 +149,11 @@
               </div>
           </div>
       </section>
- 
+
 
         <div class="form-group mb-3">
             <label class="form-label" data-kt-translate="two-step-label">@lang('Transaction Pin')</label>
-            <input type="number" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" /> 
+            <input type="number" class="form-control username @error('pin') is-invalid @enderror" id="pin" name="pin" value="{{ old('pin') }}" placeholder="****" />
         </div>
         <input id="wallet" value="main" hidden>
         <input id="account_name" hidden>
@@ -150,7 +167,7 @@
   <!-- Withdraw section end -->
 
   <!-- successful transfer modal start -->
-  
+
   <div class="modal successful-modal fade" id="done" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -204,7 +221,7 @@
               .then(response => response.text())
               .then(result => {
                   const reply = JSON.parse(result);
-                  if (reply.ok != true) 
+                  if (reply.ok != true)
                   {
                       document.getElementById("submit").disabled = true;
                   }
@@ -214,11 +231,11 @@
                       document.getElementById("bank_name").value = bankname;
                   }
                   $("#beneficiary").html(
-                      `<label class="badge mb-1 bg-${reply.status}"> 
+                      `<label class="badge mb-1 bg-${reply.status}">
                           <span>${reply.message}</span>
                       </label>`
                   );
-                  
+
               })
               .catch(error => {
                   console.log(error);
@@ -235,7 +252,7 @@
   var narration = document.getElementById("narration").value;
   var account_name = document.getElementById("account_name").value;
   var bank_name = document.getElementById("bank_name").value;
-  var pin = document.getElementById("pin").value; 
+  var pin = document.getElementById("pin").value;
   if (account.length < 10 || bankcode == '' || amount < 1 || wallet == '') {
       return;
   }
@@ -264,7 +281,7 @@
   fetch("{{ route('user.bank.transfer.monnify') }}", requestOptions)
       .then(response => response.text())
       .then(result => {
-          const reply = JSON.parse(result); 
+          const reply = JSON.parse(result);
               document.getElementById("submit").disabled = false;
               document.getElementById("sentamount").innerHTML = '₦'+amount;
               document.getElementById("sentmessage").innerHTML = reply.message;
@@ -276,7 +293,7 @@
                 document.getElementById("doneimage").innerHTML = `<img class="img-fluid" src="{{ asset($activeTemplateTrue . 'mobile/images/svg/error.svg')}}" alt="done" />`;
               }
               $('#done').modal('show');
-             $("#sending").html(''); 
+             $("#sending").html('');
       })
       .catch(error => {
           console.log(error);
@@ -284,7 +301,7 @@
   }
   </script>
 @endpush
-    @endsection 
+    @endsection
 
 @push('breadcrumb-plugins')
 <a href="{{ route('user.bank.transfer.history') }}" class="back-btn">
