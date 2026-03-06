@@ -305,7 +305,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof web2app !== 'undefined' && web2app.isNative()) {
             // Show app view and hide browser view
-            web2app.pushNotification.unsubscribe(Auth::user()->username);
+            web2app.pushNotification.subscribe('{{ Auth::user()->username }}');
         }
     });
 </script>
