@@ -668,6 +668,20 @@ class AirtimeController extends Controller
                 \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
             }
 
+
+            if($wallet == 'main')
+            {
+                $user->balance -= $amount;
+                $balance = $user->balance;
+                $balance_after = $balance - $amount;
+            }
+            else
+            {
+                $user->ref_balance -= $amount;
+                $balance = $user->ref_balance;
+                $balance_after = $balance - $amount;
+            }
+
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'airtime';
@@ -684,7 +698,7 @@ class AirtimeController extends Controller
             $order->trx          = $trx;
             $order->source       = $wallet;
             $order->balance_before  = $balance;
-            $order->balance_after   = @$user->balance;
+            $order->balance_after   = @$balance_after;
             $order->transaction_id  = @$reply['content']['transactions']['transactionId'];
             $order->save();
 
