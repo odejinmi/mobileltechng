@@ -190,7 +190,7 @@ class BettingController extends Controller
         {
 
                 $user->balance -= $payment;
-                $balance_after = $user->balance;
+                $balance_after = $balance - $payment;
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,

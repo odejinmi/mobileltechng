@@ -272,7 +272,7 @@ class UtilityController extends Controller
                 $user->ref_balance -= $payment;
                 $balance_after = $user->ref_balance;
             }
-            $user->save();
+//            $user->save();
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'electricity',
@@ -320,6 +320,11 @@ class UtilityController extends Controller
         }
         else
         {
+            BonusService::refundaccount(
+                $user,
+                $amount,
+                $wallet
+            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);

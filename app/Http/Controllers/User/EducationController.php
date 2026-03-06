@@ -548,12 +548,14 @@ class EducationController extends Controller
             if($wallet == 'main')
             {
                 $user->balance -= $payment;
-                $balance_after = $user->balance;
+                $balance = $user->balance;
+                $balance_after = $balance - $payment;
             }
             else
             {
                 $user->ref_balance -= $payment;
-                $balance_after = $user->ref_balance;
+                $balance = $user->ref_balance;
+                $balance_after = $balance - $payment;
             }
             //return $reply;
 

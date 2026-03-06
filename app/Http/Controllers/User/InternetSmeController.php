@@ -726,17 +726,17 @@ class InternetSmeController extends Controller
             if($wallet == 'main')
             {
                 $balance = $user->balance;
-                $balance_after = $user->balance;
+                $balance_after = $balance - $amount;
 
             }
             else
             {
                 $balance = $user->ref_balance;
-                $balance_after = $user->ref_balance;
+                $balance_after = $balance - $amount;
 
             }
 
-            $user->save();
+//            $user->save();
             //END DEBIT WALLET
 
             $token = env('TECHHUBTOKEN');

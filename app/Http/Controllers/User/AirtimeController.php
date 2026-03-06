@@ -598,8 +598,8 @@ class AirtimeController extends Controller
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 0,
         CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYHOST => false,
+        CURLOPT_SSL_VERIFYPEER => false,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS =>'{
@@ -655,11 +655,6 @@ class AirtimeController extends Controller
         if($reply['content']['transactions']['transactionId'] && $reply['content']['transactions']['status'] != "failed")
         {
 
-
-
-            $user->balance -= $amount;
-
-            $user->save();
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -821,7 +816,7 @@ class AirtimeController extends Controller
                 $user->balance -= $amount;
                 $balance_after = $user->balance;
 
-            $user->save();
+//            $user->save();
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
