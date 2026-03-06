@@ -321,6 +321,13 @@
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof web2app !== 'undefined' && web2app.isNative()) {
+            // Show app view and hide browser view
+            web2app.pushNotification.unsubscribe(Auth::user()->username);
+        }
+    });
+
     // Detect when the user removes their finger from the screen
     window.addEventListener('touchend', function() {
         if (window.scrollY === 0 && touchEndY - touchStartY > refreshThreshold) {
