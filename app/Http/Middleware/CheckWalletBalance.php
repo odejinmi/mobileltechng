@@ -45,6 +45,8 @@ class CheckWalletBalance
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'], 400);
         }
 
+        $user->$balanceField -= $amount;
+        $user->save();
         // Store the wallet type in request for later use in controller
         $request->merge(['wallet_type' => $wallet]);
 

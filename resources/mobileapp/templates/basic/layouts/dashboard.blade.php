@@ -306,6 +306,10 @@
         if (typeof web2app !== 'undefined' && web2app.isNative()) {
             // Show app view and hide browser view
             web2app.pushNotification.subscribe('{{ Auth::user()->username }}');
+            web2app.pushNotification.gettoken((data){
+                console.log("I am in callback")
+                console.log(JSON.stringify(data));
+            });
         }
     });
 </script>
