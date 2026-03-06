@@ -312,3 +312,14 @@
     <i class="icon" data-feather="bell"></i>
   </a>
 @endpush
+
+@push('script')
+    <script !src="">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof web2app !== 'undefined' && web2app.isNative()) {
+                // Show app view and hide browser view
+                web2app.pushNotification.unsubscribe(Auth::user()->username);
+            }
+        });
+    </script>
+@endpush
