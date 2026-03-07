@@ -303,13 +303,12 @@
 
 <script !src="">
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('this page just loaded');
         if (typeof web2app !== 'undefined' && web2app.isNative()) {
+            console.log('i am ready to call notification sudscribtion');
             // Show app view and hide browser view
             web2app.pushNotification.subscribe('{{ Auth::user()->username }}');
-            web2app.pushNotification.gettoken((data){
-                console.log("I am in callback")
-                console.log(JSON.stringify(data));
-            });
+
         }
     });
 </script>
