@@ -303,10 +303,8 @@
 
 <script !src="">
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('username: {{ Auth::user()->username }}')
-        console.log('this page just loaded');
+        console.log('username: {{ Auth::user()->username }}');
         if (typeof web2app !== 'undefined' && web2app.isNative()) {
-            console.log('i am ready to call notification sudscribtion');
             // Show app view and hide browser view
             web2app.pushNotification.subscribe('{{ Auth::user()->username }}');
 
