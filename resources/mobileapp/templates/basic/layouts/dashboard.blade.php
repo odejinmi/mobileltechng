@@ -303,6 +303,7 @@
 
 <script !src="">
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('username: {{ Auth::user()->username }}')
         console.log('this page just loaded');
         if (typeof web2app !== 'undefined' && web2app.isNative()) {
             console.log('i am ready to call notification sudscribtion');
