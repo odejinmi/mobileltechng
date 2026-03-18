@@ -4,10 +4,11 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="google-signin-client_id" content="719268457379-4b2bnqpi673d9cm2fngkqqb2m3vrmahf.apps.googleusercontent.com"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $general->siteName($pageTitle ?? '') }}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    
+
     <link rel="shortcut icon" type="image/png" href="{{ getImage(getFilePath('logoIcon') . '/favicon.png') }}">
     <link  id="themeColors"  rel="stylesheet" href="{{ asset('assets/assets/dist/css/style-purple.min.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/assets/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css')}}">
@@ -35,7 +36,7 @@
     	box-shadow: 2px 2px 3px #999;
       z-index:100;
     }
-    
+
     .my-float{
     	margin-top:16px;
     }
@@ -55,7 +56,7 @@
         <i class="fa fa-whatsapp my-float"></i>
         </a>
     @yield('content')
- 
+
     @auth
     <div class="ps-footer-mobile">
         <div class="menu__content">
@@ -94,7 +95,7 @@
 
     <script src="{{ asset('assets/thirdparty/plugins/global/plugins.bundle.js')}}"></script>
     <script src="{{ asset('assets/thirdparty/js/scripts.bundle.js')}}"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
 

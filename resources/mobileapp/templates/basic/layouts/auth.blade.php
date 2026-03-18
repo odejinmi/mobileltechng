@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+    <meta name="google-signin-client_id" content="719268457379-4b2bnqpi673d9cm2fngkqqb2m3vrmahf.apps.googleusercontent.com"/>
     <title> {{ $general->siteName(__($pageTitle)) }}</title>
     @include('partials.seo')
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -33,7 +33,7 @@
 
     <!-- swiper css -->
     <link rel="stylesheet" type="text/css" href="{{ asset($activeTemplateTrue . 'mobile/css/vendors/swiper-bundle.min.css') }}" />
- 
+
     <!-- Theme css -->
     <link rel="stylesheet" id="change-link" type="text/css" href="{{ asset($activeTemplateTrue . 'mobile/css/style.css') }}" />
     @stack('style')
@@ -54,7 +54,7 @@
 
   <!-- script js -->
   <script src="{{ asset($activeTemplateTrue . 'mobile/js/script.js') }}"></script>
- 
+
     @stack('script')
     @include('partials.plugins')
     @include('partials.notify')
