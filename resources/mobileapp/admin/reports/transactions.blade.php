@@ -58,7 +58,8 @@
                                     <th>@lang('TRX')</th>
                                     <th>@lang('Transacted')</th>
                                     <th>@lang('Amount')</th>
-                                    <th>@lang('Post Balance')</th>
+                                    <th>@lang('Balance Before')</th>
+                                    <th>@lang('Balance After')</th>
                                     <th>@lang('Details')</th>
                                 </tr>
                             </thead>
@@ -90,7 +91,11 @@
                                         </td>
 
                                         <td class="budget">
-                                            {{ showAmount($trx->post_balance) }} {{ __($general->cur_text) }}
+                                            {{ showAmount($trx->balance_before ?? (($trx->trx_type == '+') ? ($trx->post_balance - $trx->amount) : ($trx->post_balance + $trx->amount + ($trx->charge ?? 0)))) }} {{ __($general->cur_text) }}
+                                        </td>
+
+                                        <td class="budget">
+                                            {{ showAmount($trx->balance_after ?? $trx->post_balance) }} {{ __($general->cur_text) }}
                                         </td>
 
                                         <td class="break_line">{{ __($trx->details) }}</td>

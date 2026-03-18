@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\DB;
 class AirtimeController extends Controller
 {
 
@@ -671,16 +672,17 @@ class AirtimeController extends Controller
 
             if($wallet == 'main')
             {
-                $user->balance -= $amount;
                 $balance = $user->balance;
-                $balance_after = $balance - $amount;
+                $user->balance = $balance - $amount;
+                $balance_after = $user->balance;
             }
             else
             {
-                $user->ref_balance -= $amount;
                 $balance = $user->ref_balance;
-                $balance_after = $balance - $amount;
+                $user->ref_balance = $balance - $amount;
+                $balance_after = $user->ref_balance;
             }
+            $user->save();
 
             $order               = new Order();
             $order->user_id      = $user->id;
@@ -827,10 +829,25 @@ class AirtimeController extends Controller
         if($response['status'] == 'success')
         {
             Log::info('airtime purchase success');
-                $user->balance -= $amount;
-                $balance_after = $user->balance;
-
-//            $user->save();
+            $orderTrx = $code;
+            try {
+                DB::transaction(function () use ($user, $amount, &$balance, &$balance_after) {
+                    $lockedUser = User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
+                    $balance = $lockedUser->balance;
+                    if ($amount > $balance) {
+                        throw new \RuntimeException('INSUFFICIENT_BALANCE');
+                    }
+                    $lockedUser->balance = $balance - $amount;
+                    $lockedUser->save();
+                    $balance_after = $lockedUser->balance;
+                    $user->balance = $lockedUser->balance;
+                });
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
+            }
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -856,11 +873,11 @@ class AirtimeController extends Controller
             $order->currency     = @$response['content']['transactions']['product_name'];
             $order->status       = @$response['status'];
             $order->payment      = @$amount;
-            $order->trx          = getTrx();
+            $order->trx          = $orderTrx;
             $order->source       = 'main';
             $order->balance_before  = $balance;
             $order->balance_after   = $balance_after;
-            $order->transaction_id  = @$response['transid'];
+            $order->transaction_id  = @$response['transactionId'];
             $order->save();
 
             $transaction               = new Transaction();
@@ -881,7 +898,7 @@ class AirtimeController extends Controller
                 'rate'           =>  @showAmount($amount),
                 'beneficiary'     => @$phone,
                 'purchase_at'     => @Carbon::now(),
-                'trx'             => @$trx,
+                'trx'             => $orderTrx,
             ]);
 
             return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successful','orderid'=> $order->trx],200);

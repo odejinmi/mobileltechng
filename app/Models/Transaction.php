@@ -11,6 +11,27 @@ class Transaction extends Model
     protected $casts = [ 
         'val_1' => 'object'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function (Transaction $transaction) {
+            if ($transaction->balance_after === null && $transaction->post_balance !== null) {
+                $transaction->balance_after = $transaction->post_balance;
+            }
+
+            if ($transaction->balance_before === null && $transaction->balance_after !== null && $transaction->amount !== null && $transaction->trx_type !== null) {
+                $amount = (float) $transaction->amount;
+                $charge = $transaction->charge !== null ? (float) $transaction->charge : 0.0;
+                $after = (float) $transaction->balance_after;
+
+                if ($transaction->trx_type === '+') {
+                    $transaction->balance_before = $after - $amount;
+                } elseif ($transaction->trx_type === '-') {
+                    $transaction->balance_before = $after + $amount + $charge;
+                }
+            }
+        });
+    }
     
     public function user()
     {

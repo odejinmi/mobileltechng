@@ -66,7 +66,7 @@ function gradient2()
     $general = gs();
     return 'style="background: rgb(240,255,213); background: linear-gradient(90deg, rgba(240,255,213,1) 0%, rgba(255,154,230,0.17550770308123254) 49%, rgba(98,145,10,0.09147408963585435) 100%);"';
 }
- 
+
 /**
 * get access token from header
 * */
@@ -95,7 +95,7 @@ function monnifyToken()
         'Authorization: Basic '.$token.''
       ),
     ));
-    
+
     $response = curl_exec($curl);
     $reply = json_decode($response, true);
     curl_close($curl);
@@ -107,28 +107,28 @@ $token = request()->bearerToken();
 $user = User::whereApiKey($token)->whereStatus(1)->whereVendor(1)->whereApiAccess(1)->first();
 // HEADER: Get the access token from the header
     if (empty($token)) {
-        $data = 
+        $data =
         [
             'ok' => false,
             'message' => 'Please supply bearer authorization token',
         ];
     }
     if (empty($user)) {
-        $data = 
+        $data =
         [
             'ok' => false,
             'message' => 'Invalid bearer authorization token',
         ];
     }
     if ($user) {
-        $data = 
+        $data =
         [
             'ok' => true,
             'user' => $user,
             'message' => 'Validation Successful',
         ];
     }
-    
+
     $token = json_encode($data);
     $token = json_decode($token);
     return $token;
@@ -190,7 +190,7 @@ function getTrx($length = 12)
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
-    return $randomString;
+    return 'Mobile'.$randomString;
 }
 
 function getAmount($amount, $length = 2)
@@ -345,7 +345,7 @@ function getImage($image, $size = null)
         return 'https://ltechng.co/'.$image;// route('placeholder.image', $size);
     }
     return asset('assets/images/default.png');
-    
+
 }
 
 
@@ -506,7 +506,7 @@ function imagePath()
         'path' => 'assets/images/city',
         'size' => '768x550'
     ];
-    
+
     $data['kyc'] = [
         'path' => 'assets/images/kyc',
     ];
@@ -708,7 +708,7 @@ function getTokenGiftcard()
     {
     return $token;
     }
-    
+
     if(env('MODE') == "TEST")
     {
         $client_id = env('CLIENTIDTEST');
@@ -849,12 +849,12 @@ function getVPAYToken()
     $resp = curl_exec($curl);
     curl_close($curl);
     //var_dump($resp);
-    $reply = json_decode($resp,true); 
- 
+    $reply = json_decode($resp,true);
+
     $session = new Session();
-    $tokn = $session->get('vpaytoken'); 
+    $tokn = $session->get('vpaytoken');
     if(!isset($reply['token']))
-    { 
+    {
         $token['status'] = $reply['status'];
         $token['message'] = $reply['message'];
         $token['token'] = $tokn;
@@ -867,7 +867,7 @@ function getVPAYToken()
     }
     return $token;
 }
- 
+
 
 function getToken($id)
 {
@@ -936,7 +936,7 @@ function get_exchange_rate($currency)
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS =>'{ 
+        CURLOPT_POSTFIELDS =>'{
             "funding_currency": "'.$currency.'"
         }',
         CURLOPT_HTTPHEADER => array(
@@ -951,7 +951,7 @@ function get_exchange_rate($currency)
     if(!isset($reply['access_token']))
     {
         return false;
-    } 
+    }
     return $reply['access_token'];
 }
 

@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Services\BonusService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -189,8 +190,18 @@ class BettingController extends Controller
         if($reply['bulkData'][0]['reference'])
         {
 
-                $user->balance -= $payment;
-                $balance_after = $balance - $payment;
+                try {
+                    $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                } catch (\RuntimeException $e) {
+                    if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                        BonusService::refundaccount($user, $amount, $wallet);
+                        return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                    }
+                    throw $e;
+                }
+                $balance_before = $debit['balance_before'];
+                $balance_after = $debit['balance_after'];
+                $user = $debit['user'];
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -223,7 +234,7 @@ class BettingController extends Controller
             $order->payment      = @$payment;
             $order->trx          = @$code;
             $order->source       = $wallet;
-            $order->balance_before  = $balance;
+            $order->balance_before  = $balance_before;
             $order->balance_after   = $balance_after;
             $order->transaction_id  = @$reply['bulkData'][0]['reference'];
             $order->save();

@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Services\BonusService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -215,10 +216,18 @@ class InternetSmeController extends Controller
             }
 
         $payment = $amount;
-
-
-            $balance = $user->balance;
-            $balance_after = $user->balance;
+        if($wallet == 'main')
+        {
+            $balance_before = $user->balance;
+        }
+        else
+        {
+            $balance_before = $user->ref_balance;
+        }
+        if($payment > $balance_before)
+        {
+            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+        }
 
 
 
@@ -294,7 +303,19 @@ class InternetSmeController extends Controller
             $order->payment      = @$payment;
             $order->trx          = $code;
             $order->source       = $wallet;
-            $order->balance_before  = $balance;
+            try {
+                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
+            }
+            $balance_before = $debit['balance_before'];
+            $balance_after = $debit['balance_after'];
+            $user = $debit['user'];
+
+            $order->balance_before  = $balance_before;
             $order->balance_after   = $balance_after;
             $order->transaction_id  = $response['ident'];
             $order->save();
@@ -438,6 +459,7 @@ class InternetSmeController extends Controller
                 $user->ref_balance -= $payment;
                 $balance_after = $user->ref_balance;
             }
+            $user->save();
 
             $bonusAmount = BonusService::processBonus(
                 $user->id,
@@ -612,6 +634,7 @@ class InternetSmeController extends Controller
                 $user->ref_balance -= $payment;
                 $balance_after = $user->ref_balance;
             }
+            $user->save();
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'data',
@@ -722,18 +745,17 @@ class InternetSmeController extends Controller
             }
 
             $payment = $amount;
-
             if($wallet == 'main')
             {
-                $balance = $user->balance;
-                $balance_after = $balance - $amount;
-
+                $balance_before = $user->balance;
             }
             else
             {
-                $balance = $user->ref_balance;
-                $balance_after = $balance - $amount;
-
+                $balance_before = $user->ref_balance;
+            }
+            if($payment > $balance_before)
+            {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
             }
 
 //            $user->save();
@@ -818,7 +840,18 @@ class InternetSmeController extends Controller
                 $order->payment      = @$payment;
                 $order->trx          = $code;
                 $order->source       = $wallet;
-                $order->balance_before  = $balance;
+                try {
+                    $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                } catch (\RuntimeException $e) {
+                    if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                        return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                    }
+                    throw $e;
+                }
+                $balance_before = $debit['balance_before'];
+                $balance_after = $debit['balance_after'];
+                $user = $debit['user'];
+                $order->balance_before  = $balance_before;
                 $order->balance_after   = $balance_after;
                 $order->transaction_id  = $response['data']['reference'];
                 $order->save();

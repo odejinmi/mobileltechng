@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Services\BonusService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -262,17 +263,18 @@ class UtilityController extends Controller
         // END AIRTIME VENDING \\
         if(isset($response['status']) && isset($response['transactionId']) > 0)
         {
-            if($wallet == 'main')
-            {
-                $user->balance -= $payment;
-                $balance_after = $user->balance;
+            try {
+                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    BonusService::refundaccount($user, $amount, $wallet);
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
             }
-            else
-            {
-                $user->ref_balance -= $payment;
-                $balance_after = $user->ref_balance;
-            }
-//            $user->save();
+            $balance = $debit['balance_before'];
+            $balance_after = $debit['balance_after'];
+            $user = $debit['user'];
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'electricity',

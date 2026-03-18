@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 
 class LoginController extends Controller
@@ -128,8 +129,11 @@ class LoginController extends Controller
 
     public function authenticated(Request $request, $user)
     {
+        $sessionId = Str::uuid()->toString();
+        $user->current_session_id = $sessionId;
         $user->tv = $user->ts == 1 ? 0 : 1;
         $user->save();
+        $request->session()->put('current_session_id', $sessionId);
         $ip = getRealIP();
         $exist = UserLogin::where('user_ip', $ip)->first();
         $userLogin = new UserLogin();

@@ -45,7 +45,7 @@ Route::namespace('User')->controller('QrController')->group(function () {
 });
 
 
-Route::middleware('auth')->name('user.')->group(function () {
+Route::middleware(['auth','single.session','ban.newuser.large'])->name('user.')->group(function () {
     //authorization
     Route::namespace('User')->controller('AuthorizationController')->group(function () {
         Route::get('authorization', 'authorizeForm')->name('authorization');

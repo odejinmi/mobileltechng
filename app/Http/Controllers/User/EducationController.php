@@ -11,6 +11,7 @@ use App\Models\GeneralSetting;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Services\BonusService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -419,16 +420,18 @@ class EducationController extends Controller
     }
         if($reply['code'] == 000)
         {
-            if($wallet == 'main')
-            {
-                $user->balance -= $payment;
-                $balance_after = $user->balance;
+            try {
+                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    BonusService::refundaccount($user, $amount, $wallet);
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
             }
-            else
-            {
-                $user->ref_balance -= $payment;
-                $balance_after = $user->ref_balance;
-            }
+            $balance_before = $debit['balance_before'];
+            $balance_after = $debit['balance_after'];
+            $user = $debit['user'];
             //return $reply;
 
             $order               = new Order();
@@ -447,7 +450,7 @@ class EducationController extends Controller
             $order->payment      = @$payment;
             $order->trx          = @$trx;
             $order->source       = $wallet;
-            $order->balance_before  = $user->ref_balance;
+            $order->balance_before  = $balance_before;
             $order->balance_after   = $balance_after;
             $order->transaction_id  = @$reply['content']['transactions']['transactionId'];
             $order->save();
@@ -545,18 +548,18 @@ class EducationController extends Controller
 
         if($response['status'] == 'success')
         {
-            if($wallet == 'main')
-            {
-                $user->balance -= $payment;
-                $balance = $user->balance;
-                $balance_after = $balance - $payment;
+            try {
+                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    BonusService::refundaccount($user, $amount, $wallet);
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
             }
-            else
-            {
-                $user->ref_balance -= $payment;
-                $balance = $user->ref_balance;
-                $balance_after = $balance - $payment;
-            }
+            $balance_before = $debit['balance_before'];
+            $balance_after = $debit['balance_after'];
+            $user = $debit['user'];
             //return $reply;
 
             $order               = new Order();
@@ -575,7 +578,7 @@ class EducationController extends Controller
             $order->payment      = @$payment;
             $order->trx          = @$code;
             $order->source       = $wallet;
-            $order->balance_before  = $balance;
+            $order->balance_before  = $balance_before;
             $order->balance_after   = $balance_after;
             $order->transaction_id  = @$response['request-id'];
             $order->save();

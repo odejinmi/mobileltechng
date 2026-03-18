@@ -55,7 +55,13 @@
             <li>
               <h3 class="fw-normal dark-text">Balance Before</h3>
               <h3 class="fw-normal light-text">
-                {{ showAmount($trx->post_balance) }} {{ __($general->cur_text) }}
+                {{ showAmount($trx->balance_before ?? (($trx->trx_type == '+') ? ($trx->post_balance - $trx->amount) : ($trx->post_balance + $trx->amount + ($trx->charge ?? 0)))) }} {{ __($general->cur_text) }}
+              </h3>
+            </li>  
+            <li>
+              <h3 class="fw-normal dark-text">Balance After</h3>
+              <h3 class="fw-normal light-text">
+                {{ showAmount($trx->balance_after ?? $trx->post_balance) }} {{ __($general->cur_text) }}
               </h3>
             </li>  
             <li>

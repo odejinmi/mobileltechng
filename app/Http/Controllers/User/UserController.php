@@ -18,6 +18,7 @@ use App\Models\WithdrawMethod;
 use App\Models\VirtualCard;
 use App\Models\Withdrawal;
 use App\Rules\FileTypeValidate;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -802,62 +803,88 @@ class UserController extends Controller
             $transaction->remark       = 'P2P';
             $transaction->save();
 
-            if($amount <= $user->ref_balance && $request->wallet == 'ref_wallet') {
-            $user->ref_balance -= $amount;
-            $user->save();
-            //Create Debit Transaction
-            $transaction               = new Transaction();
-            $transaction->user_id      = $user->id;
-            $transaction->amount       = $amountamount;
-            $transaction->post_balance = $user->ref_balance;
-            $transaction->trx_type     = $user->wallet;
-            $transaction->details      = 'P2P Transfer';
-            $transaction->trx          = getTrx();
-            $transaction->remark       = 'P2P';
-            $transaction->save();
+            try {
+            DB::transaction(function () use ($user, $beneficiary, $amount, $request) {
+                $senderId = (int) $user->id;
+                $receiverId = (int) $beneficiary->id;
+                $ids = [$senderId, $receiverId];
+                sort($ids);
+                $locked = User::query()->whereIn('id', $ids)->lockForUpdate()->get()->keyBy('id');
+                $sender = $locked->get($senderId);
+                $receiver = $locked->get($receiverId);
+                if (!$sender || !$receiver) {
+                    throw new \RuntimeException('USER_NOT_FOUND');
+                }
 
-            $beneficiary->ref_balance += $request->amount;
-            $beneficiary->save();
-            //Create Credit Transaction
-            $transaction               = new Transaction();
-            $transaction->user_id      = $beneficiary->id;
-            $transaction->amount       = $request->amount;
-            $transaction->post_balance = $beneficiary->ref_balance;
-            $transaction->trx_type     = '+';
-            $transaction->details      = 'P2P Transfer';
-            $transaction->trx          = getTrx();
-            $transaction->remark       = 'P2P';
-            $transaction->save();
+                $trx = getTrx();
 
-            }
-            if($request->amount <= $user->balance && $request->wallet == 'act_wallet') {
-            $user->balance -= $request->amount;
-            $user->save();
+                if ($request->wallet == 'ref_wallet') {
+                    if ($amount > $sender->ref_balance) {
+                        throw new \RuntimeException('INSUFFICIENT_BALANCE');
+                    }
+                    $sender->ref_balance = $sender->ref_balance - $amount;
+                    $receiver->ref_balance = $receiver->ref_balance + $amount;
+                    $sender->save();
+                    $receiver->save();
 
-            //Create Debit Transaction
-            $transaction               = new Transaction();
-            $transaction->user_id      = $user->id;
-            $transaction->amount       = $request->amount;
-            $transaction->post_balance = $user->balance;
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'P2P Transfer';
-            $transaction->trx          = getTrx();
-            $transaction->remark       = 'P2P';
-            $transaction->save();
+                    $debit = new Transaction();
+                    $debit->user_id = $sender->id;
+                    $debit->amount = $amount;
+                    $debit->post_balance = $sender->ref_balance;
+                    $debit->trx_type = '-';
+                    $debit->details = 'P2P Transfer';
+                    $debit->trx = $trx;
+                    $debit->remark = 'P2P';
+                    $debit->save();
 
-            $beneficiary->balance += $request->amount;
-            $beneficiary->save();
+                    $credit = new Transaction();
+                    $credit->user_id = $receiver->id;
+                    $credit->amount = $amount;
+                    $credit->post_balance = $receiver->ref_balance;
+                    $credit->trx_type = '+';
+                    $credit->details = 'P2P Transfer';
+                    $credit->trx = $trx;
+                    $credit->remark = 'P2P';
+                    $credit->save();
+                }
 
-            //Create Credit Transaction
-            $transaction               = new Transaction();
-            $transaction->user_id      = $beneficiary->id;
-            $transaction->amount       = $request->amount;
-            $transaction->post_balance = $beneficiary->balance;
-            $transaction->trx_type     = '+';
-            $transaction->details      = 'P2P Transfer';
-            $transaction->trx          = getTrx();
-            $transaction->remark       = 'P2P';
-            $transaction->save();
+                if ($request->wallet == 'act_wallet') {
+                    if ($amount > $sender->balance) {
+                        throw new \RuntimeException('INSUFFICIENT_BALANCE');
+                    }
+                    $sender->balance = $sender->balance - $amount;
+                    $receiver->balance = $receiver->balance + $amount;
+                    $sender->save();
+                    $receiver->save();
+
+                    $debit = new Transaction();
+                    $debit->user_id = $sender->id;
+                    $debit->amount = $amount;
+                    $debit->post_balance = $sender->balance;
+                    $debit->trx_type = '-';
+                    $debit->details = 'P2P Transfer';
+                    $debit->trx = $trx;
+                    $debit->remark = 'P2P';
+                    $debit->save();
+
+                    $credit = new Transaction();
+                    $credit->user_id = $receiver->id;
+                    $credit->amount = $amount;
+                    $credit->post_balance = $receiver->balance;
+                    $credit->trx_type = '+';
+                    $credit->details = 'P2P Transfer';
+                    $credit->trx = $trx;
+                    $credit->remark = 'P2P';
+                    $credit->save();
+                }
+            });
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    $notify[] = ['error', 'Insufficient wallet balance'];
+                    return back()->withNotify($notify);
+                }
+                $notify[] = ['error', 'Unable to complete transfer'];
+                return back()->withNotify($notify);
             }
 
 
@@ -878,19 +905,20 @@ class UserController extends Controller
         if($general->login_bonus == 1)
         {
             $user = auth()->user();
-            if ($user->earn_at > Carbon::now() || $user->earn_at = null) {
+            if ($user->earn_at && Carbon::parse($user->earn_at)->gt(Carbon::now())) {
                 $notify[] = ['error', 'Sorry you can\'t earn daily passive income at the moment, come back tomorrow'];
                 return back()->withNotify($notify);
             }
             $nextEarn = Carbon::now()->addDay(1);
-            $user->balance += $general->login_earn;
+            $credit = WalletService::creditWithLock($user->id, $general->login_earn, 'main');
+            $user = $credit['user'];
             $user->earn_at = $nextEarn;
             $user->save();
             //LOG
             $transaction = new Transaction();
             $transaction->user_id = $user->id;
             $transaction->amount = $general->login_earn;
-            $transaction->post_balance = $user->balance;
+            $transaction->post_balance = $credit['balance_after'];
             $transaction->charge = 0;
             $transaction->trx_type = '+';
             $transaction->remark = 'Login Earn';
@@ -1058,30 +1086,50 @@ class UserController extends Controller
             $withdraw['withdraw_information'] = null;
         }
 
+        try {
+        $postBalance = DB::transaction(function () use ($withdraw, $user) {
+            $withdraw = Withdrawal::query()->whereKey($withdraw->id)->lockForUpdate()->firstOrFail();
+            if ($withdraw->status == 2) {
+                return null;
+            }
 
-        $withdraw->status = 2;
-        $withdraw->save();
-        if ($withdraw->wallet == 'ref_wallet') {
-            $user->ref_balance  -=  $withdraw->amount;
+            $withdraw->status = 2;
+            $withdraw->save();
+
+            $lockedUser = User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
+            $balanceField = $withdraw->wallet == 'ref_wallet' ? 'ref_balance' : 'balance';
+            if ($withdraw->amount > $lockedUser->$balanceField) {
+                throw new \RuntimeException('INSUFFICIENT_BALANCE');
+            }
+
+            $lockedUser->$balanceField = $lockedUser->$balanceField - $withdraw->amount;
+            $lockedUser->save();
+
+            $transaction = new Transaction();
+            $transaction->user_id = $withdraw->user_id;
+            $transaction->amount = $withdraw->amount;
+            $transaction->post_balance = $lockedUser->$balanceField;
+            $transaction->charge = $withdraw->charge;
+            $transaction->trx_type = '-';
+            $transaction->remark = 'Payout';
+            $transaction->details = showAmount($withdraw->final_amount) . ' ' . $withdraw->currency . ' Withdraw Via ' . $withdraw->method->name;
+            $transaction->trx =  $withdraw->trx;
+            $transaction->save();
+
+            return $lockedUser->$balanceField;
+        });
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                $notify[] = ['error', 'Insufficient wallet balance'];
+                return back()->withNotify($notify);
+            }
+            throw $e;
         }
-        if ($withdraw->wallet == 'act_wallet') {
-            $user->balance  -=  $withdraw->amount;
+
+        if ($postBalance === null) {
+            $notify[] = ['success', 'Withdraw request sent successfully'];
+            return redirect()->route('user.withdraw.history')->withNotify($notify);
         }
-        $user->save();
-
-
-
-        $transaction = new Transaction();
-        $transaction->user_id = $withdraw->user_id;
-        $transaction->amount = $withdraw->amount;
-        $transaction->post_balance = $user->balance;
-        $transaction->charge = $withdraw->charge;
-        $transaction->trx_type = '-';
-        $transaction->remark = 'Payout';
-        $transaction->details = showAmount($withdraw->final_amount) . ' ' . $withdraw->currency . ' Withdraw Via ' . $withdraw->method->name;
-        $transaction->trx =  $withdraw->trx;
-        $transaction->save();
-
 
         notify($user, 'WITHDRAW_REQUEST', [
             'method_name' => $withdraw->method->name,
@@ -1092,7 +1140,7 @@ class UserController extends Controller
             'currency' => $general->cur_text,
             'rate' => showAmount($withdraw->rate),
             'trx' => $withdraw->trx,
-            'post_balance' => showAmount($user->balance),
+            'post_balance' => showAmount($postBalance),
             'delay' => $withdraw->method->delay
         ]);
 

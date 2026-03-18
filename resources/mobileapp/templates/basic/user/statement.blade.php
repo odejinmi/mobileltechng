@@ -165,6 +165,7 @@ $user = auth()->user();
                                     <th class="cs-width_1 cs-semi_bold cs-primary_color">Credit</th>
                                     <th class="cs-width_1 cs-semi_bold cs-primary_color">Debit</th>
                                     </th> 
+                                    <th class="cs-width_1 cs-semi_bold cs-primary_color cs-text_right">Balance Before</th>
                                     <th class="cs-width_1 cs-semi_bold cs-primary_color cs-text_right">Balance After</th>
                                 </tr>
                             </thead>
@@ -177,6 +178,7 @@ $user = auth()->user();
                                     <td>{{$general->cur_sym}}{{number_format($data->amount,2)}}</td>
                                     <td>@if($data->trx_type == '+')<label class="badge success">Credit</label> @endif</td>
                                     <td>@if($data->trx_type != '+')<label class="badge danger">Debit</label> @endif</td>
+                                    <td class="cs-text_right cs-primary_color">{{$general->cur_sym}}{{number_format($data->balance_before ?? (($data->trx_type == '+') ? ($data->post_balance - $data->amount) : ($data->post_balance + $data->amount + ($data->charge ?? 0))),2)}}</td>
                                     <td class="cs-text_right cs-primary_color">{{$general->cur_sym}}{{number_format($data->post_balance,2)}}</td>
                                 </tr>
                                 @empty

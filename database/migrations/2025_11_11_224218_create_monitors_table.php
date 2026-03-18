@@ -4,16 +4,15 @@ use Spatie\UptimeMonitor\Models\Enums\CertificateStatus;
 use Spatie\UptimeMonitor\Models\Enums\UptimeStatus;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
-class CreateMonitorsTable extends Migration
-{
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+return new class extends Migration {
+    public function up(): void
     {
+        if (Schema::hasTable('monitors')) {
+            return;
+        }
+
         Schema::create('monitors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('url')->unique();
@@ -42,13 +41,12 @@ class CreateMonitorsTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
+        if (!Schema::hasTable('monitors')) {
+            return;
+        }
+
         Schema::drop('monitors');
     }
-}
+};

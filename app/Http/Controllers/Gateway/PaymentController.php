@@ -16,6 +16,8 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Services\WalletService;
 class PaymentController extends Controller
 {
     public function deposit()
@@ -128,71 +130,76 @@ class PaymentController extends Controller
 
     public static function userDataDepositUpdate($deposit, $isManual = null)
     {
-        if ($deposit->status == Status::PAYMENT_INITIATE || $deposit->status == Status::PAYMENT_PENDING) {
-            $deposit->status = Status::PAYMENT_SUCCESS;
-            $deposit->save(); 
+        DB::transaction(function () use ($deposit, $isManual) {
+            $lockedDeposit = Deposit::query()->whereKey($deposit->id)->lockForUpdate()->first();
+            if (!$lockedDeposit) {
+                return;
+            }
 
-            $user = User::find($deposit->user_id);
+            if ($lockedDeposit->status != Status::PAYMENT_INITIATE && $lockedDeposit->status != Status::PAYMENT_PENDING) {
+                return;
+            }
 
-            $user->balance += $deposit->amount;
-            $user->save();
-            
-            if($deposit->type == 'deposit')
+            $lockedDeposit->status = Status::PAYMENT_SUCCESS;
+            $lockedDeposit->save();
+
+            $credit = WalletService::creditWithLock($lockedDeposit->user_id, $lockedDeposit->amount, 'main');
+            $user = $credit['user'];
+
+            if($lockedDeposit->type == 'deposit')
             {
                 $transaction               = new Transaction();
-                $transaction->user_id      = $deposit->user_id;
-                $transaction->amount       = $deposit->amount;
-                $transaction->post_balance = $user->balance;
-                $transaction->charge       = $deposit->charge;
+                $transaction->user_id      = $lockedDeposit->user_id;
+                $transaction->amount       = $lockedDeposit->amount;
+                $transaction->post_balance = $credit['balance_after'];
+                $transaction->charge       = $lockedDeposit->charge;
                 $transaction->trx_type     = '+';
-                $transaction->details      = 'Deposit Via ' . $deposit->gatewayCurrency()->name;
-                $transaction->trx          = $deposit->trx;
+                $transaction->details      = 'Deposit Via ' . $lockedDeposit->gatewayCurrency()->name;
+                $transaction->trx          = $lockedDeposit->trx;
                 $transaction->remark       = 'deposit';
                 $transaction->save();
     
                 $general = GeneralSetting::first();
                 if($general->deposit_commission == 1){
-                    $commissionType =  'Commission Rewarded For '. number_format($deposit->amount) . ' '.$general->cur_text.' Deposit';
-                    levelCommisionDeposit($user->id, $deposit->amount);
+                    levelCommisionDeposit($user->id, $lockedDeposit->amount);
                 }
     
                 if (!$isManual) {
                     $adminNotification            = new AdminNotification();
                     $adminNotification->user_id   = $user->id;
-                    $adminNotification->title     = 'Deposit successful via ' . $deposit->gatewayCurrency()->name;
+                    $adminNotification->title     = 'Deposit successful via ' . $lockedDeposit->gatewayCurrency()->name;
                     $adminNotification->click_url = urlPath('admin.deposit.successful');
                     $adminNotification->save();
                 }
     
             }
-            if($deposit->type == 'invoice')
+            if($lockedDeposit->type == 'invoice')
             {
-
-                $trx =  explode("|", $deposit->trx)[0]; 
+                $trx =  explode("|", $lockedDeposit->trx)[0]; 
                 $transaction               = new Transaction();
-                $transaction->user_id      = $deposit->user_id;
-                $transaction->amount       = $deposit->amount;
-                $transaction->post_balance = $user->balance;
-                $transaction->charge       = $deposit->charge;
+                $transaction->user_id      = $lockedDeposit->user_id;
+                $transaction->amount       = $lockedDeposit->amount;
+                $transaction->post_balance = $credit['balance_after'];
+                $transaction->charge       = $lockedDeposit->charge;
                 $transaction->trx_type     = '+';
                 $transaction->val_1          = $trx;
-                $transaction->details      = 'Invoice Payment Via ' . $deposit->gatewayCurrency()->name;
-                $transaction->trx          = $deposit->trx;
+                $transaction->details      = 'Invoice Payment Via ' . $lockedDeposit->gatewayCurrency()->name;
+                $transaction->trx          = $lockedDeposit->trx;
                 $transaction->remark       = 'invoice';
                 $transaction->save();
             }
             
             notify($user, $isManual ? 'DEPOSIT_APPROVE' : 'DEPOSIT_COMPLETE', [
-                'method_name'     => $deposit->gatewayCurrency()->name,
-                'method_currency' => $deposit->method_currency,
-                'method_amount'   => showAmount($deposit->final_amo),
-                'amount'          => showAmount($deposit->amount),
-                'charge'          => showAmount($deposit->charge),
-                'rate'            => showAmount($deposit->rate),
-                'trx'             => $deposit->trx,
-                'post_balance'    => showAmount($user->balance),
+                'method_name'     => $lockedDeposit->gatewayCurrency()->name,
+                'method_currency' => $lockedDeposit->method_currency,
+                'method_amount'   => showAmount($lockedDeposit->final_amo),
+                'amount'          => showAmount($lockedDeposit->amount),
+                'charge'          => showAmount($lockedDeposit->charge),
+                'rate'            => showAmount($lockedDeposit->rate),
+                'trx'             => $lockedDeposit->trx,
+                'post_balance'    => showAmount($credit['balance_after']),
             ]);
-        }
+        });
     }
 
     public function manualDepositConfirm()

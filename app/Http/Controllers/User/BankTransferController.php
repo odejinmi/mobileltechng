@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BankTransferRequest;
 use App\Services\StrowalletService;
+use App\Services\WalletService;
 
 class BankTransferController extends Controller
 {
@@ -139,7 +141,16 @@ class BankTransferController extends Controller
         try {
             return DB::transaction(function () use ($user, $request, $total, $fee) {
                 // Deduct balance
-                $user->decrement('balance', $total);
+                $user = \App\Models\User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
+                if ($total > $user->balance) {
+                    return response()->json([
+                        'ok' => false,
+                        'status' => 'danger',
+                        'message' => 'Insufficient balance'
+                    ], 400);
+                }
+                $user->balance = $user->balance - $total;
+                $user->save();
 
                 // Process transfer
                 $response = $this->strowalletService->transferFunds(
@@ -301,19 +312,15 @@ class BankTransferController extends Controller
         }
         if($reply['requestSuccessful'] === true)
         {
-
-            if($wallet == 'main')
-				{
-					$user->balance -= $total;
-					$user->save();
-					$balance = $user->balance;
-				}
-				if($wallet == 'ref')
-				{
-					$user->ref_balance -= $total;
-					$user->save();
-					$balance = $user->ref_balance;
-				}
+            try {
+                $debit = WalletService::debitWithLock($user->id, $total, $wallet == 'ref' ? 'ref' : 'main');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient balance'],400);
+                }
+                throw $e;
+            }
+            $balance = $debit['balance_after'];
 
 				$transaction               = new Transaction();
 				$transaction->user_id      = $user->id;
@@ -366,7 +373,7 @@ class BankTransferController extends Controller
             'user_id' => $user->id,
             'amount' => $amount,
             'charge' => $fee,
-            'post_balance' => $user->balance - $amount - $fee,
+            'post_balance' => $user->balance,
             'trx_type' => '-',
             'details' => $narration,
             'trx' => getTrx(),

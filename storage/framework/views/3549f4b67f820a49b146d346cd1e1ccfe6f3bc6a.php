@@ -3,7 +3,7 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+    <meta name="google-signin-client_id" content="719268457379-4b2bnqpi673d9cm2fngkqqb2m3vrmahf.apps.googleusercontent.com"/>
     <title> <?php echo e($general->siteName(__($pageTitle))); ?></title>
     <?php echo $__env->make('partials.seo', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
@@ -301,6 +301,16 @@
     $(document).ready(function() { $("#banklist").select2(); });
   </script>
 
+<script !src="">
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('username:<?php echo e(Auth::user()->username); ?>');
+        if (typeof web2app !== 'undefined' && web2app.isNative()) {
+            // Show app view and hide browser view
+            web2app.pushNotification.subscribe('<?php echo e(Auth::user()->username); ?>');
+
+        }
+    });
+</script>
   <!-- Add the pull-to-refresh script here -->
     <script>
     let touchStartY = 0;
@@ -318,13 +328,6 @@
     window.addEventListener('touchmove', function(event) {
         if (window.scrollY === 0) { // Only check if the user is still at the top
             touchEndY = event.touches[0].clientY;
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof web2app !== 'undefined' && web2app.isNative()) {
-            // Show app view and hide browser view
-            web2app.pushNotification.unsubscribe(Auth::user()->username);
         }
     });
 

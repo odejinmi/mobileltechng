@@ -20,9 +20,11 @@ use App\Models\Fdr;
 use App\Models\Admin;
 use App\Models\Installment;
 use App\Models\Customer;
+use App\Services\WalletService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 
 class ApiController extends Controller
@@ -215,8 +217,21 @@ class ApiController extends Controller
                             'reasonCode' => '00',
                             'message' => gs()->site_name.' Transaction Successful'
                         ];
-                        $user->balance -= $debit;
-                        $user->save();
+                        try {
+                            $debitRes = WalletService::debitWithLock($user->id, $debit, 'main');
+                            $user = $debitRes['user'];
+                        } catch (\RuntimeException $e) {
+                            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                                $data['transaction'] = [
+                                    'shouldActionProceed' => false,
+                                    'reasonCode' => '01',
+                                    'message' => gs()->site_name.' Insufficient Balance'
+                                ];
+                                $code = 400;
+                                return response(['data'=>$data], $code);
+                            }
+                            throw $e;
+                        }
 
                         $transaction               = new Transaction();
                         $transaction->user_id      = $user->id;
@@ -315,14 +330,14 @@ class ApiController extends Controller
                         }
 
                         $pay = $amount - $trxfee;
-                        $user->balance += $pay;
-                        $user->save();
+                        $creditRes = WalletService::creditWithLock($user->id, $pay, 'main');
+                        $user = $creditRes['user'];
 
                         $transaction               = new Transaction();
                         $transaction->user_id      = $user->id;
                         $transaction->amount       = round($pay);
                         $transaction->val_1        = json_encode($input);
-                        $transaction->post_balance = $user->balance;
+                        $transaction->post_balance = $creditRes['balance_after'];
                         $transaction->charge       = round($trxfee);
                         $transaction->trx_type     = '+';
                         $transaction->details      = 'Wallet Credit Via POS For '.strToUpper($actionType);
@@ -503,9 +518,8 @@ class ApiController extends Controller
             return 'Transaction already processed';
         }
         $user = User::whereAccountRef($account_ref)->firstOrFail();
-        $user->balance += $amount;
-        $user->save();
-        $user = User::whereAccountRef($account_ref)->firstOrFail();
+        $creditRes = WalletService::creditWithLock($user->id, $amount, 'main');
+        $user = $creditRes['user'];
 
         $commission = (@$amount / 100) * @$fee;
         $credit = $amount - $commission;
@@ -514,7 +528,7 @@ class ApiController extends Controller
         $transaction->user_id      = $user->id;
         $transaction->amount       = round($credit);
         $transaction->val_1        = json_encode($input);
-        $transaction->post_balance = $user->balance;
+        $transaction->post_balance = $creditRes['balance_after'];
         $transaction->charge       = round($commission);
         $transaction->trx_type     = '+';
         $transaction->details      = 'Wallet funding via dedicated account number';
@@ -525,7 +539,7 @@ class ApiController extends Controller
         $transaction1               = new Transaction();
         $transaction1->user_id      = $user->id;
         $transaction1->amount       = round($fee);
-        $transaction1->post_balance = $user->balance;
+        $transaction1->post_balance = $creditRes['balance_after'];
         $transaction1->charge       = round(0.0);
         $transaction1->trx_type     = '-';
         $transaction1->details      = 'Charges for Wallet funding via dedicated account number';
