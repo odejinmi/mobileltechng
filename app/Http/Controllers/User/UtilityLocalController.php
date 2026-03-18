@@ -5,8 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Constants\Status;
 use App\Http\Controllers\Controller;
 use App\Lib\GoogleAuthenticator;
-use App\Models\Order; 
-use App\Models\GeneralSetting; 
+use App\Models\Order;
+use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
@@ -19,7 +19,7 @@ use Carbon\Carbon;
 class UtilityLocalController extends Controller
 {
 
- 
+
     public function __construct()
     {
         $this->middleware('kyc.status');
@@ -27,8 +27,8 @@ class UtilityLocalController extends Controller
         $this->activeTemplate = activeTemplate();
     }
 
-     
-    
+
+
     public function utility(Request $request)
     {
         $pageTitle       = 'Utility Bills';
@@ -87,8 +87,8 @@ class UtilityLocalController extends Controller
         $auth = base64_encode($str);
         $datecode = date('Y').date('m').date('d').date('H').date('i').date('s');
         $codex = substr(str_shuffle('01234567890') , 0 , 5 );
-        $trx = $datecode.$codex; 
-        
+        $trx = 'mobile'.$datecode.$codex;
+
         if($mode == 'TEST')
         {
         $url = 'https://sandbox.vtpass.com/api/merchant-verify';
@@ -112,7 +112,7 @@ class UtilityLocalController extends Controller
         "serviceID": "'.strToLower($company).'",
         "type": "'.$type.'"
         }',
-        
+
         CURLOPT_HTTPHEADER => array(
         'Authorization: Basic '.$auth,
         'Content-Type: application/json',
@@ -132,19 +132,19 @@ class UtilityLocalController extends Controller
         {
             return response()->json(['ok'=>true,'status'=>'success','message'=> 'Valid Decoder Number','content'=> @$reply['content']['Customer_Name']],200);
         }
-    
+
 	}
-	
+
 
 
     public function buy_utility_post()
     {
-         
+
         $user = auth()->user();
         $json = file_get_contents('php://input');
-        $input = json_decode($json, true); 
+        $input = json_decode($json, true);
         $password = $input['password'];
-        
+
         $amount =  @$input['amount'];
         $customername = $input['customername'];
         $number = $input['number'];
@@ -174,7 +174,7 @@ class UtilityLocalController extends Controller
         {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
         }
-       
+
         $mode = env('MODE');
         $username = env('VTPASSUSERNAME');
         $password = env('VTPASSPASSWORD');
@@ -182,7 +182,7 @@ class UtilityLocalController extends Controller
         $auth = base64_encode($str);
         $datecode = date('Y').date('m').date('d').date('H').date('i').date('s');
         $codex = substr(str_shuffle('01234567890') , 0 , 5 );
-        $trx = $datecode.$codex;  
+        $trx = 'mobile'.$datecode.$codex;
         if($mode == 'TEST')
         {
         $url = 'https://sandbox.vtpass.com/api/pay';
@@ -219,27 +219,27 @@ class UtilityLocalController extends Controller
     $response = $resp;
     $reply = json_decode($resp, true);
     curl_close($curl);
-    if(!isset($reply['code'] )) 
+    if(!isset($reply['code'] ))
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
 
     }
-    
-    if(isset($reply['content']['errors'] )) 
+
+    if(isset($reply['content']['errors'] ))
     {
-    
+
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @$reply['response_description'].'We cant processs this request at the moment'],400);
 
-  
-    }
-  
 
-    if($reply['code'] != "000") 
+    }
+
+
+    if($reply['code'] != "000")
     {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
 
     }
-    
+
         if(!isset($reply['content']['transactions']['transactionId']))
         {
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
@@ -298,15 +298,15 @@ class UtilityLocalController extends Controller
             notify($user,'UTILITY_BUY', [
                 'provider'        => @$company,
                 'amount'          => @showAmount($payment),
-                'type'            => @$metertype, 
-                'token'           => @$reply['purchased_code'], 
-                'beneficiary'     => @$customername, 
-                'number'          =>  @$number, 
+                'type'            => @$metertype,
+                'token'           => @$reply['purchased_code'],
+                'beneficiary'     => @$customername,
+                'number'          =>  @$number,
                 'rate'            => @showAmount($payment),
                 'purchase_at'     => @Carbon::now(),
                 'trx'             => @$trx,
             ]);
-            
+
             return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successful','orderid'=> $trx],200);
         }
         else
@@ -328,7 +328,7 @@ class UtilityLocalController extends Controller
         } else {
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
         }
- 
+
     }
 
 
@@ -341,5 +341,5 @@ class UtilityLocalController extends Controller
     }
 
 
-    
+
 }
