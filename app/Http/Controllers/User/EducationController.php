@@ -313,11 +313,6 @@ class EducationController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
         }
         $total = env('CABLECHARGE')+$amount;
@@ -336,6 +331,18 @@ class EducationController extends Controller
     public function buy_education_vtpass($decoder,$wallet,$number,$customername,$plan,$amount,$payment,$profilecode)
     {
         $user = auth()->user();
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
+        }
+        $balance_before = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
         $mode = env('MODE');
         $username = env('VTPASSUSERNAME');
         $password = env('VTPASSPASSWORD');
@@ -344,6 +351,18 @@ class EducationController extends Controller
         $datecode = date('Y').date('m').date('d').date('H').date('i').date('s');
         $codex = substr(str_shuffle('01234567890') , 0 , 5 );
         $trx = 'mobile'.$datecode.$codex;
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = env('CABLECHARGE');
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Paid education bill via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $trx;
+        $transaction->remark       = 'education';
+        $transaction->save();
+
         if($mode == 'TEST')
         {
         $url = 'https://sandbox.vtpass.com/api/pay';
@@ -381,57 +400,69 @@ class EducationController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed education purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'education_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(isset($reply['content']['errors'] ))
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed education purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'education_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
     if($reply['code'] != "000")
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed education purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'education_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed education purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'education_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
         if($reply['code'] == 000)
         {
-            try {
-                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-            } catch (\RuntimeException $e) {
-                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                    BonusService::refundaccount($user, $amount, $wallet);
-                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                }
-                throw $e;
-            }
-            $balance_before = $debit['balance_before'];
-            $balance_after = $debit['balance_after'];
-            $user = $debit['user'];
             //return $reply;
 
             $order               = new Order();
@@ -455,17 +486,6 @@ class EducationController extends Controller
             $order->transaction_id  = @$reply['content']['transactions']['transactionId'];
             $order->save();
 
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = env('CABLECHARGE');
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Paid education bill via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'education';
-            $transaction->save();
-
             notify($user,'EDUCATION_BUY', [
                 'provider'        => @$decoder,
                 'amount'          => @showAmount($payment),
@@ -480,11 +500,17 @@ class EducationController extends Controller
         }
         else
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed education purchase';
+            $refund->trx          = $trx;
+            $refund->remark       = 'education_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
@@ -518,6 +544,28 @@ class EducationController extends Controller
         );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         $code = getTrx();
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
+        }
+        $balance_before = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = env('CABLECHARGE');
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Paid education bill via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $code;
+        $transaction->remark       = 'education';
+        $transaction->save();
         $data = <<<DATA
         {
             "cable": "$operatorId",
@@ -538,28 +586,22 @@ class EducationController extends Controller
 
         if(!isset($response['status']) && !isset($response['newbal']))
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed education purchase';
+            $refund->trx          = $code;
+            $refund->remark       = 'education_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
         }
 
         if($response['status'] == 'success')
         {
-            try {
-                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-            } catch (\RuntimeException $e) {
-                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                    BonusService::refundaccount($user, $amount, $wallet);
-                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                }
-                throw $e;
-            }
-            $balance_before = $debit['balance_before'];
-            $balance_after = $debit['balance_after'];
-            $user = $debit['user'];
             //return $reply;
 
             $order               = new Order();
@@ -583,17 +625,6 @@ class EducationController extends Controller
             $order->transaction_id  = @$response['request-id'];
             $order->save();
 
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = env('CABLECHARGE');
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Paid education bill via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'education';
-            $transaction->save();
-
             notify($user,'EDUCATION_BUY', [
                 'provider'        => @$decoder,
                 'amount'          => @showAmount($payment),
@@ -601,18 +632,24 @@ class EducationController extends Controller
                 'beneficiary'     => @$customername.'|Decoder:'.$number,
                 'rate'            => @showAmount($payment),
                 'purchase_at'     => @Carbon::now(),
-                'trx'             => @$trx,
+                'trx'             => $code,
             ]);
 
             return response()->json(['ok'=>true,'status'=>'success','message'=> @$response['message'],'orderid'=> $code],200);
         }
         else
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed education purchase';
+            $refund->trx          = $code;
+            $refund->remark       = 'education_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> @$response['message']. 'API ERROR'],400);
         }
         //return json_decode($resp,true);

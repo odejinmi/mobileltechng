@@ -111,11 +111,6 @@ class BettingController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
@@ -123,14 +118,28 @@ class BettingController extends Controller
         $total = env('BETTINGCHARGE')+$amount;
         $payment = $total;
         $code = getTrx();
-        if($wallet == 'main')
-        {
-            $balance = $user->balance;
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
         }
-        else
-        {
-            $balance = $user->ref_balance;
-        }
+        $balance_before = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = env('BETTINGCHARGE');
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Fund betting wallet via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $code;
+        $transaction->remark       = 'betting';
+        $transaction->save();
 
         $parseamount = $amount*100;
         $url = 'https://cashierapi.opayweb.com/api/v3/bills/bulk-bills';
@@ -168,41 +177,39 @@ class BettingController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed betting wallet funding';
+        $refund->trx          = $code;
+        $refund->remark       = 'betting_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
     if(!isset($reply['bulkData'][0]['reference']))
     {
-        BonusService::refundaccount(
-            $user,
-            $amount,
-            $wallet
-        );
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed betting wallet funding';
+        $refund->trx          = $code;
+        $refund->remark       = 'betting_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
 
     }
 
         if($reply['bulkData'][0]['reference'])
         {
-
-                try {
-                    $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-                } catch (\RuntimeException $e) {
-                    if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                        BonusService::refundaccount($user, $amount, $wallet);
-                        return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                    }
-                    throw $e;
-                }
-                $balance_before = $debit['balance_before'];
-                $balance_after = $debit['balance_after'];
-                $user = $debit['user'];
-
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'betting',
@@ -221,10 +228,10 @@ class BettingController extends Controller
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'betting';
-            $order->val_1   = $customerName;
+            $order->val_1   = $customername;
             $order->val_2   = $customerId;
             $order->product_id   = @$customerId;
-            $order->product_name = @$customerName;
+            $order->product_name = @$customername;
             $order->product_logo = @$reply['bulkData'][0]['provider'];
             $order->details      = @json_encode($response,true);
             $order->quantity     = 1;
@@ -239,38 +246,32 @@ class BettingController extends Controller
             $order->transaction_id  = @$reply['bulkData'][0]['reference'];
             $order->save();
 
-
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = env('BETTINGCHARGE');
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Fund betting wallet via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'betting';
-            $transaction->save();
-
             notify($user,'BETTING_BUY', [
                 'provider'        => @$customerId,
                 'amount'          => @showAmount($payment),
-                'product'         => @$plan,
-                'beneficiary'     => @$customerName,
+                'product'         => @$companyId,
+                'beneficiary'     => @$customername,
                 'rate'            => @showAmount($payment),
                 'purchase_at'     => @Carbon::now(),
-                'trx'             => @$trx,
+                'trx'             => @$code,
             ]);
 
-            return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successfull','orderid'=> $trx],200);
+            return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successfull','orderid'=> $code],200);
         }
         else
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed betting wallet funding';
+            $refund->trx          = $code;
+            $refund->remark       = 'betting_refund';
+            $refund->save();
+            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'API ERROR'],400);
         }
         //return json_decode($resp,true);
     }

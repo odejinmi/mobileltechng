@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\TransactionBonus;
 use App\Models\User;
+use App\Services\WalletService;
 
 class BonusService
 {
@@ -23,15 +24,14 @@ class BonusService
             $bonusAmount = ($amount * $bonusPercentage) / 100;
         }
 
-        $user = User::find($userId);
-        $user->bonus_balance += $bonusAmount;
-        $user->save();
+        $credit = WalletService::creditWithLock($userId, $bonusAmount, 'bonus');
+        $user = $credit['user'];
 
         // Record the bonus transaction
         $transaction = new Transaction();
         $transaction->user_id = $userId;
         $transaction->amount = $bonusAmount;
-        $transaction->post_balance = $user->bonus_balance;
+        $transaction->post_balance = $credit['balance_after'];
         $transaction->trx_type = '+';
         $transaction->details = 'Bonus for ' . $transactionType . ' transaction';
         $transaction->trx = getTrx();
@@ -42,53 +42,16 @@ class BonusService
     }
 
     public static function debitaccount($user,$amount,$wallet){
-        if($wallet == 'ref')
-        {
-            if($amount > $user->ref_balance)
-            {
+        try {
+            WalletService::debitWithLock($user->id, $amount, $wallet);
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-            }else{
-                $user->ref_balance -= $amount;
-                $user->save();
             }
-        }
-        else if($wallet == 'bonus')
-        {
-            if($amount > $user->bonus_balance)
-            {
-                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-            }else{
-                $user->bonus_balance -= $amount;
-                $user->save();
-            }
-        }
-        else
-        {
-            if($amount > $user->balance)
-            {
-                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-            }else{
-                $user->balance -= $amount;
-                $user->save();
-            }
+            throw $e;
         }
     }
     public static function refundaccount($user,$amount,$wallet){
-        if($wallet == 'ref')
-        {
-                $user->ref_balance += $amount;
-                $user->save();
-        }
-        else if($wallet == 'bonus')
-        {
-                $user->bonus_balance += $amount;
-                $user->save();
-        }
-        else
-        {
-                $user->balance += $amount;
-                $user->save();
-
-        }
+        WalletService::creditWithLock($user->id, $amount, $wallet);
     }
 }

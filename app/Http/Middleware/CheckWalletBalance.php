@@ -22,21 +22,24 @@ class CheckWalletBalance
         }
 
         $user = auth()->user();
-//        $amount = $request->input('amount');
-//        $wallet = $request->input('wallet');
 
         $json = file_get_contents('php://input');
         $input = json_decode($json, true);
 
-        $amount = $input['amount'];
-        $wallet = $input['wallet'];
+        $amountRaw = null;
+        if (is_array($input)) {
+            $amountRaw = $input['amount'] ?? $input['plan'] ?? $input['payment'] ?? $input['total'] ?? null;
+            $wallet = $input['wallet'] ?? null;
+        } else {
+            $wallet = null;
+        }
 
 
         // Parse amount dynamically - handle different formats
-        $amount = $this->parseAmount($amount);
+        $amount = $this->parseAmount($amountRaw);
 
         if (!$amount || !is_numeric($amount) || $amount <= 0) {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Invalid amount'.$amount], 400);
+            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Invalid amount'], 400);
         }
 
         $balanceField = $this->getBalanceField($wallet);
@@ -45,10 +48,7 @@ class CheckWalletBalance
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'], 400);
         }
 
-        $user->$balanceField -= $amount;
-        $user->save();
-        // Store the wallet type in request for later use in controller
-        $request->merge(['wallet_type' => $wallet]);
+        $request->merge(['wallet_type' => $wallet, 'wallet_amount' => $amount, 'wallet_balance_field' => $balanceField]);
 
         return $next($request);
     }

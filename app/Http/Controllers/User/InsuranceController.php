@@ -10,6 +10,7 @@ use App\Models\GeneralSetting;
  use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -128,6 +129,7 @@ class InsuranceController extends Controller
         $password = $input['password'];
 
         $customername = @$input['customername'];
+        $wallet = @$input['wallet'] ?? 'main';
         $Chasis_Number = @$input['Chasis_Number'];
         $Contact_Address = @$input['Contact_Address'];
         $Engine_Number = @$input['Engine_Number'];
@@ -153,22 +155,35 @@ class InsuranceController extends Controller
 
         $total = env('INSURANCECHARGE')+$amount;
         $payment = $total;
-
-            $balance = $user->balance;
-
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+        $trx = 'mobile'.date('Y').date('m').date('d').date('H').date('i').date('s').substr(str_shuffle('01234567890') , 0 , 5 );
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
         }
+        $balance = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = env('INSURANCECHARGE');
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Paid insurance levy via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $trx;
+        $transaction->remark       = 'insurance';
+        $transaction->save();
 
         $mode = env('MODE');
         $username = env('VTPASSUSERNAME');
         $password = env('VTPASSPASSWORD');
         $str = $username.':'.$password;
         $auth = base64_encode($str);
-        $datecode = date('Y').date('m').date('d').date('H').date('i').date('s');
-        $codex = substr(str_shuffle('01234567890') , 0 , 5 );
-        $trx = 'mobile'.$datecode.$codex;
         if($mode == 'TEST')
         {
         $url = 'https://sandbox.vtpass.com/api/pay';
@@ -216,13 +231,34 @@ class InsuranceController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
 
     }
 
     if(isset($reply['content']['errors'] ))
     {
-
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
 
 
@@ -231,6 +267,17 @@ class InsuranceController extends Controller
 
     if($reply['code'] != "000")
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> $reply['response_description'].' We cant processs this request at the moment'],400);
 
     }
@@ -238,19 +285,24 @@ class InsuranceController extends Controller
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
 
     }
 
         if($reply['code'] == 000)
         {
-
-                $user->balance -= $payment;
-                $balance_after = $user->balance;
-
            //return $reply;
-
-            $user->save();
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         = 'insurance';
@@ -274,19 +326,8 @@ class InsuranceController extends Controller
             $order->transaction_id  = @$reply['content']['transactions']['transactionId'];
             $order->save();
 
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = env('INSURANCECHARGE');
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Paid insurance levy via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'insurance';
-            $transaction->save();
-
             notify($user,'INSURANCE_BUY', [
-                'provider'        => @$decoder,
+                'provider'        => @$reply['content']['transactions']['product_name'],
                 'amount'          => @showAmount($payment),
                 'product'         => @$variation_name,
                 'beneficiary'     => @$billersCode,
@@ -299,10 +340,35 @@ class InsuranceController extends Controller
         }
         else
         {
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed insurance purchase';
+            $refund->trx          = $trx;
+            $refund->remark       = 'insurance_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
     } catch (\Exception $e) {
+        $wallet = isset($wallet) ? $wallet : 'main';
+        if (isset($payment) && isset($trx)) {
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed insurance purchase';
+            $refund->trx          = $trx;
+            $refund->remark       = 'insurance_refund';
+            $refund->save();
+        }
         return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
 
     }
@@ -341,22 +407,35 @@ class InsuranceController extends Controller
 
         $total = env('INSURANCECHARGE')+$amount;
         $payment = $total;
-
-            $balance = $user->balance;
-
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+        $trx = 'mobile'.date('Y').date('m').date('d').date('H').date('i').date('s').substr(str_shuffle('01234567890') , 0 , 5 );
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
         }
+        $balance = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = env('INSURANCECHARGE');
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Paid insurance levy via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $trx;
+        $transaction->remark       = 'insurance';
+        $transaction->save();
 
         $mode = env('MODE');
         $username = env('VTPASSUSERNAME');
         $password = env('VTPASSPASSWORD');
         $str = $username.':'.$password;
         $auth = base64_encode($str);
-        $datecode = date('Y').date('m').date('d').date('H').date('i').date('s');
-        $codex = substr(str_shuffle('01234567890') , 0 , 5 );
-        $trx = 'mobile'.$datecode.$codex;
         if($mode == 'TEST')
         {
         $url = 'https://sandbox.vtpass.com/api/pay';
@@ -401,35 +480,72 @@ class InsuranceController extends Controller
     curl_close($curl);
     if(!isset($reply['code'] ))
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
     if(isset($reply['content']['errors'] ))
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> @json_encode($reply).'We cant processs this request at the moment'],400);
     }
 
 
     if($reply['code'] != "000")
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> $reply['response_description'].' We cant processs this request at the moment'],400);
     }
 
 
     if(!isset($reply['content']['transactions']['transactionId']))
     {
+        $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        $refund               = new Transaction();
+        $refund->user_id      = $user->id;
+        $refund->amount       = $payment;
+        $refund->post_balance = $credit['balance_after'];
+        $refund->charge       = 0;
+        $refund->trx_type     = '+';
+        $refund->details      = 'Refund for failed insurance purchase';
+        $refund->trx          = $trx;
+        $refund->remark       = 'insurance_refund';
+        $refund->save();
         return response()->json(['ok'=>false,'status'=>'danger','message'=> 'We cant processs this request at the moment'],400);
     }
 
         if($reply['code'] == 000)
         {
-
-                $user->balance -= $payment;
-                $balance_after = $user->balance;
-
-            //return $reply;
-
-            $user->save();
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         = 'insurance';
@@ -452,21 +568,10 @@ class InsuranceController extends Controller
             $order->transaction_id  = @$reply['content']['transactions']['transactionId'];
             $order->save();
 
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = env('INSURANCECHARGE');
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Paid insurance levy via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'insurance';
-            $transaction->save();
-
             notify($user,'INSURANCE_BUY', [
                 'provider'        => @$reply['content']['transactions']['product_name'],
                 'amount'          => @showAmount($payment),
-                'product'         => @$deposit_code,
+                'product'         => 'personal',
                 'beneficiary'     => $billersCode,
                 'rate'            => @showAmount($payment),
                 'purchase_at'     => @Carbon::now(),
@@ -477,10 +582,35 @@ class InsuranceController extends Controller
         }
         else
         {
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed insurance purchase';
+            $refund->trx          = $trx;
+            $refund->remark       = 'insurance_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
     } catch (\Exception $e) {
+        $wallet = isset($wallet) ? $wallet : 'main';
+        if (isset($payment) && isset($trx)) {
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed insurance purchase';
+            $refund->trx          = $trx;
+            $refund->remark       = 'insurance_refund';
+            $refund->save();
+        }
         return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
 
     }

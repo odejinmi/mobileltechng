@@ -188,6 +188,7 @@ class InternetSmeController extends Controller
     public function buy_internet_sme_natkemlinks()
     {
         try {
+        $debited = false;
         $user = auth()->user();
         $json = file_get_contents('php://input');
         $input = json_decode($json, true);
@@ -207,27 +208,34 @@ class InternetSmeController extends Controller
             $passcheck = true;
             } else {
             $passcheck = false;
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
         $payment = $amount;
-        if($wallet == 'main')
-        {
-            $balance_before = $user->balance;
+        $code = getTrx();
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
         }
-        else
-        {
-            $balance_before = $user->ref_balance;
-        }
-        if($payment > $balance_before)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
+        $debited = true;
+        $balance_before = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = 0;
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Purchased SME internet data via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $code;
+        $transaction->remark       = 'internet';
+        $transaction->save();
 
 
 
@@ -262,11 +270,17 @@ class InternetSmeController extends Controller
         if(!isset($response['ident']) && !isset($response['balance_after']))
         {
             //RETURN FUND
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed SME internet purchase';
+            $refund->trx          = $code;
+            $refund->remark       = 'internet_refund';
+            $refund->save();
             //RETURN FUND
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment '.json_encode($response)],400);
         }
@@ -286,7 +300,6 @@ class InternetSmeController extends Controller
                 \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
             }
 
-            $code = getTrx();
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'smedata';
@@ -303,34 +316,10 @@ class InternetSmeController extends Controller
             $order->payment      = @$payment;
             $order->trx          = $code;
             $order->source       = $wallet;
-            try {
-                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-            } catch (\RuntimeException $e) {
-                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                }
-                throw $e;
-            }
-            $balance_before = $debit['balance_before'];
-            $balance_after = $debit['balance_after'];
-            $user = $debit['user'];
-
             $order->balance_before  = $balance_before;
             $order->balance_after   = $balance_after;
             $order->transaction_id  = $response['ident'];
             $order->save();
-
-
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = 0;
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Purchased SME internet data via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'internet';
-            $transaction->save();
 
             notify($user,'INTERNET_BUY', [
                 'provider'        => @$networkname,
@@ -347,19 +336,33 @@ class InternetSmeController extends Controller
         }
         else
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed SME internet purchase';
+            $refund->trx          = $code;
+            $refund->remark       = 'internet_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'ERROR '.@$response['api_response']. 'API ERROR'],400);
         }
         } catch (\Exception $e) {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            if (isset($debited) && $debited) {
+                $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                $refund               = new Transaction();
+                $refund->user_id      = $user->id;
+                $refund->amount       = $payment;
+                $refund->post_balance = $credit['balance_after'];
+                $refund->charge       = 0;
+                $refund->trx_type     = '+';
+                $refund->details      = 'Refund for failed SME internet purchase';
+                $refund->trx          = $code;
+                $refund->remark       = 'internet_refund';
+                $refund->save();
+            }
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);
@@ -717,6 +720,7 @@ class InternetSmeController extends Controller
     public function buy_internet_sme_techhub()
     {
         try {
+            $debited = false;
             $user = auth()->user();
             $json = file_get_contents('php://input');
             $input = json_decode($json, true);
@@ -736,30 +740,34 @@ class InternetSmeController extends Controller
                 $passcheck = true;
             } else {
                 $passcheck = false;
-                BonusService::refundaccount(
-                    $user,
-                    $amount,
-                    $wallet
-                );
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'The password doesn\'t match!'],400);
             }
 
             $payment = $amount;
-            if($wallet == 'main')
-            {
-                $balance_before = $user->balance;
+            $code = getTrx();
+            try {
+                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            } catch (\RuntimeException $e) {
+                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+                }
+                throw $e;
             }
-            else
-            {
-                $balance_before = $user->ref_balance;
-            }
-            if($payment > $balance_before)
-            {
-                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-            }
+            $debited = true;
+            $balance_before = $debit['balance_before'];
+            $balance_after = $debit['balance_after'];
+            $user = $debit['user'];
 
-//            $user->save();
-            //END DEBIT WALLET
+            $transaction               = new Transaction();
+            $transaction->user_id      = $user->id;
+            $transaction->amount       = $payment;
+            $transaction->post_balance = $balance_after;
+            $transaction->charge       = 0;
+            $transaction->trx_type     = '-';
+            $transaction->details      = 'Purchased SME internet data via ' . strToUpper($wallet).' Wallet';
+            $transaction->trx          = $code;
+            $transaction->remark       = 'internet';
+            $transaction->save();
 
             $token = env('TECHHUBTOKEN');
             $curl = curl_init();
@@ -792,18 +800,34 @@ class InternetSmeController extends Controller
             curl_close($curl);
 
             if ($err) {
-            dd($err);
-            return [];
+                $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                $refund               = new Transaction();
+                $refund->user_id      = $user->id;
+                $refund->amount       = $payment;
+                $refund->post_balance = $credit['balance_after'];
+                $refund->charge       = 0;
+                $refund->trx_type     = '+';
+                $refund->details      = 'Refund for failed SME internet purchase';
+                $refund->trx          = $code;
+                $refund->remark       = 'internet_refund';
+                $refund->save();
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment'],400);
             }
             $response = json_decode($resp,true);
             if(!isset($response['data']['reference']))
             {
                 //RETURN FUND
-                BonusService::refundaccount(
-                    $user,
-                    $amount,
-                    $wallet
-                );
+                $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                $refund               = new Transaction();
+                $refund->user_id      = $user->id;
+                $refund->amount       = $payment;
+                $refund->post_balance = $credit['balance_after'];
+                $refund->charge       = 0;
+                $refund->trx_type     = '+';
+                $refund->details      = 'Refund for failed SME internet purchase';
+                $refund->trx          = $code;
+                $refund->remark       = 'internet_refund';
+                $refund->save();
                 //RETURN FUND
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Sorry we cant process this request at the moment '.json_encode($response)],400);
             }
@@ -823,7 +847,6 @@ class InternetSmeController extends Controller
                     \Log::info("Bonus of {$bonusAmount} awarded for airtime purchase");
                 }
 
-                $code = getTrx();
                 $order               = new Order();
                 $order->user_id      = $user->id;
                 $order->type         =  'smedata';
@@ -840,33 +863,10 @@ class InternetSmeController extends Controller
                 $order->payment      = @$payment;
                 $order->trx          = $code;
                 $order->source       = $wallet;
-                try {
-                    $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-                } catch (\RuntimeException $e) {
-                    if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                        return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                    }
-                    throw $e;
-                }
-                $balance_before = $debit['balance_before'];
-                $balance_after = $debit['balance_after'];
-                $user = $debit['user'];
                 $order->balance_before  = $balance_before;
                 $order->balance_after   = $balance_after;
                 $order->transaction_id  = $response['data']['reference'];
                 $order->save();
-
-
-                $transaction               = new Transaction();
-                $transaction->user_id      = $order->user_id;
-                $transaction->amount       = $order->payment;
-                $transaction->post_balance = $order->balance_after;
-                $transaction->charge       = 0;
-                $transaction->trx_type     = '-';
-                $transaction->details      = 'Purchased SME internet data via ' . strToUpper($wallet).' Wallet';
-                $transaction->trx          = $order->trx;
-                $transaction->remark       = 'internet';
-                $transaction->save();
 
                 notify($user,'INTERNET_BUY', [
                     'provider'        => @$networkname,
@@ -883,19 +883,33 @@ class InternetSmeController extends Controller
             }
             else
             {
-                BonusService::refundaccount(
-                    $user,
-                    $amount,
-                    $wallet
-                );
+                $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                $refund               = new Transaction();
+                $refund->user_id      = $user->id;
+                $refund->amount       = $payment;
+                $refund->post_balance = $credit['balance_after'];
+                $refund->charge       = 0;
+                $refund->trx_type     = '+';
+                $refund->details      = 'Refund for failed SME internet purchase';
+                $refund->trx          = $code;
+                $refund->remark       = 'internet_refund';
+                $refund->save();
                 return response()->json(['ok'=>false,'status'=>'danger','message'=> 'ERROR '.@$response['message']. 'API ERROR'],400);
             }
         } catch (\Exception $e) {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            if (isset($debited) && $debited) {
+                $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+                $refund               = new Transaction();
+                $refund->user_id      = $user->id;
+                $refund->amount       = $payment;
+                $refund->post_balance = $credit['balance_after'];
+                $refund->charge       = 0;
+                $refund->trx_type     = '+';
+                $refund->details      = 'Refund for failed SME internet purchase';
+                $refund->trx          = $code;
+                $refund->remark       = 'internet_refund';
+                $refund->save();
+            }
             return response()->json(['ok'=>false,'status'=>'danger','message'=> $e->getMessage()],400);
         }
         //return json_decode($resp,true);

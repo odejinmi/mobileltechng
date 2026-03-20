@@ -219,18 +219,29 @@ class UtilityController extends Controller
             return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Maximum amount you can purchase is '.getAmount($max)],400);
         }
         $payment = $amount/$rate;
-        if($wallet == 'main')
-        {
-            $balance = $user->balance;
+        $code = getTrx();
+        try {
+            $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+        } catch (\RuntimeException $e) {
+            if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
+                return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
+            }
+            throw $e;
         }
-        else
-        {
-            $balance = $user->ref_balance;
-        }
-        if($payment > $balance)
-        {
-            return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-        }
+        $balance = $debit['balance_before'];
+        $balance_after = $debit['balance_after'];
+        $user = $debit['user'];
+
+        $transaction               = new Transaction();
+        $transaction->user_id      = $user->id;
+        $transaction->amount       = $payment;
+        $transaction->post_balance = $balance_after;
+        $transaction->charge       = 0;
+        $transaction->trx_type     = '-';
+        $transaction->details      = 'Paid utility bill via ' . strToUpper($wallet).' Wallet';
+        $transaction->trx          = $code;
+        $transaction->remark       = 'utility';
+        $transaction->save();
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_POST, true);
@@ -241,7 +252,6 @@ class UtilityController extends Controller
         "Content-Type: application/json",
         );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        $code = getTrx();
         $data = <<<DATA
         {
             "billerId": "$operatorId",
@@ -263,18 +273,6 @@ class UtilityController extends Controller
         // END AIRTIME VENDING \\
         if(isset($response['status']) && isset($response['transactionId']) > 0)
         {
-            try {
-                $debit = WalletService::debitWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
-            } catch (\RuntimeException $e) {
-                if ($e->getMessage() === 'INSUFFICIENT_BALANCE') {
-                    BonusService::refundaccount($user, $amount, $wallet);
-                    return response()->json(['ok'=>false,'status'=>'danger','message'=> 'Insufficient wallet balance'],400);
-                }
-                throw $e;
-            }
-            $balance = $debit['balance_before'];
-            $balance_after = $debit['balance_after'];
-            $user = $debit['user'];
             $bonusAmount = BonusService::processBonus(
                 $user->id,
                 'electricity',
@@ -289,8 +287,8 @@ class UtilityController extends Controller
             $order               = new Order();
             $order->user_id      = $user->id;
             $order->type         =  'utility';
-            $order->val_1   = $phone;
-            $order->val_2   = $plan;
+            $order->val_1   = $meter;
+            $order->val_2   = $operatorName;
             $order->product_id   = @$operatorId;
             $order->product_name = @$operatorName;
             $order->product_logo = @$operatorLogo;
@@ -306,27 +304,21 @@ class UtilityController extends Controller
             $order->balance_after   = $balance_after;
             $order->transaction_id  = @$response['transactionId'];
             $order->save();
-
-
-            $transaction               = new Transaction();
-            $transaction->user_id      = $order->user_id;
-            $transaction->amount       = $order->payment;
-            $transaction->post_balance = $order->balance_after;
-            $transaction->charge       = 0;
-            $transaction->trx_type     = '-';
-            $transaction->details      = 'Paid utility bill via ' . strToUpper($wallet).' Wallet';
-            $transaction->trx          = $order->trx;
-            $transaction->remark       = 'utility';
-            $transaction->save();
             return response()->json(['ok'=>true,'status'=>'success','message'=> 'Transaction Was Successful','orderid'=> $response['transactionId']],200);
         }
         else
         {
-            BonusService::refundaccount(
-                $user,
-                $amount,
-                $wallet
-            );
+            $credit = WalletService::creditWithLock($user->id, $payment, $wallet == 'main' ? 'main' : 'ref');
+            $refund               = new Transaction();
+            $refund->user_id      = $user->id;
+            $refund->amount       = $payment;
+            $refund->post_balance = $credit['balance_after'];
+            $refund->charge       = 0;
+            $refund->trx_type     = '+';
+            $refund->details      = 'Refund for failed utility purchase';
+            $refund->trx          = $code;
+            $refund->remark       = 'utility_refund';
+            $refund->save();
             return response()->json(['ok'=>false,'status'=>'danger','message'=> json_encode($response). 'API ERROR'],400);
         }
         //return json_decode($resp,true);
