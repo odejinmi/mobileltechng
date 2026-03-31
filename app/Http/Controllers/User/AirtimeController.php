@@ -12,6 +12,7 @@ use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\Transaction;
 use App\Services\BonusService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
