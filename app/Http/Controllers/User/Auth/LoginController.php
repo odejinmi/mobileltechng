@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminNotification;
 use App\Models\User;
 use App\Models\UserLogin;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -325,7 +327,14 @@ class LoginController extends Controller
                 'profile_complete' => 1, // Profile completed
             ]);
 
-            Auth::login($newUser, true);
+            $adminNotification = new AdminNotification();
+            $adminNotification->user_id = $newUser->id;
+            $adminNotification->title = 'New member registered';
+            $adminNotification->click_url = urlPath('admin.users.detail', $user->id);
+            $adminNotification->save();
+            event(new Registered($user = $newUser));
+
+            Auth::login($user, true);
 
             // Call the same authenticated method
             return $this->authenticated(request(), $newUser);

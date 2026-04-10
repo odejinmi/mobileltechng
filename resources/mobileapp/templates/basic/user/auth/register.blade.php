@@ -83,7 +83,7 @@
         <div>   </div>
         <!-- Google Login Button -->
         <div class="d-grid">
-            <a href="{{ route('user.google.login') }}" class="btn btn-danger">
+            <button type="button" onclick="googlesignin()" class="btn btn-danger">
                 <svg width="18" height="18" viewBox="0 0 24 24" class="me-2">
                     <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -91,7 +91,7 @@
                     <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
                 Continue with Google
-            </a>
+            </button>
         </div>
 
     </div>
@@ -102,6 +102,114 @@
 @endsection
 @push('script')
     <script>
+
+
+
+        function googlesignin() {
+            // Add your BVN verification logic here
+            if (typeof web2app !== 'undefined' && web2app.isNative()) {
+                // Uncomment this in production
+
+                web2app.googlesignin.signin( function(response) {
+                    console.log('BVN Verification Response:', JSON.stringify(response));
+                    console.log('BVN Verification Response:', JSON.stringify(response.success));
+
+                    // Handle the response structure
+                    // if (response && response.message) {
+                    //     const responseData = response.message;
+                    console.log('Response Data:', JSON.stringify(response));
+                    console.log('Response Data:', JSON.stringify(response.data));
+                    // } else {
+                    //     console.error('Invalid response format:', response);
+                    // }
+                    if (response && response.success){
+                        updatedata(response)
+                    }
+                });
+
+            } else {
+                window.location.href = "{{ route('user.google.login') }}";
+            }
+        }
+
+        function updatedata(response) {
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+
+            var raw = JSON.stringify({
+                _token: "{{ csrf_token() }}",
+                name: response.displayName,
+                email: response.email,
+                id: response.id,
+                avatar: response.photoUrl,
+            });
+
+            var requestOptions = {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: raw
+            };
+
+            fetch("{{ route('user.app.google.callback') }}", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    // Show success message
+                    const message = result.message || 'Verification successful';
+                    const status = result.status || 'success';
+
+                    // Update UI with response
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `alert alert-${status}`;
+                    messageDiv.role = 'alert';
+                    messageDiv.innerHTML = `<strong>${status.charAt(0).toUpperCase() + status.slice(1)} - </strong> ${message}`;
+
+                    const container = document.getElementById('passmessage') || document.body;
+                    container.innerHTML = '';
+                    container.appendChild(messageDiv);
+
+                    // If verification was successful, reload the page after a delay
+                    if (status === 'success') {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.role = 'alert';
+                    errorDiv.textContent = 'An error occurred during verification. Please try again.';
+
+                    // Safely handle the message container
+                    const container = document.getElementById('passmessage');
+                    if (container) {
+                        container.innerHTML = '';
+                        container.appendChild(errorDiv);
+                    } else {
+                        // If passmessage doesn't exist, create it
+                        const newContainer = document.createElement('div');
+                        newContainer.id = 'passmessage';
+                        newContainer.appendChild(errorDiv);
+                        document.body.prepend(newContainer);
+                    }
+                })
+                .finally(() => {
+                    // Hide loading overlay
+                    loadingOverlay.style.display = 'none';
+                });
+        }
+
         function loadbutton() {
             $("#loader").html(
                 `<center><div class="spinner-border theme-color mt-2" role="status"><span class="visually-hidden">Loading...</span></div></center>`
