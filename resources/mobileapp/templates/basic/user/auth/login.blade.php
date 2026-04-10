@@ -86,7 +86,7 @@
 
                 web2app.googlesignin.signin( function(response) {
                     console.log('BVN Verification Response:', JSON.stringify(response));
-                    console.log('BVN Verification Response:', JSON.stringify(response.data));
+                    console.log('BVN Verification Response:', JSON.stringify(response.success));
 
                     // Handle the response structure
                     // if (response && response.message) {
@@ -96,8 +96,8 @@
                     // } else {
                     //     console.error('Invalid response format:', response);
                     // }
-                    if (response.data && response.data.success){
-                        updatedata(response.data)
+                    if (response && response.success){
+                        updatedata(response)
                     }
                 });
 
