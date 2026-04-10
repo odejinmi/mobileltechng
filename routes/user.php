@@ -11,6 +11,7 @@ Route::namespace('User\Auth')->name('user.')->group(function () {
         Route::get('logout', 'logout')->name('logout');
         Route::get('auth/google', 'redirectToGoogle')->name('google.login');
         Route::get('auth/google/callback', 'handleGoogleCallback');
+        Route::get('auth/google/appcallback', 'handleappGoogleCallback')->name('app.google.callback');
     });
 
     Route::controller('RegisterController')->group(function () {

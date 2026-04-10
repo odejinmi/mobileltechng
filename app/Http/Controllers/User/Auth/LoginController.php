@@ -253,6 +253,88 @@ class LoginController extends Controller
             return redirect()->route('user.login')->withNotify($notify);
         }
     }
+    public function handleappGoogleCallback(Request $request)
+    {
+        // Debug: Log all request parameters
+        \Log::info('Google Callback Request:', [
+            'all_params' => $request->all(),
+            'code' => $request->get('code'),
+            'state' => $request->get('state'),
+            'error' => $request->get('error'),
+            'url' => $request->fullUrl()
+        ]);
+
+        // Handle user denial or errors
+        if ($request->has('error')) {
+            $notify[] = ['error', 'Google authentication was cancelled: ' . $request->get('error')];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
+
+        // Check if code exists
+        if (!$request->has('code') || empty($request->get('code'))) {
+            \Log::error('No authorization code received from Google');
+            $notify[] = ['error', 'Authorization code not received from Google.'];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
+        try {
+            // Check if user already exists with this Google ID
+            $existingUser = User::where('google_id', $request->id)->first();
+
+            if ($existingUser) {
+                // Use the same authentication flow as normal login
+                Auth::login($existingUser, true);
+
+                // Call the same authenticated method to maintain consistency
+                return $this->authenticated(request(), $existingUser);
+            }
+
+            // Check if user exists with same email
+            $existingEmailUser = User::where('email', $request->email)->first();
+
+            if ($existingEmailUser) {
+                // Update existing user with Google ID and avatar
+                $existingEmailUser->update([
+                    'google_id' => $request->id,
+                    'avatar' => $request->avatar,
+                ]);
+
+                Auth::login($existingEmailUser, true);
+
+                // Call the same authenticated method
+                return $this->authenticated(request(), $existingEmailUser);
+            }
+
+            // Create new user with proper defaults
+            $user = new User();
+
+            $newUser = User::create([
+                'firstname' => $this->extractFirstName($request->name),
+                'lastname' => $this->extractLastName($request->name),
+                'username' => $this->generateUsername($request->email),
+                'email' => $request->email,
+                'google_id' => $request->id,
+                'avatar' => $request->avatar,
+                'password' => Hash::make(uniqid()), // Random password
+                'email_verified_at' => now(), // Auto-verify Google users
+                'status' => 1, // Active status
+                'ev' => 1, // Email verified
+                'sv' => 1, // SMS verified (if applicable)
+                'ts' => 0, // Two-factor security
+                'tv' => 1, // Two-factor verified
+                'theme' => 'default', // Default theme
+                'profile_complete' => 1, // Profile completed
+            ]);
+
+            Auth::login($newUser, true);
+
+            // Call the same authenticated method
+            return $this->authenticated(request(), $newUser);
+
+        } catch (Exception $e) {
+            $notify[] = ['error', 'Something went wrong with Google authentication.'];
+            return redirect()->route('user.login')->withNotify($notify);
+        }
+    }
 
     // Helper methods for Google user creation
     private function extractFirstName($fullName)
