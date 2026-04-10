@@ -93,7 +93,6 @@
                     //     const responseData = response.message;
                     console.log('Response Data:', JSON.stringify(response));
                     console.log('Response Data:', JSON.stringify(response.data));
-                    console.log('Response Data:', response.data.verify);
                     // } else {
                     //     console.error('Invalid response format:', response);
                     // }
